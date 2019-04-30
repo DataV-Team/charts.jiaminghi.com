@@ -1,0 +1,26 @@
+{
+  "name": "Charts_Guide",
+  "version": "0.0.1",
+  "author": "JiaMing <743192023@qq.com>",
+  "scripts": {
+    "build": "vuepress build docs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vuepress dev docs"
+  },
+  "dependencies": {
+    "@jiaminghi/c-render": "^0.2.3",
+    "@jiaminghi/color": "^0.0.3",
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0",
+    "vuepress": "^0.14.9"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "charts",
+    "canvas",
+    "interactive"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": "https://github.com/jiaming743/Charts.git"
+}
