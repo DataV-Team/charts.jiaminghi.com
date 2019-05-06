@@ -7,6 +7,8 @@
 <script>
 import Charts from '../../Charts/index.js'
 
+import transition from '@jiaminghi/transition'
+
 export default {
   name: 'Demo',
   data () {
