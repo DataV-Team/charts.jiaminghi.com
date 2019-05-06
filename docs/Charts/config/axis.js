@@ -6,14 +6,18 @@ const xAxisConfig = {
   nameLocation: 'start',
   nameTextStyle: {},
   nameGap: 10,
-  min: null,
-  max: null,
+  min: '10%',
+  max: '10%',
   interval: null,
-  minInterval: 0,
+  minInterval: null,
+  precision: 0,
   boundaryGap: true,
+  splitNumber: 5,
   axisLine: {
     show: true,
-    style: {}
+    style: {
+      stroke: '#b6b6b6'
+    }
   },
   axisTick: {
     show: true,
@@ -35,5 +39,5 @@ const xAxisConfig = {
 }
 
 export const axisConfig = {
-
+  xAxisConfig
 }
