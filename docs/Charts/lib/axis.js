@@ -4,20 +4,22 @@ import { axisConfig } from '../config'
 
 import { filterNonNumber } from '../util'
 
+import { deepClone } from '@jiaminghi/c-render/lib/util'
+
+const { xAxisConfig, yAxisConfig } = axisConfig
+
 export function axis (chart, option = {}) {
-  const { grid, render } = chart
   const { xAxis, yAxis, series } = option
 
   if (!xAxis || !yAxis || !series) return
+
+  if (!chart.axis) chart.axis = { xAxis: [], yAxis: [] }
 
   const [minValue, maxValue] = getSeriesMinMaxValue(series)
 
   const { allXAxis, allYAxis } = getAllAxis(xAxis, yAxis)
 
-  allXAxis.forEach((axis, i) => {
-    if (i > 1) return
-
-  })
+  allXAxis.forEach((axis, i) => updateXAxis(chart, axis, i, maxValue, minValue))
 }
 
 function getSeriesMinMaxValue (series) {
@@ -52,4 +54,83 @@ function getAllAxis (xAxis, yAxis) {
   }
 
   return { allXAxis, allYAxis }
+}
+
+function updateXAxis (chart, axis, i, maxValue, minValue) {
+  const { axis: { xAxis }, render, grid } = chart
+
+  if (i > 1) return
+
+  if (!xAxis[i]) {
+    addXAxis(chart, axis, i, maxValue, minValue)
+
+    return
+  }
+
+
+}
+
+function addXAxis (chart, axis, i, maxValue, minValue) {
+  chart.axis.xAxis[i] = {}
+
+  addXAxisLine(chart, axis, i, maxValue, minValue)
+  addXAxisTick(chart, axis, i, maxValue, minValue)
+}
+
+function addXAxisLine (chart, axis, i, maxValue, minValue) {
+  const { grid, render } = chart
+
+  const { x, y, w, h } = grid.data
+
+  let { position, offset, axisLine } = axis
+
+  if (!position) position = xAxisConfig.position
+  if (!offset) offset = xAxisConfig.offset
+  if (axisLine) {
+    Object.assign(deepClone(axisConfig.axisLine), axisLine)
+  } else {
+    axisLine = deepClone(xAxisConfig.axisLine)
+  }
+
+  let [startX, startY] = [x, y + h]
+  
+  startY += offset
+
+  const axisLineGraph = render.add({
+    name: 'polyline',
+    visible: axisLine.show,
+    shape: {
+      points: [
+        [startX, startY],
+        [startX + w, startY]
+      ]
+    },
+    style: axisLine.style
+  })
+
+  chart.axis.xAxis[i].axisLine = axisLineGraph
+}
+
+function addXAxisTick (chart, axis, i, maxValue, minValue) {
+  let { data, min, max, precision, interval, minInterval, boundaryGap, splitNumber, axisTick } = axis
+
+  if (min === undefined) min = xAxisConfig.min
+  if (max === undefined) max = xAxisConfig.max
+  if (precision === undefined) precision = xAxisConfig.precision
+  if (interval === undefined) interval = xAxisConfig.interval
+  if (minInterval === undefined) minInterval = xAxisConfig.minInterval
+  if (boundaryGap === undefined) boundaryGap = xAxisConfig.boundaryGap
+  if (splitNumber === undefined) splitNumber = xAxisConfig.splitNumber
+
+  if (axisTick) {
+    Object.assign(deepClone(axisConfig.axisTick), axisTick)
+  } else {
+    axisTick = deepClone(xAxisConfig.axisTick)
+  }
+
+  let label = data
+
+  if (!data) {
+
+  }
 }
