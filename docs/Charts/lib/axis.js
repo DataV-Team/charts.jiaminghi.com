@@ -28,7 +28,9 @@ export function axis (chart, option = {}) {
 
   allAxis = calcAxisTickPosition(allAxis, chart)
 
-  updateAxis(allAxis, chart)
+  updateAxisLine(allAxis, chart)
+
+  updateAxisTick(allAxis, chart)
 }
 
 function getAllAxis (xAxis, yAxis) {
@@ -274,96 +276,52 @@ function calcAxisTickPosition (allAxis, chart) {
   })
 }
 
-function updateAxis (allAxis, chart) {
+function updateAxisLine (allAxis, chart) {
   const { render, axis } = chart
 
   allAxis.forEach(axisItem => {
     const { axis: axisType, index } = axisItem
 
-    const axisLine = axis.find(({ axis: tAxis, index: tIndex }) => tAxis === axisType && index === tIndex)
+    const axisIndex = axisType + index
 
-    const { linePosition, axisLine } = axisItem
+    let graph = axis.find(({ axis: tAxis, index: tIndex }) => axisIndex === `${tAxis}${tIndex}`)
 
-    const { axisLine: axisLineConfig } = axisConfig[axisType + 'AxisConfig'].axisLine
+    let { linePosition, axisLine } = axisItem
 
-    if (axisLine) {
-      axisLine.animation('shape', linePosition, true)
-      if (!axisLine) return
+    const axisLineConfig = axisConfig[axisType + 'AxisConfig'].axisLine
 
-      let { show, style } = axisLine
+    if (!axisLine) axisLine = {}
 
-      if (typeof show !== 'boolean') show = axisLineConfig.show
+    let { show, style } = axisLine
 
-      axisLine.visible = show
+    const { show: defaultShow, style: defaultStyle } = axisLineConfig
 
-      if (style) axisLine.animation('style', style)
+    if (graph) {
+      graph.animation('shape', linePosition, true)
+
+      if (typeof show === 'boolean') graph.visible = show
+
+      if (typeof style === 'object') graph.animation('style', style)
+
+      return
     }
+
+    if (typeof show !== 'boolean') show = defaultShow
+    if (typeof style === 'object') {
+      Object.assign(deepClone(style, true), axisLine.style)
+    } else {
+      style = defaultStyle
+    }
+
+    axis.push(render.add({
+      axisIndex,
+      name: 'polyline',
+      visible: show,
+      shape: {
+        points: linePosition
+      },
+      style
+    }))
   })
-
-
 }
 
-function addXAxis (chart, axis, i, maxValue, minValue) {
-  chart.axis.xAxis[i] = {}
-
-  addXAxisLine(chart, axis, i, maxValue, minValue)
-  addXAxisTick(chart, axis, i, maxValue, minValue)
-}
-
-function addXAxisLine (chart, axis, i, maxValue, minValue) {
-  const { grid, render } = chart
-
-  const { x, y, w, h } = grid.area
-
-  let { position, axisLine } = axis
-
-  if (!position) position = xAxisConfig.position
-  if (!offset) offset = xAxisConfig.offset
-  if (axisLine) {
-    Object.assign(deepClone(axisConfig.axisLine, true), axisLine)
-  } else {
-    axisLine = deepClone(xAxisConfig.axisLine, true)
-  }
-
-  let [startX, startY] = [x, y + h]
-
-  if (position !== 'bottom') startY = y
-
-  const axisLineGraph = render.add({
-    name: 'polyline',
-    visible: axisLine.show,
-    shape: {
-      points: [
-        [startX, startY],
-        [startX + w, startY]
-      ]
-    },
-    style: axisLine.style
-  })
-
-  chart.axis.xAxis[i].axisLine = axisLineGraph
-}
-
-function addXAxisTick (chart, axis, i, maxValue, minValue) {
-  let { data, min, max, precision, interval, minInterval, boundaryGap, splitNumber, axisTick } = axis
-
-  if (min === undefined) min = xAxisConfig.min
-  if (max === undefined) max = xAxisConfig.max
-  if (precision === undefined) precision = xAxisConfig.precision
-  if (interval === undefined) interval = xAxisConfig.interval
-  if (minInterval === undefined) minInterval = xAxisConfig.minInterval
-  if (boundaryGap === undefined) boundaryGap = xAxisConfig.boundaryGap
-  if (splitNumber === undefined) splitNumber = xAxisConfig.splitNumber
-
-  if (axisTick) {
-    Object.assign(deepClone(axisConfig.axisTick, true), axisTick)
-  } else {
-    axisTick = deepClone(xAxisConfig.axisTick, true)
-  }
-
-  let label = data
-
-  if (!data) {
-
-  }
-}

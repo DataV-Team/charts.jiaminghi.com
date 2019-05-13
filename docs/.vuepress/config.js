@@ -1,10 +1,15 @@
+// const dev = 'pc'
+const dev = 'mac'
+
+const host = dev === 'pc' ? '192.168.10.150' : 'localhost'
+
 module.exports = {
   title: 'Charts',
   description: 'Just playing around',
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }]
   ],
-  host: '192.168.10.150',
+  host,
   port: 5003,
   locales: {
     '/': {
