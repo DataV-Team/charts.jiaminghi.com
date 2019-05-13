@@ -45,14 +45,13 @@ export function grid (chart, option = {}) {
     name: 'rect',
     animationCurve: 'linear',
     shape,
-    style: { fill: backgroundColor }  
+    style: { fill: backgroundColor }
   })
 
   chart.grid = {
     graph,
-    data: {
-      ...shape,
-      backgroundColor
+    area: {
+      ...shape
     }
   }
 }

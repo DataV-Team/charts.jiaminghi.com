@@ -1,25 +1,119 @@
-const { min, max } = Math
+const { min, max, abs, pow, ceil, floor } = Math
 
 import { axisConfig } from '../config'
 
 import { filterNonNumber } from '../util'
 
 import { deepClone } from '@jiaminghi/c-render/lib/util'
+import { all } from 'any-promise';
 
 const { xAxisConfig, yAxisConfig } = axisConfig
 
 export function axis (chart, option = {}) {
+  option = deepClone(option, true)
+
   const { xAxis, yAxis, series } = option
 
   if (!xAxis || !yAxis || !series) return
 
-  if (!chart.axis) chart.axis = { xAxis: [], yAxis: [] }
+  if (!chart.axis) chart.axis = []
 
-  const [minValue, maxValue] = getSeriesMinMaxValue(series)
+  let allAxis = getAllAxis(xAxis, yAxis)
 
-  const { allXAxis, allYAxis } = getAllAxis(xAxis, yAxis)
+  allAxis = calcAxisLabelData(allAxis, series)
 
-  allXAxis.forEach((axis, i) => updateXAxis(chart, axis, i, maxValue, minValue))
+  allAxis = setAxisPosition(allAxis)
+
+  allAxis = calcAxisLinePosition(allAxis, chart)
+
+  allAxis = calcAxisTickPosition(allAxis, chart)
+
+  updateAxis(allAxis, chart)
+}
+
+function getAllAxis (xAxis, yAxis) {
+  let [allXAxis, allYAxis] = [[], []]
+
+  if (xAxis instanceof Array) {
+    allXAxis.push(...xAxis)
+  } else {
+    allXAxis.push(xAxis)
+  }
+
+  if (yAxis instanceof Array) {
+    allYAxis.push(...yAxis)
+  } else {
+    allYAxis.push(yAxis)
+  }
+
+  allXAxis.splice(2)
+  allYAxis.splice(2)
+
+  allXAxis = allXAxis.map((axis, i) => ({ ...axis, index: i, axis: 'x'}))
+  allYAxis = allYAxis.map((axis, i) => ({ ...axis, index: i, axis: 'y'}))
+
+  return [...allXAxis, ...allYAxis]
+}
+
+function calcAxisLabelData (allAxis, series) {
+  let valueAxis = allAxis.filter(({ data }) => data === 'value')
+  let labelAxis = allAxis.filter(({ data }) => data instanceof Array)
+
+  valueAxis = calcValueAxisLabelData(valueAxis, series)
+  labelAxis = labelAxis.map(axis => ({ ...axis, label: axis.data }))
+
+  return [...valueAxis, ...labelAxis]
+}
+
+function calcValueAxisLabelData (valueAxis, series) {
+  return valueAxis.map(axis => {
+    const minMaxValue = getValueAxisMaxMinValue(axis, series)
+
+    const [min, max] = getTrueMinMax(axis, minMaxValue)
+
+    const interval = getValueInterval(min, max, axis)
+
+    if (min < 0 && max > 0) {
+      let [negative, positive] = [[], []]
+      let [currentNegative, currentPositive] = [0, 0]
+
+      do {
+        negative.push(currentNegative -= interval)
+      } while (currentNegative > min)
+
+      do {
+        positive.push(currentPositive += interval)
+      } while (currentPositive < max)
+
+      return {
+        ...axis,
+        label: [...negative, 0, ...positive]
+      }
+    }
+
+    let [label, currentValue] = [[min], min]
+
+    do {
+      label.push(currentValue += interval)
+    } while (currentValue < max)
+
+    return {
+      ...axis,
+      label
+    }
+  })
+}
+
+function getValueAxisMaxMinValue (axis, series) {
+  const { index, axis: axisType } = axis
+
+  const axisName = axisType + 'Axis'
+
+  let valueSeries = series.filter(s => s[axisName] === index)
+
+  if (!valueSeries.length) valueSeries = series
+
+  return getSeriesMinMaxValue(valueSeries)
 }
 
 function getSeriesMinMaxValue (series) {
@@ -38,34 +132,173 @@ function getSeriesMinMaxValue (series) {
   return [minValue, maxValue]
 }
 
-function getAllAxis (xAxis, yAxis) {
-  const [allXAxis, allYAxis] = [[], []]
+function getTrueMinMax ({min, max, axis}, [minValue, maxValue]) {
+  let [minType, maxType] = [typeof min, typeof max]
 
-  if (xAxis instanceof Array) {
-    allXAxis.push(...xAxis)
-  } else {
-    allXAxis.push(xAxis)
+  if (!testMinMaxType(min)) {
+    min = axisConfig[axis + 'AxisConfig'].min
+    minType = 'string'
   }
 
-  if (yAxis instanceof Array) {
-    allYAxis.push(...yAxis)
-  } else {
-    allYAxis.push(yAxis)
+  if (!testMinMaxType(max)) {
+    max = axisConfig[axis + 'AxisConfig'].max
+    maxType = 'string'
   }
 
-  return { allXAxis, allYAxis }
+  if (minType === 'number') min = minValue
+  if (maxType === 'number') max = maxValue
+
+  if (minType === 'string') {
+    min = minValue - abs(parseInt(minValue * parseFloat(min) / 100))
+
+    const lever = pow(10, abs(min).toString().length - 1)
+
+    min = floor(min / lever) * lever
+  }
+
+  if (maxType === 'string') {
+    max = maxValue + abs(maxValue * parseFloat(max) / 100)
+
+    const lever = pow(10, max.toString().length - 1)
+
+    max = ceil(max / lever) * lever    
+  }
+
+  return [min, max]
 }
 
-function updateXAxis (chart, axis, i, maxValue, minValue) {
-  const { axis: { xAxis }, render, grid } = chart
+function testMinMaxType (val) {
+  const valType = typeof val
 
-  if (i > 1) return
+  const isValidString = (valType === 'string' && /^\d+%$/.test(val))
+  const isValidNumber = valType === 'number'
 
-  if (!xAxis[i]) {
-    addXAxis(chart, axis, i, maxValue, minValue)
+  return isValidString || isValidNumber
+}
 
-    return
+function getValueInterval (min, max, axis) {
+  let { interval, minInterval, maxInterval, splitNumber, axis: axisType } = axis
+
+  const config = axisConfig[axisType + 'AxisConfig']
+
+  if (typeof interval !== 'number') interval = config.interval
+  if (typeof minInterval !== 'number') minInterval = config.minInterval
+  if (typeof maxInterval !== 'number') maxInterval = config.maxInterval
+  if (typeof splitNumber !== 'number') splitNumber = config.splitNumber
+
+  if (typeof interval === 'number') return interval
+
+  const valueInterval = (max - min) / (splitNumber - 1)
+
+  if (typeof minInterval === 'number' && valueInterval < minInterval) return minInterval
+
+  if (typeof maxInterval === 'number' && valueInterval > maxInterval) return maxInterval
+
+  return valueInterval
+}
+
+function setAxisPosition (allAxis) {
+  const xAxis = allAxis.filter(({ axis }) => axis === 'x')
+  const yAxis = allAxis.filter(({ axis }) => axis === 'y')
+
+  if (xAxis[0] && !xAxis[0].position) xAxis[0].position = xAxisConfig.position
+  if (xAxis[1] && !xAxis[1].position) {
+    xAxis[1].position = xAxis[0].position === 'bottom' ? 'top' : 'bottom'
   }
+
+  if (yAxis[0] && !yAxis[0].position) yAxis[0].position = yAxisConfig.position
+  if (yAxis[1] && !yAxis[1].position) {
+    yAxis[1].position = yAxis[0].position === 'left' ? 'right' : 'left'
+  }
+
+  return [...xAxis, ...yAxis]
+}
+
+function calcAxisLinePosition (allAxis, chart) {
+  const { x, y, w, h } = chart.grid.area
+
+  allAxis = allAxis.map(axis => {
+    const { position } = axis
+
+    let linePosition = []
+
+    if (position === 'left') {
+      linePosition = [[x, y], [x, y + h]]
+    } else if (position === 'right') {
+      linePosition = [[x + w, y], [x + w, y + h]]
+    } else if (position === 'top') {
+      linePosition = [[x, y], [x + w, y]]
+    } else if (position === 'bottom') {
+      linePosition = [[x, y + h], [x + w, y + h]]
+    }
+
+    return {
+      ...axis,
+      linePosition
+    }
+  })
+
+  // let valueAxis = allAxis.filter(({ data }) => data === 'value')
+  // let labelAxis = allAxis.filter(({ data }) => data !== 'value')
+  // const hasZero = valueAxis.find(({label}) => label.find(v => v === 0) === 0)
+
+  return allAxis
+}
+
+function calcAxisTickPosition (allAxis, chart) {
+  const xBoundaryGap = xAxisConfig.boundaryGap
+  const yBoundaryGap = yAxisConfig.boundaryGap
+
+  return allAxis.map(axis => {
+    let { axis: axisType, linePosition, label, boundaryGap } = axis
+
+    if (typeof boundaryGap !== 'boolean') boundaryGap = axisConfig[axisType + 'AxisConfig'].boundaryGap
+
+    const labelNum = label.length
+
+    const [[startX, startY], [endX, endY]] = linePosition
+
+    const gapLength = axisType === 'x' ? endX - startX : endY - startY
+
+    const gap = gapLength / (boundaryGap ? labelNum : labelNum - 1)
+
+    const tickPosition = new Array(labelNum)
+      .fill(0)
+      .map((foo, i) => startX + (gap * boundaryGap ? (i + 0.5) : i))
+
+    return {
+      ...axis,
+      tickPosition,
+      tickGap: gap
+    }
+  })
+}
+
+function updateAxis (allAxis, chart) {
+  const { render, axis } = chart
+
+  allAxis.forEach(axisItem => {
+    const { axis: axisType, index } = axisItem
+
+    const axisLine = axis.find(({ axis: tAxis, index: tIndex }) => tAxis === axisType && index === tIndex)
+
+    const { linePosition, axisLine } = axisItem
+
+    const { axisLine: axisLineConfig } = axisConfig[axisType + 'AxisConfig'].axisLine
+
+    if (axisLine) {
+      axisLine.animation('shape', linePosition, true)
+      if (!axisLine) return
+
+      let { show, style } = axisLine
+
+      if (typeof show !== 'boolean') show = axisLineConfig.show
+
+      axisLine.visible = show
+
+      if (style) axisLine.animation('style', style)
+    }
+  })
 
 
 }
@@ -80,21 +313,21 @@ function addXAxis (chart, axis, i, maxValue, minValue) {
 function addXAxisLine (chart, axis, i, maxValue, minValue) {
   const { grid, render } = chart
 
-  const { x, y, w, h } = grid.data
+  const { x, y, w, h } = grid.area
 
-  let { position, offset, axisLine } = axis
+  let { position, axisLine } = axis
 
   if (!position) position = xAxisConfig.position
   if (!offset) offset = xAxisConfig.offset
   if (axisLine) {
-    Object.assign(deepClone(axisConfig.axisLine), axisLine)
+    Object.assign(deepClone(axisConfig.axisLine, true), axisLine)
   } else {
-    axisLine = deepClone(xAxisConfig.axisLine)
+    axisLine = deepClone(xAxisConfig.axisLine, true)
   }
 
   let [startX, startY] = [x, y + h]
-  
-  startY += offset
+
+  if (position !== 'bottom') startY = y
 
   const axisLineGraph = render.add({
     name: 'polyline',
@@ -123,9 +356,9 @@ function addXAxisTick (chart, axis, i, maxValue, minValue) {
   if (splitNumber === undefined) splitNumber = xAxisConfig.splitNumber
 
   if (axisTick) {
-    Object.assign(deepClone(axisConfig.axisTick), axisTick)
+    Object.assign(deepClone(axisConfig.axisTick, true), axisTick)
   } else {
-    axisTick = deepClone(xAxisConfig.axisTick)
+    axisTick = deepClone(xAxisConfig.axisTick, true)
   }
 
   let label = data

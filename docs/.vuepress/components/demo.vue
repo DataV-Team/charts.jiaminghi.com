@@ -9,6 +9,8 @@ import Charts from '../../Charts/index.js'
 
 import transition from '@jiaminghi/transition'
 
+import CRender from '@jiaminghi/c-render'
+
 export default {
   name: 'Demo',
   data () {
@@ -28,7 +30,7 @@ export default {
           data: 'value'
         },
         series: [{
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
+          data: [820, 932, -11, 934, 1290, 1330, 1320],
           type: 'line'
         }]
       })
