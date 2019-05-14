@@ -2,7 +2,7 @@ const { min, max, abs, pow, ceil, floor } = Math
 
 import { axisConfig } from '../config'
 
-import { filterNonNumber, deepMerge } from '../util'
+import { filterNonNumber, deepMerge, mulAdd } from '../util'
 
 import { deepClone } from '@jiaminghi/c-render/lib/util'
 
@@ -125,6 +125,18 @@ function calcValueAxisLabelData (valueAxis, series) {
 function getValueAxisMaxMinValue (axis, series) {
   const { index, axis: axisType } = axis
 
+  let stacks = series.filter(({ stack }) => stack).map(({ stack }) => stack)
+
+  stacks = [...new Set(stacks)]
+
+  stacks = stacks.map(s => series.filter(({ stack }) => stack = s))
+
+  stacks = mergeStack(stacks)
+
+  series = series.filter(({ stack }) => !stack)
+
+  series = [...series, ...stacks]
+
   const axisName = axisType + 'Axis'
 
   let valueSeries = series.filter(s => s[axisName] === index)
@@ -132,6 +144,24 @@ function getValueAxisMaxMinValue (axis, series) {
   if (!valueSeries.length) valueSeries = series
 
   return getSeriesMinMaxValue(valueSeries)
+}
+
+function mergeStack (stacks) {
+  stacks = deepClone(stacks, true)
+
+  return stacks.map(item => {
+    const firstStack = item[0]
+
+    const stackData = item.map(({ data }) => data)
+
+    const stackSum = new Array(firstStack.data.length)
+      .fill(0)
+      .map((foo, i) => mulAdd(stackData.map(d => d[i])))
+
+    firstStack.data = stackSum
+
+    return firstStack
+  })
 }
 
 function getSeriesMinMaxValue (series) {

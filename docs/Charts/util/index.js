@@ -10,3 +10,9 @@ export function deepMerge(target, merged) {
 
   return target
 }
+
+export function mulAdd (nums) {
+  nums = filterNonNumber(nums)
+
+  return nums.reduce((all, num) => all + num, 0)
+}

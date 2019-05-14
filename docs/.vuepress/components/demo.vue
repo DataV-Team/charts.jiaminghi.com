@@ -31,32 +31,37 @@ export default {
           name: 'Count',
           data: 'value'
         },
-        series: [{
-          data: [820, 932, -11, 934, 1290, 1330, 1320],
-          type: 'line'
-        }]
+        series: [
+          {
+            data: [820, 932, -11, 934, 1290, 1330, 1320],
+            type: 'line',
+            stack: 'a'
+          },
+          {
+            data: [820, 932, -120, 934, 1290, 1330, 1320],
+            type: 'line',
+            stack: 'a'
+          }
+        ]
       })
 
-      setTimeout(() => {
-        myChart.setOption({
-          grid: {
-            left: 100
-          },
-          xAxis: {
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-          },
-          yAxis: {
-            data: 'value'
-          },
-          series: [{
-            data: [820, 932, 100, 934, 1290, 1330, 1320],
-            type: 'line'
-          }]
-        })
-        console.log(11)
-      }, 3000)
+      // setTimeout(() => {
+      //   myChart.setOption({
+      //     xAxis: {
+      //       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      //     },
+      //     yAxis: {
+      //       data: 'value'
+      //     },
+      //     series: [{
+      //       data: [820, 932, 100, 934, 1290, 1330, 1320],
+      //       type: 'line'
+      //     }]
+      //   })
+      //   console.log(11)
+      // }, 3000)
 
-      console.error(myChart)
+      console.warn(myChart)
     }
   },
   mounted () {
