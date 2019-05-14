@@ -2,10 +2,12 @@ const xAxisConfig = {
   name: '',
   show: true,
   position: 'bottom',
-  offset: 0,
-  nameLocation: 'start',
-  nameTextStyle: {},
-  nameGap: 10,
+  nameGap: 15,
+  nameLocation: 'end',
+  nameTextStyle: {
+    fill: '#333',
+    fontSize: 10
+  },
   min: '20%',
   max: '20%',
   interval: null,
@@ -16,66 +18,78 @@ const xAxisConfig = {
   axisLine: {
     show: true,
     style: {
-      stroke: '#b6b6b6'
+      stroke: '#333',
+      lineWidth: 1
     }
   },
   axisTick: {
     show: true,
-    style: {}
+    style: {
+      stroke: '#333',
+      lineWidth: 1
+    }
   },
-  axisLable: {
+  axisLabel: {
     show: true,
-    style: {}
+    style: {
+      fill: '#333',
+      fontSize: 10
+    }
   },
   splitLine: {
-    show: true,
-    style: {}
-  },
-  axisPointer: {
     show: false,
-    type: 'shadow'
-  },
-  inverse: false
+    style: {
+      stroke: '#d4d4d4',
+      lineWidth: 1
+    }
+  }
 }
 
 const yAxisConfig = {
   name: '',
   show: true,
   position: 'left',
-  offset: 0,
-  nameLocation: 'start',
-  nameTextStyle: {},
-  nameGap: 10,
+  nameGap: 15,
+  nameLocation: 'end',
+  nameTextStyle: {
+    fill: '#333',
+    fontSize: 10
+  },
   min: '20%',
   max: '20%',
   interval: null,
   minInterval: null,
   maxInterval: null,
-  boundaryGap: true,
+  boundaryGap: false,
   splitNumber: 5,
   axisLine: {
     show: true,
     style: {
-      stroke: '#b6b6b6'
+      stroke: '#333',
+      lineWidth: 1
     }
   },
   axisTick: {
     show: true,
-    style: {}
+    style: {
+      stroke: '#333',
+      lineWidth: 1
+    }
   },
-  axisLable: {
+  axisLabel: {
     show: true,
-    style: {}
+    style: {
+      fill: '#333',
+      fontSize: 10
+    }
   },
   splitLine: {
     show: true,
-    style: {}
-  },
-  axisPointer: {
-    show: false,
-    type: 'shadow'
-  },
-  inverse: false
+    style: {
+      stroke: '#d4d4d4',
+      lineWidth: 1
+    }
+  }
 }
 
 export const axisConfig = {

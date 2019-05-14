@@ -1,5 +1,5 @@
-// const dev = 'pc'
-const dev = 'mac'
+const dev = 'pc'
+// const dev = 'mac'
 
 const host = dev === 'pc' ? '192.168.10.150' : 'localhost'
 

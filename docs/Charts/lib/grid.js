@@ -36,7 +36,9 @@ export function grid (chart, option = {}) {
 
     graph.animation('shape', shape, true)
 
-    graph.animation('style', { fill: bgColor }, true)
+    graph.animation('style', { fill: backgroundColor }, true)
+
+    chart.grid.area = { ...shape }
 
     return
   }

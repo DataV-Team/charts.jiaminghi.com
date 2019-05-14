@@ -24,9 +24,11 @@ export default {
 
       myChart.setOption({
         xAxis: {
+          name: 'WeekDay',
           data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         },
         yAxis: {
+          name: 'Count',
           data: 'value'
         },
         series: [{
@@ -34,6 +36,25 @@ export default {
           type: 'line'
         }]
       })
+
+      setTimeout(() => {
+        myChart.setOption({
+          grid: {
+            left: 100
+          },
+          xAxis: {
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          },
+          yAxis: {
+            data: 'value'
+          },
+          series: [{
+            data: [820, 932, 100, 934, 1290, 1330, 1320],
+            type: 'line'
+          }]
+        })
+        console.log(11)
+      }, 3000)
 
       console.error(myChart)
     }
