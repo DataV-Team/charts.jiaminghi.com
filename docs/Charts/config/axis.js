@@ -31,6 +31,7 @@ const xAxisConfig = {
   },
   axisLabel: {
     show: true,
+    formatter: null,
     style: {
       fill: '#333',
       fontSize: 10
@@ -78,6 +79,7 @@ const yAxisConfig = {
   },
   axisLabel: {
     show: true,
+    formatter: null,
     style: {
       fill: '#333',
       fontSize: 10

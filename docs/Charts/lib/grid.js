@@ -2,24 +2,22 @@ import { deepClone } from '@jiaminghi/c-render/lib/util'
 
 import { gridConfig } from '../config'
 
-export function grid (chart, option = {}) {
-  const config = deepClone(gridConfig)
+import { deepMerge } from '../util'
 
+export function grid (chart, option = {}) {
   let { grid } = option
 
-  if (!grid) grid = {}
-
-  Object.assign(config, grid)
+  grid = deepMerge(deepClone(gridConfig, true), grid || {})
 
   const { render } = chart
 
   const { area: [w, h] } = render
 
-  const left = getNumberValue(config.left, w)
-  const right = getNumberValue(config.right, w)
-  const top = getNumberValue(config.top, h)
-  const bottom = getNumberValue(config.bottom, h)
-  const backgroundColor = config.backgroundColor
+  const left = getNumberValue(grid.left, w)
+  const right = getNumberValue(grid.right, w)
+  const top = getNumberValue(grid.top, h)
+  const bottom = getNumberValue(grid.bottom, h)
+  const backgroundColor = grid.backgroundColor
 
   const width = w - left - right
   const height = h - top - bottom

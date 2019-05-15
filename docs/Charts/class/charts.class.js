@@ -1,6 +1,10 @@
 import CRender from '@jiaminghi/c-render'
 
-import { grid, axis } from '../lib'
+import { deepClone } from '@jiaminghi/c-render/lib/util'
+
+import { grid, axis, title } from '../lib'
+
+import { line } from '../lib'
 
 export default class Charts {
   constructor (dom) {
@@ -22,9 +26,7 @@ export default class Charts {
     const attribute = {
       container: dom,
       render: new CRender(canvas),
-      option: null,
-      grid: null,
-      axis: null
+      option: null
     }
 
     Object.assign(this, attribute)
@@ -38,9 +40,17 @@ Charts.prototype.setOption = function (option) {
     return false
   }
 
+  option = deepClone(option, true)  
+
   grid(this, option)
 
   axis(this, option)
+
+  title(this, option)
+
+  line(this, option)
+
+  this.option = option
 
   this.render.launchAnimation()
 }

@@ -9,11 +9,13 @@ import { deepClone } from '@jiaminghi/c-render/lib/util'
 const { xAxisConfig, yAxisConfig } = axisConfig
 
 export function axis (chart, option = {}) {
-  option = deepClone(option, true)
-
   let { xAxis, yAxis, series } = option
 
-  if (!xAxis || !yAxis || !series) return
+  if (!xAxis || !yAxis || !series) {
+    removeAxis(chart)
+
+    return
+  }
 
   xAxis = deepMerge(deepClone(xAxisConfig, true), xAxis)
   yAxis = deepMerge(deepClone(yAxisConfig, true), yAxis)
@@ -47,6 +49,42 @@ export function axis (chart, option = {}) {
   updateAxisName(allAxis, chart)
 
   updateSplitLine(allAxis, chart)
+
+  chart.axisData = allAxis
+}
+
+function removeAxis (chart) {
+  const { axisLabel, axisLine, axisName, axisTick, splitLine, render } = chart
+
+  if (axisLabel) {
+    axisLabel.map(({ graphs }) => graphs.forEach(g => render.delGraph(g)))
+
+    chart.axisLabel = []
+  }
+
+  if (axisLine) {
+    axisLine.forEach(g => render.delGraph(g))
+
+    chart.axisLine = []
+  }
+
+  if (axisName) {
+    axisName.forEach(g => render.delGraph(g))
+
+    chart.axisName = []
+  }
+
+  if (axisTick) {
+    axisTick.map(({ graphs }) => graphs.forEach(g => render.delGraph(g)))
+
+    chart.axisTick = []
+  }
+
+  if (splitLine) {
+    axisTick.map(({ graphs }) => graphs.forEach(g => render.delGraph(g)))
+
+    chart.splitLine = []
+  }
 }
 
 function getAllAxis (xAxis, yAxis) {
@@ -78,7 +116,7 @@ function calcAxisLabelData (allAxis, series) {
   let labelAxis = allAxis.filter(({ data }) => data instanceof Array)
 
   valueAxis = calcValueAxisLabelData(valueAxis, series)
-  labelAxis = labelAxis.map(axis => ({ ...axis, label: axis.data }))
+  labelAxis = calcLabelAxisLabelData(labelAxis)
 
   return [...valueAxis, ...labelAxis]
 }
@@ -90,6 +128,8 @@ function calcValueAxisLabelData (valueAxis, series) {
     const [min, max] = getTrueMinMax(axis, minMaxValue)
 
     const interval = getValueInterval(min, max, axis)
+
+    const { axisLabel: { formatter } } = axis
 
     if (min < 0 && max > 0) {
       let [negative, positive] = [[], []]
@@ -103,9 +143,13 @@ function calcValueAxisLabelData (valueAxis, series) {
         positive.push(currentPositive += interval)
       } while (currentPositive < max)
 
+      let label = [...negative, 0, ...positive]
+
       return {
         ...axis,
-        label: [...negative, 0, ...positive]
+        maxValue: label.slice(-1)[0],
+        minValue: label[0],
+        label: getAfterFormatterLabel(label, formatter)
       }
     }
 
@@ -117,8 +161,25 @@ function calcValueAxisLabelData (valueAxis, series) {
 
     return {
       ...axis,
-      label
+      maxValue: label.slice(-1)[0],
+      minValue: label[0],
+      label: getAfterFormatterLabel(label, formatter)
     }
+  })
+}
+
+function getAfterFormatterLabel (label, formatter) {
+  if (typeof formatter === 'string') label = label.map(l => formatter.replace('{value}', l))
+  if (typeof formatter === 'function') label = label.map(l => formatter(l))
+
+  return label
+}
+
+function calcLabelAxisLabelData (labelAxis) {
+  return labelAxis.map(axis => {
+    const { data, axisLabel: { formatter } } = axis
+
+    return { ...axis, label: getAfterFormatterLabel(data, formatter) }
   })
 }
 

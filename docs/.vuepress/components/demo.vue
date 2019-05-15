@@ -23,13 +23,21 @@ export default {
       const myChart = new Charts($refs['chart'])
 
       myChart.setOption({
+        title: {
+          text: 'This is a Chart'
+        },
         xAxis: {
           name: 'WeekDay',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          // data: 'value'
         },
         yAxis: {
           name: 'Count',
-          data: 'value'
+          data: 'value',
+          axisLabel: {
+            formatter: '{value} KG'
+          }
+          // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         },
         series: [
           {
