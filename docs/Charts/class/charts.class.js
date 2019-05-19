@@ -2,7 +2,7 @@ import CRender from '@jiaminghi/c-render'
 
 import { deepClone } from '@jiaminghi/c-render/lib/util'
 
-import { grid, axis, title } from '../lib'
+import { mergeColor, grid, axis, title } from '../lib'
 
 import { line } from '../lib'
 
@@ -40,7 +40,9 @@ Charts.prototype.setOption = function (option) {
     return false
   }
 
-  option = deepClone(option, true)  
+  option = deepClone(option, true)
+
+  mergeColor(this, option)
 
   grid(this, option)
 

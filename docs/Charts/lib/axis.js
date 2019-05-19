@@ -2,7 +2,7 @@ const { min, max, abs, pow, ceil, floor } = Math
 
 import { axisConfig } from '../config'
 
-import { filterNonNumber, deepMerge, mulAdd } from '../util'
+import { filterNonNumber, deepMerge, mergeSameStackData } from '../util'
 
 import { deepClone } from '@jiaminghi/c-render/lib/util'
 
@@ -105,8 +105,8 @@ function getAllAxis (xAxis, yAxis) {
   allXAxis.splice(2)
   allYAxis.splice(2)
 
-  allXAxis = allXAxis.map((axis, i) => ({ ...axis, index: i, axis: 'x'}))
-  allYAxis = allYAxis.map((axis, i) => ({ ...axis, index: i, axis: 'y'}))
+  allXAxis = allXAxis.map((axis, i) => ({ ...axis, index: i, axis: 'x' }))
+  allYAxis = allYAxis.map((axis, i) => ({ ...axis, index: i, axis: 'y' }))
 
   return [...allXAxis, ...allYAxis]
 }
@@ -186,17 +186,7 @@ function calcLabelAxisLabelData (labelAxis) {
 function getValueAxisMaxMinValue (axis, series) {
   const { index, axis: axisType } = axis
 
-  let stacks = series.filter(({ stack }) => stack).map(({ stack }) => stack)
-
-  stacks = [...new Set(stacks)]
-
-  stacks = stacks.map(s => series.filter(({ stack }) => stack = s))
-
-  stacks = mergeStack(stacks)
-
-  series = series.filter(({ stack }) => !stack)
-
-  series = [...series, ...stacks]
+  series = mergeStackData(series)
 
   const axisName = axisType + 'Axis'
 
@@ -207,21 +197,15 @@ function getValueAxisMaxMinValue (axis, series) {
   return getSeriesMinMaxValue(valueSeries)
 }
 
-function mergeStack (stacks) {
-  stacks = deepClone(stacks, true)
+function mergeStackData (series) {
+  series = deepClone(series, true)
 
-  return stacks.map(item => {
-    const firstStack = item[0]
+  return series.map(item => {
+    const data = mergeSameStackData(item, series)
 
-    const stackData = item.map(({ data }) => data)
+    item.data = data
 
-    const stackSum = new Array(firstStack.data.length)
-      .fill(0)
-      .map((foo, i) => mulAdd(stackData.map(d => d[i])))
-
-    firstStack.data = stackSum
-
-    return firstStack
+    return item
   })
 }
 
@@ -230,18 +214,18 @@ function getSeriesMinMaxValue (series) {
 
   const minValue = min(
     ...series
-    .map(({ data }) => min(...filterNonNumber(data)))
+      .map(({ data }) => min(...filterNonNumber(data)))
   )
 
   const maxValue = max(
     ...series
-    .map(({ data }) => max(...filterNonNumber(data)))
+      .map(({ data }) => max(...filterNonNumber(data)))
   )
 
   return [minValue, maxValue]
 }
 
-function getTrueMinMax ({min, max, axis}, [minValue, maxValue]) {
+function getTrueMinMax ({ min, max, axis }, [minValue, maxValue]) {
   let [minType, maxType] = [typeof min, typeof max]
 
   if (!testMinMaxType(min)) {
@@ -258,7 +242,7 @@ function getTrueMinMax ({min, max, axis}, [minValue, maxValue]) {
   if (maxType === 'number') max = maxValue
 
   if (minType === 'string') {
-    min = minValue - abs(parseInt(minValue * parseFloat(min) / 100))
+    min = parseInt(minValue - abs(minValue * parseFloat(min) / 100))
 
     const lever = pow(10, abs(min).toString().length - 1)
 
@@ -266,11 +250,11 @@ function getTrueMinMax ({min, max, axis}, [minValue, maxValue]) {
   }
 
   if (maxType === 'string') {
-    max = maxValue + abs(maxValue * parseFloat(max) / 100)
+    max = parseInt(maxValue + abs(maxValue * parseFloat(max) / 100))
 
     const lever = pow(10, max.toString().length - 1)
 
-    max = ceil(max / lever) * lever    
+    max = ceil(max / lever) * lever
   }
 
   return [min, max]
@@ -552,7 +536,7 @@ function updateAxisTick (allAxis, chart) {
               points: [[0, 0], [0, 0]]
             },
             style
-        })))
+          })))
       }
 
       graphs.forEach((tick, i) => {
@@ -565,13 +549,13 @@ function updateAxisTick (allAxis, chart) {
     }
 
     const graphs = tickLinePosition.map(points => render.add({
-        name: 'polyline',
-        visible: show,
-        animationCurve: 'easeOutCubic',
-        shape: {
-          points
-        },
-        style
+      name: 'polyline',
+      visible: show,
+      animationCurve: 'easeOutCubic',
+      shape: {
+        points
+      },
+      style
     }))
 
     axisTickCache.push({
@@ -581,7 +565,7 @@ function updateAxisTick (allAxis, chart) {
   })
 }
 
-function updateAxisLabel(allAxis, chart) {
+function updateAxisLabel (allAxis, chart) {
   const { render, axisLabel: axisLabelCache } = chart
 
   allAxis.forEach(axisItem => {
@@ -618,7 +602,7 @@ function updateAxisLabel(allAxis, chart) {
               ...style,
               ...getAxisLabelRealAlign(position)
             }
-        })))
+          })))
       }
 
       graphs.forEach((labelItem, i) => {
@@ -635,18 +619,18 @@ function updateAxisLabel(allAxis, chart) {
     }
 
     const graphs = tickPosition.map((labelPosition, i) => render.add({
-        name: 'text',
-        visible: show,
-        animationCurve: 'easeOutCubic',
-        position,
-        shape: {
-          content: label[i].toString(),
-          position: getAxisLabelRealPosition(labelPosition, position)
-        },
-        style: {
-          ...style,
-          ...getAxisLabelRealAlign(position)
-        }
+      name: 'text',
+      visible: show,
+      animationCurve: 'easeOutCubic',
+      position,
+      shape: {
+        content: label[i].toString(),
+        position: getAxisLabelRealPosition(labelPosition, position)
+      },
+      style: {
+        ...style,
+        ...getAxisLabelRealAlign(position)
+      }
     }))
 
     axisLabelCache.push({
@@ -733,7 +717,7 @@ function getAxisNameRealAlign (position, location) {
     (position === 'top' && location === 'start') ||
     (position === 'bottom' && location === 'start') ||
     (position === 'left' && location === 'center')
-   ) return {
+  ) return {
     textAlign: 'right',
     textBaseline: 'middle'
   }
@@ -799,7 +783,7 @@ function updateSplitLine (allAxis, chart) {
               points: [[0, 0], [0, 0]]
             },
             style
-        })))
+          })))
       }
 
       graphs.forEach((tick, i) => {
@@ -812,13 +796,13 @@ function updateSplitLine (allAxis, chart) {
     }
 
     const graphs = splitLinePosition.map(points => render.add({
-        name: 'polyline',
-        visible: show,
-        animationCurve: 'easeOutCubic',
-        shape: {
-          points
-        },
-        style
+      name: 'polyline',
+      visible: show,
+      animationCurve: 'easeOutCubic',
+      shape: {
+        points
+      },
+      style
     }))
 
     splitLineCache.push({

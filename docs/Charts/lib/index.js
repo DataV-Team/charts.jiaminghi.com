@@ -5,3 +5,5 @@ export { axis } from './axis'
 export { title } from './title'
 
 export { line } from './line'
+
+export { mergeColor } from './mergeColor'
