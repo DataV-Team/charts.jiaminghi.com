@@ -7,34 +7,57 @@ import { deepMerge } from '../util'
 export function title (chart, option = {}) {
   let { title } = option
 
-  if (!title) {
-    removeTitle(chart)
-
-    return
-  }
+  if (!title) return removeTitle(chart)
 
   title = deepMerge(deepClone(titleConfig, true), title)
 
-  const { show, text, offset, textStyle } = title
+  const titleCache = chart.title
 
-  const { render, grid } = chart
+  if (titleCache) {
+    changeTitle(titleCache, title, chart)
+  } else {
+    addTitle(title, chart)
+  }
+}
+
+function removeTitle (chart) {
+  const { title, render } = chart
+
+  if (!title) return
+
+  render.delGraph(title)
+
+  chart.title = null
+}
+
+function changeTitle (titleGraph, title, chart) {
+  const { show, text, textStyle } = title
+
+  const position = getTitlePosition(title, chart)
+
+  titleGraph.visible = show
+  titleGraph.shape.content = text
+  titleGraph.animation('shape', { position }, true)
+  titleGraph.animation('style', { ...textStyle }, true)
+}
+
+function getTitlePosition (title, chart) {
+  const { offset } = title
+  const { grid } = chart
 
   const [ox, oy] = offset
 
   const { x, y, w } = grid.area
 
-  const position = [x + (w / 2) + ox, y + oy]
+  return [x + (w / 2) + ox, y + oy]
+}
 
-  const titleCache = chart.title
+function addTitle (title, chart) {
+  const { show, text, textStyle } = title
 
-  if (titleCache) {
-    titleCache.visible = show
-    titleCache.shape.content = text
-    titleCache.animation('shape', { position }, true)
-    titleCache.animation('style', { ...textStyle }, true)
+  const position = getTitlePosition(title, chart)
 
-    return
-  }
+  const { render } = chart
 
   chart.title = render.add({
     name: 'text',
@@ -48,14 +71,4 @@ export function title (chart, option = {}) {
       ...textStyle
     }
   })
-}
-
-function removeTitle (chart) {
-  const { title, render } = chart
-
-  if (!title) return
-
-  render.delGraph(title)
-
-  chart.title = null
 }
