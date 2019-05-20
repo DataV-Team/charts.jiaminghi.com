@@ -8,22 +8,22 @@
 </template>
 
 <script>
-import Charts from "../../Charts/index.js";
+import Charts from "../../Charts/index.js"
 
-import transition from "@jiaminghi/transition";
+import transition from "@jiaminghi/transition"
 
-import CRender from "@jiaminghi/c-render";
+import CRender from "@jiaminghi/c-render"
 
 export default {
   name: "Demo",
-  data() {
-    return {};
+  data () {
+    return {}
   },
   methods: {
-    init() {
+    init () {
       const { $refs } = this;
 
-      const myChart = new Charts($refs["chart"]);
+      const myChart = new Charts($refs["chart"])
 
       myChart.setOption({
         title: {
@@ -31,7 +31,7 @@ export default {
         },
         xAxis: {
           name: "WeekDay",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
           // data: "value"
         },
         yAxis: {
@@ -39,7 +39,7 @@ export default {
           data: "value",
           axisLabel: {
             formatter: "{value} KG"
-          }
+          },
           // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         },
         series: [
@@ -47,8 +47,14 @@ export default {
             data: [162, 220, 387, 155, 377, 266, 198],
             type: "line",
             stack: "a",
+            smooth: true,
             fill: {
-              show: true
+              show: true,
+              gradient: ['rgba(255, 231, 147, .5)', 'rgba(255, 231, 147, .1)']
+            },
+            label: {
+              show: true,
+              formatter: '{value} kg'
             }
           },
           {
@@ -59,27 +65,57 @@ export default {
         ]
       })
 
-      // setTimeout(() => {
-      //   myChart.setOption({
-      //     xAxis: {
-      //       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      //     },
-      //     yAxis: {
-      //       data: 'value'
-      //     },
-      //     series: [{
-      //       data: [820, 932, 100, 934, 1290, 1330, 1320],
-      //       type: 'line'
-      //     }]
-      //   })
-      //   console.log(11)
-      // }, 3000)
+      setTimeout(() => {
+        // myChart.setOption({
+        //   title: {
+        //     text: "This is a Chart"
+        //   },
+        //   xAxis: {
+        //     name: "WeekDay",
+        //     data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        //     // data: "value"
+        //   },
+        //   yAxis: {
+        //     name: "Count",
+        //     data: "value",
+        //     axisLabel: {
+        //       formatter: "{value} KG"
+        //     },
+        //     // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        //   },
+        //   series: [
+        //     {
+        //       data: [50, 113, 387, 155, 377, 322],
+        //       type: "line",
+        //       // stack: "a",
+        //       smooth: true,
+        //       fill: {
+        //         show: true,
+        //         gradient: ['rgba(255, 231, 147, .5)', 'rgba(255, 231, 147, .1)']
+        //       },
+        //       lineStyle: {
+        //         lineDash: [5, 5]
+        //       },
+        //       label: {
+        //         show: true
+        //       }
+        //     },
+        //     {
+        //       data: [150, 213, 487, 255, 477, 422],
+        //       type: "line",
+        //       // stack: "a"
+        //     }
+        //   ]
+        // })
+      }, 2000)
 
-      console.warn(myChart);
+      console.warn(myChart)
     }
   },
-  mounted() {
-    this.init();
+  async mounted () {
+    // await new Promise(resolve => setTimeout(resolve, 1000))
+
+    this.init()
   }
 };
 </script>

@@ -6,21 +6,29 @@ export const lineConfig = {
   yAxisIndex: 0,
   label: {
     show: false,
-    style: {}
+    position: 'top',
+    offset: [0, -10],
+    formatter: null,
+    style: {
+      fontSize: 10
+    }
   },
   lineStyle: {
     lineWidth: 1
   },
   linePoint: {
-    radius: 1,
-    style: {}
+    show: true,
+    radius: 2,
+    style: {
+      fill: '#fff',
+      lineWidth: 1
+    }
   },
   fill: {
     show: false,
-    gradient: false,
+    gradient: [],
     style: {
-      opacity: 0.5,
-      fill: '#000'
+      opacity: 0.5
     }
   }
 }

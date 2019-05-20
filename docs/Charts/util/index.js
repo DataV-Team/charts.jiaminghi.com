@@ -42,3 +42,19 @@ export function getTwoPointDistance(pointOne, pointTwo) {
 
   return Math.sqrt(minusX * minusX + minusY * minusY)
 }
+
+export function getLinearGradientColor (ctx, begin, end, color) {
+  if (!ctx || !begin || !end || !color.length) return
+
+  let colors = color
+
+  typeof colors === 'string' && (colors = [color, color])
+
+  const linearGradientColor = ctx.createLinearGradient(...begin, ...end)
+
+  const colorGap = 1 / (colors.length - 1)
+
+  colors.forEach((c, i) => linearGradientColor.addColorStop(colorGap * i, c))
+
+  return linearGradientColor
+}

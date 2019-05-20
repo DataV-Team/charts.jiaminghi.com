@@ -11,20 +11,12 @@ const { xAxisConfig, yAxisConfig } = axisConfig
 export function axis (chart, option = {}) {
   let { xAxis, yAxis, series } = option
 
-  if (!xAxis || !yAxis || !series) {
-    removeAxis(chart)
-
-    return
-  }
+  if (!xAxis || !yAxis || !series) return removeAxis(chart)
 
   xAxis = deepMerge(deepClone(xAxisConfig, true), xAxis)
   yAxis = deepMerge(deepClone(yAxisConfig, true), yAxis)
 
-  if (!chart.axisLine) chart.axisLine = []
-  if (!chart.axisTick) chart.axisTick = []
-  if (!chart.axisLabel) chart.axisLabel = []
-  if (!chart.axisName) chart.axisName = []
-  if (!chart.splitLine) chart.splitLine = []
+  initChartAxis(chart)
 
   let allAxis = getAllAxis(xAxis, yAxis)
 
@@ -87,6 +79,14 @@ function removeAxis (chart) {
   }
 }
 
+function initChartAxis (chart) {
+  if (!chart.axisLine) chart.axisLine = []
+  if (!chart.axisTick) chart.axisTick = []
+  if (!chart.axisLabel) chart.axisLabel = []
+  if (!chart.axisName) chart.axisName = []
+  if (!chart.splitLine) chart.splitLine = []
+}
+
 function getAllAxis (xAxis, yAxis) {
   let [allXAxis, allYAxis] = [[], []]
 
@@ -131,33 +131,13 @@ function calcValueAxisLabelData (valueAxis, series) {
 
     const { axisLabel: { formatter } } = axis
 
+    let label = []
+
     if (min < 0 && max > 0) {
-      let [negative, positive] = [[], []]
-      let [currentNegative, currentPositive] = [0, 0]
-
-      do {
-        negative.push(currentNegative -= interval)
-      } while (currentNegative > min)
-
-      do {
-        positive.push(currentPositive += interval)
-      } while (currentPositive < max)
-
-      let label = [...negative, 0, ...positive]
-
-      return {
-        ...axis,
-        maxValue: label.slice(-1)[0],
-        minValue: label[0],
-        label: getAfterFormatterLabel(label, formatter)
-      }
+      label = getValueAxisLabelFromZero(min, max, interval)
+    } else {
+      label = getValueAxisLabelFromMin(min, max, interval)
     }
-
-    let [label, currentValue] = [[min], min]
-
-    do {
-      label.push(currentValue += interval)
-    } while (currentValue < max)
 
     return {
       ...axis,
@@ -165,21 +145,6 @@ function calcValueAxisLabelData (valueAxis, series) {
       minValue: label[0],
       label: getAfterFormatterLabel(label, formatter)
     }
-  })
-}
-
-function getAfterFormatterLabel (label, formatter) {
-  if (typeof formatter === 'string') label = label.map(l => formatter.replace('{value}', l))
-  if (typeof formatter === 'function') label = label.map(l => formatter(l))
-
-  return label
-}
-
-function calcLabelAxisLabelData (labelAxis) {
-  return labelAxis.map(axis => {
-    const { data, axisLabel: { formatter } } = axis
-
-    return { ...axis, label: getAfterFormatterLabel(data, formatter) }
   })
 }
 
@@ -197,18 +162,6 @@ function getValueAxisMaxMinValue (axis, series) {
   return getSeriesMinMaxValue(valueSeries)
 }
 
-function mergeStackData (series) {
-  series = deepClone(series, true)
-
-  return series.map(item => {
-    const data = mergeSameStackData(item, series)
-
-    item.data = data
-
-    return item
-  })
-}
-
 function getSeriesMinMaxValue (series) {
   if (!series) return
 
@@ -223,6 +176,18 @@ function getSeriesMinMaxValue (series) {
   )
 
   return [minValue, maxValue]
+}
+
+function mergeStackData (series) {
+  series = deepClone(series, true)
+
+  return series.map(item => {
+    const data = mergeSameStackData(item, series)
+
+    item.data = data
+
+    return item
+  })
 }
 
 function getTrueMinMax ({ min, max, axis }, [minValue, maxValue]) {
@@ -267,6 +232,48 @@ function testMinMaxType (val) {
   const isValidNumber = valType === 'number'
 
   return isValidString || isValidNumber
+}
+
+function getValueAxisLabelFromZero (min, max, interval) {
+  let [negative, positive] = [[], []]
+  let [currentNegative, currentPositive] = [0, 0]
+
+  do {
+    negative.push(currentNegative -= interval)
+  } while (currentNegative > min)
+
+  do {
+    positive.push(currentPositive += interval)
+  } while (currentPositive < max)
+
+  return [...negative, 0, ...positive]
+}
+
+function getValueAxisLabelFromMin (min, max, interval) {
+  let [label, currentValue] = [[min], min]
+
+  do {
+    label.push(currentValue += interval)
+  } while (currentValue < max)
+
+  return label
+}
+
+function getAfterFormatterLabel (label, formatter) {
+  if (!formatter) return label
+
+  if (typeof formatter === 'string') label = label.map(l => formatter.replace('{value}', l))
+  if (typeof formatter === 'function') label = label.map(l => formatter(l))
+
+  return label
+}
+
+function calcLabelAxisLabelData (labelAxis) {
+  return labelAxis.map(axis => {
+    const { data, axisLabel: { formatter } } = axis
+
+    return { ...axis, label: getAfterFormatterLabel(data, formatter) }
+  })
 }
 
 function getValueInterval (min, max, axis) {
