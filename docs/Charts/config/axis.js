@@ -43,7 +43,9 @@ const xAxisConfig = {
       stroke: '#d4d4d4',
       lineWidth: 1
     }
-  }
+  },
+  animationCurve: 'easeOutCubic',
+  animationFrame: 30
 }
 
 const yAxisConfig = {
@@ -91,7 +93,9 @@ const yAxisConfig = {
       stroke: '#d4d4d4',
       lineWidth: 1
     }
-  }
+  },
+  animationCurve: 'easeOutCubic',
+  animationFrame: 30
 }
 
 export const axisConfig = {

@@ -37,7 +37,7 @@ export function axis (chart, option = {}) {
   updateAxisTick(allAxis, chart)
 
   updateAxisLabel(allAxis, chart)
-
+  
   updateAxisName(allAxis, chart)
 
   updateSplitLine(allAxis, chart)
@@ -338,10 +338,6 @@ function calcAxisLinePosition (allAxis, chart) {
     }
   })
 
-  // let valueAxis = allAxis.filter(({ data }) => data === 'value')
-  // let labelAxis = allAxis.filter(({ data }) => data !== 'value')
-  // const hasZero = valueAxis.find(({label}) => label.find(v => v === 0) === 0)
-
   return allAxis
 }
 
@@ -477,7 +473,7 @@ function calcSplitLinePosition (allAxis, chart) {
 }
 
 function updateAxisLine (allAxis, chart) {
-  const { render, axisLine: axisLineCache } = chart
+  const { axisLine: axisLineCache } = chart
 
   allAxis.forEach(axisItem => {
     const { axis: axisType, index } = axisItem
@@ -486,32 +482,48 @@ function updateAxisLine (allAxis, chart) {
 
     let graph = axisLineCache.find(({ axisIndex: ai }) => axisIndex === ai)
 
-    let { linePosition, axisLine } = axisItem
-
-    let { show, style } = axisLine
-
     if (graph) {
-      graph.visible = show
-      graph.animation('shape', { points: linePosition }, true)
-      graph.animation('style', style, true)
-      return
+      changeAxisLine(graph, axisItem)
+    } else {
+      addAxisLine(axisLineCache, axisItem, chart, axisIndex)
     }
-
-    axisLineCache.push(render.add({
-      axisIndex,
-      name: 'polyline',
-      animationCurve: 'easeOutCubic',
-      visible: show,
-      shape: {
-        points: linePosition
-      },
-      style
-    }))
   })
 }
 
+function changeAxisLine (axisLineGraph, axisItem) {
+  const { linePosition, axisLine, animationCurve, animationFrame } = axisItem
+
+  const { show, style } = axisLine
+
+  axisLineGraph.visible = show
+  axisLineGraph.animationCurve = animationCurve
+  axisLineGraph.animationFrame = animationFrame
+  axisLineGraph.animation('shape', { points: linePosition }, true)
+  axisLineGraph.animation('style', style, true)
+}
+
+function addAxisLine (axisLineCache, axisItem, chart, axisIndex) {
+  const { render } = chart
+
+  const { linePosition, axisLine, animationCurve, animationFrame } = axisItem
+
+  const { show, style } = axisLine
+
+  axisLineCache.push(render.add({
+    axisIndex,
+    name: 'polyline',
+    animationCurve,
+    animationFrame,
+    visible: show,
+    shape: {
+      points: linePosition
+    },
+    style: style
+  }))
+}
+
 function updateAxisTick (allAxis, chart) {
-  const { render, axisTick: axisTickCache } = chart
+  const { axisTick: axisTickCache } = chart
 
   allAxis.forEach(axisItem => {
     const { axis: axisType, index } = axisItem
@@ -520,60 +532,78 @@ function updateAxisTick (allAxis, chart) {
 
     let ticks = axisTickCache.find(({ axisIndex: ai }) => axisIndex === ai)
 
-    let { tickLinePosition, axisTick } = axisItem
-
-    let { show, style } = axisTick
-
     if (ticks) {
-      const { graphs } = ticks
-
-      const graphsNum = graphs.length
-      const ticksNum = tickLinePosition.length
-
-      if (graphsNum > ticksNum) {
-        graphs.splice(ticksNum).forEach(t => render.delGraph(t))
-      } else if (graphsNum < ticksNum) {
-        graphs.push(...new Array(ticksNum - graphsNum)
-          .fill(0)
-          .map(foo => render.add({
-            name: 'polyline',
-            animationCurve: 'easeOutCubic',
-            visible: show,
-            shape: {
-              points: [[0, 0], [0, 0]]
-            },
-            style
-          })))
-      }
-
-      graphs.forEach((tick, i) => {
-        tick.visible = show
-        tick.animation('shape', { points: tickLinePosition[i] }, true)
-        tick.animation('style', style, true)
-      })
-
-      return
+      changeAxisTick(ticks, axisItem, chart)
+    } else {
+      addAxisTick(axisTickCache, axisItem, chart, axisIndex)
     }
+  })
+}
 
-    const graphs = tickLinePosition.map(points => render.add({
-      name: 'polyline',
-      visible: show,
-      animationCurve: 'easeOutCubic',
-      shape: {
-        points
-      },
-      style
-    }))
+function changeAxisTick (ticks, axisItem, chart) {
+  const { render } = chart
 
-    axisTickCache.push({
-      axisIndex,
-      graphs
-    })
+  const { graphs } = ticks
+
+  const { tickLinePosition, axisTick, animationCurve, animationFrame } = axisItem
+
+  const { show, style } = axisTick
+
+  const graphsNum = graphs.length
+  const ticksNum = tickLinePosition.length
+
+  if (graphsNum > ticksNum) {
+    graphs.splice(ticksNum).forEach(t => render.delGraph(t))
+  } else if (graphsNum < ticksNum) {
+    const lastTickGraphShape = graphs[graphsNum - 1].shape
+
+    graphs.push(...new Array(ticksNum - graphsNum)
+      .fill(0)
+      .map(foo => render.add({
+        name: 'polyline',
+        animationCurve,
+        animationFrame,
+        visible: show,
+        shape: lastTickGraphShape,
+        style
+      })))
+  }
+
+  graphs.forEach((tick, i) => {
+    tick.visible = show
+    tick.animationCurve = animationCurve
+    tick.animationFrame = animationFrame
+    tick.animation('shape', { points: tickLinePosition[i] }, true)
+    tick.animation('style', style, true)
+  })
+}
+
+function addAxisTick (axisTickCache, axisItem, chart, axisIndex) {
+  const { render } = chart
+
+  const { tickLinePosition, axisTick, animationCurve, animationFrame } = axisItem
+
+  const { show, style } = axisTick
+
+  const graphs = tickLinePosition.map(points => render.add({
+    name: 'polyline',
+    visible: show,
+    animationCurve,
+    animationFrame,
+    shape: {
+      points
+    },
+    style
+  }))
+
+  axisTickCache.push({
+    axisIndex,
+    graphs
   })
 }
 
 function updateAxisLabel (allAxis, chart) {
-  const { render, axisLabel: axisLabelCache } = chart
+  const { axisLabel: axisLabelCache } = chart
 
   allAxis.forEach(axisItem => {
     const { axis: axisType, index, position } = axisItem
@@ -582,81 +612,85 @@ function updateAxisLabel (allAxis, chart) {
 
     let labels = axisLabelCache.find(({ axisIndex: ai }) => axisIndex === ai)
 
-    let { tickPosition, label, axisLabel } = axisItem
-
-    let { show, style } = axisLabel
-
     if (labels) {
-      const { graphs } = labels
-
-      const graphsNum = graphs.length
-      const labelsNum = tickPosition.length
-
-      if (graphsNum > labelsNum) {
-        graphs.splice(labelsNum).forEach(l => render.delGraph(l))
-      } else if (graphsNum < labelsNum) {
-        graphs.push(...new Array(labelsNum - graphsNum)
-          .fill(0)
-          .map(foo => render.add({
-            name: 'text',
-            visible: show,
-            animationCurve: 'easeOutCubic',
-            shape: {
-              content: '',
-              position: [[0, 0], [0, 0]]
-            },
-            style: {
-              ...style,
-              ...getAxisLabelRealAlign(position)
-            }
-          })))
-      }
-
-      graphs.forEach((labelItem, i) => {
-        labelItem.visible = show
-        labelItem.shape.content = label[i].toString()
-        labelItem.animation('shape', { position: getAxisLabelRealPosition(tickPosition[i], position) }, true)
-        labelItem.animation('style', {
-          ...style,
-          ...getAxisLabelRealAlign(position)
-        }, true)
-      })
-
-      return
+      changeAxisLabel(labels, axisItem, chart)
+    } else {
+      addAxisLabel(axisLabelCache, axisItem, chart, axisIndex)
     }
-
-    const graphs = tickPosition.map((labelPosition, i) => render.add({
-      name: 'text',
-      visible: show,
-      animationCurve: 'easeOutCubic',
-      position,
-      shape: {
-        content: label[i].toString(),
-        position: getAxisLabelRealPosition(labelPosition, position)
-      },
-      style: {
-        ...style,
-        ...getAxisLabelRealAlign(position)
-      }
-    }))
-
-    axisLabelCache.push({
-      axisIndex,
-      graphs
-    })
   })
 }
 
-function getAxisLabelRealPosition (points, position) {
-  let [index, plus] = [0, 10]
+function changeAxisLabel (labels, axisItem, chart) {
+  const { render } = chart
 
-  if (position === 'top' || position === 'bottom') index = 1
-  if (position === 'top' || position === 'left') plus = -10
+  const { graphs } = labels
 
-  points = deepClone(points)
-  points[index] += plus
+  const { tickPosition, label, axisLabel, position, animationCurve, animationFrame } = axisItem
 
-  return points
+  let { show, style } = axisLabel
+
+  style = mergeAxisLabelAlign(style, position)
+
+  const graphsNum = graphs.length
+  const labelsNum = tickPosition.length
+
+  if (graphsNum > labelsNum) {
+    graphs.splice(labelsNum).forEach(l => render.delGraph(l))
+  } else if (graphsNum < labelsNum) {
+    const lastAxisLabelShape = graphs[graphsNum - 1].shape
+
+    graphs.push(...new Array(labelsNum - graphsNum)
+      .fill(0)
+      .map(foo => render.add({
+        name: 'text',
+        visible: show,
+        animationCurve,
+        animationFrame,
+        shape: lastAxisLabelShape,
+        style
+      })))
+  }
+
+  graphs.forEach((labelItem, i) => {
+    labelItem.visible = show
+    labelItem.shape.content = label[i].toString()
+    labelItem.animation('shape', { position: getAxisLabelRealPosition(tickPosition[i], position) }, true)
+    labelItem.animation('style', style, true)
+  })
+}
+
+function addAxisLabel (axisLabelCache, axisItem, chart, axisIndex) {
+  const { render } = chart
+
+  const { tickPosition, label, axisLabel, position, animationCurve, animationFrame } = axisItem
+
+  let { show, style } = axisLabel
+
+  style = mergeAxisLabelAlign(style, position)
+
+  const graphs = tickPosition.map((labelPosition, i) => render.add({
+    name: 'text',
+    visible: show,
+    animationCurve,
+    animationFrame,
+    position,
+    shape: {
+      content: label[i].toString(),
+      position: getAxisLabelRealPosition(labelPosition, position)
+    },
+    style
+  }))
+
+  axisLabelCache.push({
+    axisIndex,
+    graphs
+  })
+}
+
+function mergeAxisLabelAlign (style, position) {
+  const align = getAxisLabelRealAlign(position)
+
+  return deepMerge(align, style)
 }
 
 function getAxisLabelRealAlign (position) {
@@ -675,14 +709,26 @@ function getAxisLabelRealAlign (position) {
     textBaseline: 'bottom'
   }
 
-  if (position === 'left') return {
+  if (position === 'bottom') return {
     textAlign: 'center',
     textBaseline: 'top'
   }
 }
 
+function getAxisLabelRealPosition (points, position) {
+  let [index, plus] = [0, 10]
+
+  if (position === 'top' || position === 'bottom') index = 1
+  if (position === 'top' || position === 'left') plus = -10
+
+  points = deepClone(points)
+  points[index] += plus
+
+  return points
+}
+
 function updateAxisName (allAxis, chart) {
-  const { render, axisName: axisNameCache } = chart
+  const { axisName: axisNameCache } = chart
 
   allAxis.forEach(axisItem => {
     const { axis: axisType, index } = axisItem
@@ -691,32 +737,54 @@ function updateAxisName (allAxis, chart) {
 
     let graph = axisNameCache.find(({ axisIndex: ai }) => axisIndex === ai)
 
-    let { position, name, namePosition, nameTextStyle, nameLocation } = axisItem
-
     if (graph) {
-      graph.shape.content = name
-      graph.animation('shape', { position: namePosition }, true)
-      graph.animation('style', {
-        ...nameTextStyle,
-        ...getAxisNameRealAlign(position, nameLocation)
-      }, true)
-      return
+      changeAxisName(graph, axisItem)
+    } else {
+      addAxisName(axisNameCache, chart, axisItem, axisIndex)
     }
-
-    axisNameCache.push(render.add({
-      axisIndex,
-      name: 'text',
-      animationCurve: 'easeOutCubic',
-      shape: {
-        content: name,
-        position: namePosition
-      },
-      style: {
-        ...nameTextStyle,
-        ...getAxisNameRealAlign(position, nameLocation)
-      }
-    }))
   })
+}
+
+function changeAxisName (graph, axisItem) {
+  const { position, name, namePosition, nameTextStyle, nameLocation } = axisItem
+
+  const { animationCurve, animationFrame } = axisItem
+
+  const style = mergeAxisNameAlign(nameTextStyle, position, nameLocation)
+
+  graph.shape.content = name
+  graph.animationCurve = animationCurve
+  graph.animationFrame = animationFrame
+  graph.animation('shape', { position: namePosition }, true)
+  graph.animation('style', style, true)
+}
+
+function addAxisName (axisNameCache, chart, axisItem, axisIndex) {
+  const { render } = chart
+
+  const { position, name, namePosition, nameTextStyle, nameLocation } = axisItem
+
+  const { animationCurve, animationFrame } = axisItem
+
+  const style = mergeAxisNameAlign(nameTextStyle, position, nameLocation)
+
+  axisNameCache.push(render.add({
+    axisIndex,
+    name: 'text',
+    animationCurve,
+    animationFrame,
+    shape: {
+      content: name,
+      position: namePosition
+    },
+    style
+  }))
+}
+
+function mergeAxisNameAlign (style, position, nameLocation) {
+  const align = getAxisNameRealAlign(position, nameLocation)
+
+  return deepMerge(align, style)
 }
 
 function getAxisNameRealAlign (position, location) {
@@ -758,7 +826,7 @@ function getAxisNameRealAlign (position, location) {
 }
 
 function updateSplitLine (allAxis, chart) {
-  const { render, splitLine: splitLineCache } = chart
+  const { splitLine: splitLineCache } = chart
 
   allAxis.forEach(axisItem => {
     const { axis, index } = axisItem
@@ -767,54 +835,72 @@ function updateSplitLine (allAxis, chart) {
 
     let splitLines = splitLineCache.find(({ axisIndex: ai }) => axisIndex === ai)
 
-    let { splitLinePosition, splitLine } = axisItem
-
-    let { show, style } = splitLine
-
     if (splitLines) {
-      const { graphs } = splitLines
-
-      const graphsNum = graphs.length
-      const splitLinesNum = splitLinePosition.length
-
-      if (graphsNum > splitLinesNum) {
-        graphs.splice(splitLinesNum).forEach(t => render.delGraph(t))
-      } else if (graphsNum < splitLinesNum) {
-        graphs.push(...new Array(splitLinesNum - graphsNum)
-          .fill(0)
-          .map(foo => render.add({
-            name: 'polyline',
-            animationCurve: 'easeOutCubic',
-            visible: show,
-            shape: {
-              points: [[0, 0], [0, 0]]
-            },
-            style
-          })))
-      }
-
-      graphs.forEach((tick, i) => {
-        tick.visible = show
-        tick.animation('shape', { points: splitLinePosition[i] }, true)
-        tick.animation('style', style, true)
-      })
-
-      return
+      changeSplitLine(splitLines, axisItem, chart)
+    } else {
+      addSplitLine(splitLineCache, axisItem, chart, axisIndex)
     }
+  })
+}
 
-    const graphs = splitLinePosition.map(points => render.add({
-      name: 'polyline',
-      visible: show,
-      animationCurve: 'easeOutCubic',
-      shape: {
-        points
-      },
-      style
-    }))
+function changeSplitLine (splitLines, axisItem, chart) {
+  const { render } = chart
 
-    splitLineCache.push({
-      axisIndex,
-      graphs
-    })
+  let { splitLinePosition, splitLine, animationCurve, animationFrame } = axisItem
+
+  let { show, style } = splitLine
+
+  const { graphs } = splitLines
+
+  const graphsNum = graphs.length
+  const splitLinesNum = splitLinePosition.length
+
+  if (graphsNum > splitLinesNum) {
+    graphs.splice(splitLinesNum).forEach(t => render.delGraph(t))
+  } else if (graphsNum < splitLinesNum) {
+    const lastSplitLineShape = graphs[graphsNum - 1].shape
+
+    graphs.push(...new Array(splitLinesNum - graphsNum)
+      .fill(0)
+      .map(foo => render.add({
+        name: 'polyline',
+        animationCurve,
+        animationFrame,
+        visible: show,
+        shape: lastSplitLineShape,
+        style
+      })))
+  }
+
+  graphs.forEach((tick, i) => {
+    tick.visible = show
+    tick.animationCurve = animationCurve
+    tick.animationFrame = animationFrame
+    tick.animation('shape', { points: splitLinePosition[i] }, true)
+    tick.animation('style', style, true)
+  })
+}
+
+function addSplitLine (splitLineCache, axisItem, chart, axisIndex) {
+  const { render } = chart
+
+  let { splitLinePosition, splitLine, animationCurve, animationFrame } = axisItem
+
+  let { show, style } = splitLine
+
+  const graphs = splitLinePosition.map(points => render.add({
+    name: 'polyline',
+    visible: show,
+    animationCurve,
+    animationFrame,
+    shape: {
+      points
+    },
+    style
+  }))
+
+  splitLineCache.push({
+    axisIndex,
+    graphs
   })
 }
