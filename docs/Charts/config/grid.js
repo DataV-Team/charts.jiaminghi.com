@@ -3,5 +3,9 @@ export const gridConfig = {
   right: '10%',
   top: 60,
   bottom: 60,
-  backgroundColor: 'rgba(0, 0, 0, 0)'
+  style: {
+    fill: 'rgba(0, 0, 0, 0)'
+  },
+  animationCurve: 'easeOutCubic',
+  animationFrame: 30
 }
