@@ -1,5 +1,5 @@
-const dev = 'pc'
-// const dev = 'mac'
+// const dev = 'pc'
+const dev = 'mac'
 
 const host = dev === 'pc' ? '192.168.10.150' : 'localhost'
 
@@ -15,7 +15,7 @@ module.exports = {
     '/': {
       lang: 'zh-CN',
       title: 'Charts',
-      description: '轻量级交互式图表'
+      description: '轻量级图表'
     },
     '/EN/': {
       lang: 'en-US',
