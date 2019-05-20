@@ -33,9 +33,13 @@ function removeTitle (chart) {
 function changeTitle (titleGraph, title, chart) {
   const { show, text, textStyle } = title
 
+  const { animationCurve, animationFrame } = title
+
   const position = getTitlePosition(title, chart)
 
   titleGraph.visible = show
+  titleGraph.animationCurve = animationCurve
+  titleGraph.animationFrame = animationFrame
   titleGraph.shape.content = text
   titleGraph.animation('shape', { position }, true)
   titleGraph.animation('style', { ...textStyle }, true)
@@ -55,13 +59,16 @@ function getTitlePosition (title, chart) {
 function addTitle (title, chart) {
   const { show, text, textStyle } = title
 
+  const { animationCurve, animationFrame } = title
+
   const position = getTitlePosition(title, chart)
 
   const { render } = chart
 
   chart.title = render.add({
     name: 'text',
-    animationCurve: 'easeOutCubic',
+    animationCurve,
+    animationFrame,
     visible: show,
     shape: {
       content: text,

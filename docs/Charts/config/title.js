@@ -8,5 +8,7 @@ export const titleConfig = {
     fontWeight: 'bold',
     textAlign: 'center',
     textBaseline: 'bottom'
-  }
+  },
+  animationCurve: 'easeOutCubic',
+  animationFrame: 30
 }
