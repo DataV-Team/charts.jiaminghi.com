@@ -19,9 +19,9 @@ export function bar (chart, option = {}) {
 
   bars = setBarAxis(bars, chart)
 
-  bars = setBarIndexAndCategoryWidth(bars)
+  bars = setBarPositionData(bars, chart)
 
-  bars = setBarItemWidth(bars)
+  console.error(bars)
 
   bars = calcBarsPosition(bars, chart)
 }
@@ -71,38 +71,44 @@ function setBarAxis (bars, chart) {
   return bars
 }
 
-function setBarIndexAndCategoryWidth (bars) {
+function setBarPositionData (bars, chart) {
   const labelBarGroup = groupBarByLabelAxis(bars)
 
   labelBarGroup.forEach(group => {
-    let stacks = getBarStack(group)
-  
-    stacks = stacks.map(stack => ({ stack, index: -1 }))
-  
-    let currentIndex = 0
-  
-    bars.forEach(bar => {
-      const { stack } = bar
-  
-      if (!stack) {
-        bar.barIndex = currentIndex
-
-        currentIndex++
-      } else {
-        const stackData = stacks.find(({ stack:s }) => s === stack)
-  
-        if (stackData.index === -1) {
-          stackData.index = currentIndex
-  
-          currentIndex++
-        }
-  
-        bar.barIndex = stackData.index
-      }
-    })
+    setBarIndex(group)
+    setBarCategoryWidth(group, chart)
+    setBarGap(group)
   })
 
   return bars
+}
+
+function setBarIndex (bars) {
+  let stacks = getBarStack(bars)
+  
+  stacks = stacks.map(stack => ({ stack, index: -1 }))
+
+  let currentIndex = 0
+
+  bars.forEach(bar => {
+    const { stack } = bar
+
+    if (!stack) {
+      bar.barIndex = currentIndex
+
+      currentIndex++
+    } else {
+      const stackData = stacks.find(({ stack:s }) => s === stack)
+
+      if (stackData.index === -1) {
+        stackData.index = currentIndex
+
+        currentIndex++
+      }
+
+      bar.barIndex = stackData.index
+    }
+  })
 }
 
 function groupBarByLabelAxis (bars) {
@@ -125,8 +131,28 @@ function getBarStack (bars) {
   return [...new Set(stacks)]
 }
 
-function setBarItemWidth (bars) {
+function setBarCategoryWidth (bars) {
+  const lastBar = bars.slice(-1)[0]
 
+  const { barCategoryGap, labelAxis: { tickGap } } = lastBar
+
+  let barCategoryWidth = 0
+
+  if (typeof barCategoryGap === 'number') {
+    barCategoryWidth = barCategoryGap
+  } else {
+    barCategoryWidth = (1 - (parseInt(barCategoryGap) / 100)) * tickGap 
+  }
+
+  bars.forEach(bar => (bar.barCategoryWidth = barCategoryWidth))
+}
+
+function setBarGap (bars) {
+  const lastBar = bars.slice(-1)[0]
+
+  const { barGap, barCategoryWidth } = lastBar
+
+  
 }
 
 function getBarPositionData (bars, chart) {
