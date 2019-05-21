@@ -1,5 +1,4 @@
 export const lineConfig = {
-  name: '',
   show: true,
   smooth: false,
   xAxisIndex: 0,

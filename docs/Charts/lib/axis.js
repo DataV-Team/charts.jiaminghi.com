@@ -100,7 +100,7 @@ function mergeDefaultAxisConfig (allAxis) {
 
 function mergeDefaultBoundaryGap (allAxis) {
   const valueAxis = allAxis.filter(({ data }) => data === 'value')
-  const labelAxis = allAxis.filter(({ axis }) => axis !== 'value')
+  const labelAxis = allAxis.filter(({ data }) => data !== 'value')
 
   valueAxis.forEach(axis => {
     if (typeof axis.boundaryGap === 'boolean') return
@@ -178,6 +178,10 @@ function calcValueAxisLabelData (valueAxis, series) {
 }
 
 function getValueAxisMaxMinValue (axis, series) {
+  series = series.filter(({ show }) => show !== false)
+
+  if (series.length === 0) return [0, 0]
+  
   const { index, axis: axisType } = axis
 
   series = mergeStackData(series)

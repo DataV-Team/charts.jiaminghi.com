@@ -31,8 +31,7 @@ export default {
         },
         xAxis: {
           name: "WeekDay",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-          // data: "value"
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
         },
         yAxis: {
           name: "Count",
@@ -40,26 +39,27 @@ export default {
           axisLabel: {
             formatter: "{value} KG"
           },
-          // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         },
         series: [
           {
-            data: [162, 220, 387, 155, 377, 266, 198],
-            type: "line",
+            data: [50, 113, 387, 155, 377, 322],
+            type: "bar",
             stack: "a",
             smooth: true,
             fill: {
               show: true,
               gradient: ['rgba(255, 231, 147, .5)', 'rgba(255, 231, 147, .1)']
             },
+            lineStyle: {
+              lineDash: [5, 5]
+            },
             label: {
-              show: true,
-              formatter: '{value} kg'
+              show: true
             }
           },
           {
-            data: [162, 220, 387, 155, 377, 266, 198],
-            type: "line",
+            data: [150, 213, 487, 255, 477, 422],
+            type: "bar",
             stack: "a"
           }
         ]
@@ -87,7 +87,7 @@ export default {
         //     {
         //       data: [50, 113, 387, 155, 377, 322],
         //       type: "line",
-        //       // stack: "a",
+        //       stack: "a",
         //       smooth: true,
         //       fill: {
         //         show: true,
@@ -102,8 +102,8 @@ export default {
         //     },
         //     {
         //       data: [150, 213, 487, 255, 477, 422],
-        //       type: "line",
-        //       // stack: "a"
+        //       type: "bar",
+        //       stack: "a"
         //     }
         //   ]
         // })

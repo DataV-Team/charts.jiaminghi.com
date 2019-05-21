@@ -19,6 +19,10 @@ export function line (chart, option = {}) {
 
   let lines = series.filter(({ type }) => type === 'line')
 
+  lines = mergeLineDefaultConfig(lines)
+
+  lines = filterShowLines(lines)
+
   lines = calcLinesPosition(lines, chart)
 
   updateLines(lines, chart, color)
@@ -44,12 +48,18 @@ function initChartLine (chart) {
   if (!chart.lineLabels) chart.lineLabels = []
 }
 
+function mergeLineDefaultConfig (lines) {
+  return lines.map(lineItem => deepMerge(deepClone(lineConfig, true), lineItem))
+}
+
+function filterShowLines (lines) {
+  return lines.filter(({ show }) => show === true)
+}
+
 function calcLinesPosition (lines, chart) {
   const { axisData, grid } = chart
 
   return lines.map(lineItem => {
-    lineItem = deepMerge(deepClone(lineConfig, true), lineItem)
-
     const lineData = mergeSameStackData(lineItem, lines)
 
     const lineAxis = getLineAxis(lineItem, axisData)
@@ -209,8 +219,6 @@ function mergeLineColor (lineStyle, i, color) {
 
 function addNewLine (lineCache, lineItem, i, color, render, graphName) {
   let { show, lineStyle, linePosition, smooth, animationCurve, animationFrame } = lineItem
-
-  linePosition = linePosition.filter(p => p)
 
   lineStyle = mergeLineColor(lineStyle, i, color)
 
@@ -404,7 +412,7 @@ function changeLinePoints (cache, lineItem, i, render, color) {
 }
 
 function addNewLinePoints (linePointsCache, lineItem, i, render, color) {
-  const { linePoint, linePosition, animationCurve, animationFrame } = lineItem
+  let { linePoint, linePosition, animationCurve, animationFrame } = lineItem
 
   let { show, radius, style } = linePoint
 
@@ -540,7 +548,9 @@ function mergeLabelColor (style, i, color) {
 }
 
 function getLabelPosition (linePosition, lineFillBottomPos, position, offset) {
-  const { changeIndex, changeValue } = lineFillBottomPos
+  let { changeIndex, changeValue } = lineFillBottomPos
+
+  linePosition = linePosition.filter(p => p)
 
   return linePosition.map(pos => {
     if (position === 'bottom') {
