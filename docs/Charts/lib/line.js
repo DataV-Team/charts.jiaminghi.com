@@ -13,15 +13,9 @@ const { polylineToBezierCurve, getBezierCurveLength } = bezierCurve
 export function line (chart, option = {}) {
   const { xAxis, yAxis, series, color } = option
 
-  if (!xAxis || !yAxis || !series) {
-    removeLines(chart)
+  if (!xAxis || !yAxis || !series) removeLines(chart)
 
-    return
-  }
-
-  if (!chart.line) chart.line = []
-  if (!chart.linePoints) chart.linePoints = []
-  if (!chart.lineLabels) chart.lineLabels = []
+  initChartLine(chart)
 
   let lines = series.filter(({ type }) => type === 'line')
 
@@ -42,6 +36,12 @@ function removeLines (chart) {
   line.forEach(l => render.delGraph(l))
 
   chart.line = null
+}
+
+function initChartLine (chart) {
+  if (!chart.line) chart.line = []
+  if (!chart.linePoints) chart.linePoints = []
+  if (!chart.lineLabels) chart.lineLabels = []
 }
 
 function calcLinesPosition (lines, chart) {
@@ -92,32 +92,24 @@ function getLinePosition (lineData, lineAxis) {
   const valueMinus = maxValue - minValue
 
   const position = lineData.map(v => {
-    if (typeof v === 'number') {
-      return (v - minValue) / valueMinus * valueAxisPosMinus + valueAxisStartPos
-    } else {
-      return null
-    }
+    if (typeof v !== 'number') return null
+
+    return (v - minValue) / valueMinus * valueAxisPosMinus + valueAxisStartPos
   })
 
   const { tickPosition } = labelAxis
-
   const tickNum = tickPosition.length
 
   return position.map((vPos, i) => {
-    if (i >= tickNum) return null
+    if (i >= tickNum || typeof vPos !== 'number') return null
 
-    if (typeof vPos === 'number') {
+    const pos = [vPos, tickPosition[i][1 - valueAxisPosIndex]]
 
-      const pos = [vPos, tickPosition[i][1 - valueAxisPosIndex]]
+    if (valueAxisPosIndex === 0) return pos
 
-      if (valueAxisPosIndex === 0) return pos
+    pos.reverse()
 
-      pos.reverse()
-
-      return pos
-    } else {
-      return null
-    }
+    return pos
   })
 }
 
@@ -162,24 +154,25 @@ function updateLines (lines, chart, color) {
     }
 
     if (cache) {
-      updateLineFill(cache[0], lineItem, i, color)
-      updateLine(cache[1], lineItem, i, color)
-
-      return
+      changeLineFill(cache[0], lineItem, i, color)
+      changeLine(cache[1], lineItem, i, color)
+    } else {
+      addNewLineFill(lineCache, lineItem, i, color, render, graphName)
+      addNewLine(lineCache, lineItem, i, color, render, graphName)
     }
-
-    addNewLine(lineItem, lineCache, i, color, render)
   })
 }
 
-function updateLineFill (graph, lineItem, i, color) {
-  const { fill, lineFillBottomPos, linePosition } = lineItem
+function changeLineFill (graph, lineItem, i, color) {
+  const { fill, lineFillBottomPos, linePosition, animationCurve, animationFrame } = lineItem
 
   let { show, gradient, style } = fill
 
   style = mergeLineFillStyle(style, i, color, gradient)
 
   graph.visible = show
+  graph.animationCurve = animationCurve
+  graph.animationFrame = animationFrame
   graph.lineFillBottomPos = lineFillBottomPos
   graph.animation('shape', { points: linePosition }, true)
   graph.animation('style', { ...style }, true)
@@ -196,12 +189,14 @@ function mergeLineFillStyle (lineFillStyle, i, color, gradient) {
   }
 }
 
-function updateLine (graph, lineItem, i, color) {
-  let { show, lineStyle, linePosition } = lineItem
+function changeLine (graph, lineItem, i, color) {
+  let { show, lineStyle, linePosition, animationCurve, animationFrame } = lineItem
 
   lineStyle = mergeLineColor(lineStyle, i, color)
 
   graph.visible = show
+  graph.animationCurve = animationCurve
+  graph.animationFrame = animationFrame
   graph.animation('shape', { points: linePosition }, true)
   graph.animation('style', { ...lineStyle }, true)
 }
@@ -212,14 +207,12 @@ function mergeLineColor (lineStyle, i, color) {
   return deepMerge({ stroke: color[i % colorNum] }, lineStyle)
 }
 
-function addNewLine (line, lineCache, i, color, render) {
-  let { show, lineStyle, linePosition, smooth } = line
+function addNewLine (lineCache, lineItem, i, color, render, graphName) {
+  let { show, lineStyle, linePosition, smooth, animationCurve, animationFrame } = lineItem
 
   linePosition = linePosition.filter(p => p)
 
   lineStyle = mergeLineColor(lineStyle, i, color)
-
-  const graphName = smooth ? 'smoothline' : 'polyline'
 
   const lineLength = getLineLength(linePosition, smooth)
 
@@ -228,7 +221,8 @@ function addNewLine (line, lineCache, i, color, render) {
   const lineGraph = render.add({
     name: graphName,
     visible: show,
-    animationCurve: 'easeOutCubic',
+    animationCurve,
+    animationFrame,
     shape: {
       points: linePosition
     },
@@ -242,7 +236,12 @@ function addNewLine (line, lineCache, i, color, render) {
     lineDash: lineDash || [lineLength, 0]
   }, true)
 
-  const { fill, lineFillBottomPos } = line
+  if (!(lineCache[i] instanceof Array)) lineCache[i] = []
+  lineCache[i][1] = lineGraph
+}
+
+function addNewLineFill (lineCache, lineItem, i, color, render, graphName) {
+  const { linePosition, fill, lineFillBottomPos, animationCurve, animationFrame } = lineItem
 
   let { show: fillShow, gradient, style: lineFillStyle } = fill
 
@@ -250,17 +249,14 @@ function addNewLine (line, lineCache, i, color, render) {
 
   const { opacity, gradient: gradientColor } = lineFillStyle
 
-  let startGradientColor = gradientColor
-    .map(c => {
-      c = [...c]
-      c[3] = [0]
-      return c
-    })
+  let startGradientColor = deepClone(gradientColor)
+  startGradientColor.forEach(c => (c[3] = 0))
 
   const lineFillGraph = render.add({
     name: graphName,
     visible: fillShow,
-    animationCurve: 'easeOutCubic',
+    animationCurve,
+    animationFrame,
     lineFillBottomPos,
     shape: {
       points: linePosition
@@ -279,10 +275,8 @@ function addNewLine (line, lineCache, i, color, render) {
     gradient: gradientColor
   }, true)
 
-  lineCache[i] = [
-    lineFillGraph,
-    lineGraph
-  ]
+  if (!(lineCache[i] instanceof Array)) lineCache[i] = []
+  lineCache[i][0] = lineFillGraph
 }
 
 function lineFillBeforeDraw ({ lineFillBottomPos, shape, style }, { ctx }) {
@@ -357,71 +351,80 @@ function updatePoints (lines, chart, color) {
   const { render, linePoints: linePointsCache } = chart
 
   lines.forEach((lineItem, i) => {
-    const { linePoint, linePosition } = lineItem
-
-    let { show, radius, style } = linePoint
-
-    style = mergePointColor(style, i, color)
-
-    const pointsNum = linePosition.length
-
     const cache = linePointsCache[i]
 
     if (cache) {
-      const cacheNum = cache.length
-
-      if (cacheNum > pointsNum) {
-        const needDelGraphs = cache.splice(pointsNum)
-
-        needDelGraphs.forEach(g => render.delGraph(g))
-      } else if (cacheNum < pointsNum) {
-        const lastPointShape = cache[cacheNum - 1].shape
-
-        const needAddGraphs = new Array(pointsNum - cacheNum)
-          .fill(0)
-          .map(foo => render.add({
-            name: 'circle',
-            visible: show,
-            animationCurve: 'easeOutCubic',
-            shape: {
-              ...lastPointShape
-            },
-            style
-          }))
-
-        cache.push(...needAddGraphs)
-      }
-
-      cache.forEach((g, i) => {
-        g.visible = show
-        g.animation('shape', {
-          r: radius,
-          rx: linePosition[i][0],
-          ry: linePosition[i][1]
-        }, true)
-        g.animation('style', {
-          ...style
-        }, true)
-      })
-
-      return
+      changeLinePoints(cache, lineItem, i, render, color)
+    } else {
+      addNewLinePoints(linePointsCache, lineItem, i, render, color)
     }
+  })
+}
 
-    linePointsCache[i] = linePosition.map(pos => render.add({
-      name: 'circle',
-      visible: show,
-      animationCurve: 'easeOutCubic',
-      shape: {
-        r: 1,
-        rx: pos[0],
-        ry: pos[1]
-      },
-      style
-    }))
+function changeLinePoints (cache, lineItem, i, render, color) {
+  const { linePoint, linePosition, animationCurve, animationFrame } = lineItem
 
-    linePointsCache[i].forEach(g => {
-      g.animation('shape', { r: radius }, true)
-    })
+  let { show, radius, style } = linePoint
+
+  style = mergePointColor(style, i, color)
+
+  const pointsNum = linePosition.length
+  const cacheNum = cache.length
+
+  if (cacheNum > pointsNum) {
+    cache.splice(pointsNum).forEach(g => render.delGraph(g))
+  } else if (cacheNum < pointsNum) {
+    const lastPointShape = cache[cacheNum - 1].shape
+
+    const needAddGraphs = new Array(pointsNum - cacheNum)
+      .fill(0)
+      .map(foo => render.add({
+        name: 'circle',
+        visible: show,
+        animationCurve,
+        animationFrame,
+        shape: lastPointShape,
+        style
+      }))
+
+    cache.push(...needAddGraphs)
+  }
+
+  cache.forEach((g, i) => {
+    g.visible = show
+    g.animationCurve = animationCurve
+    g.animationFrame = animationFrame
+    g.animation('shape', {
+      r: radius,
+      rx: linePosition[i][0],
+      ry: linePosition[i][1]
+    }, true)
+    g.animation('style', style, true)
+  })
+}
+
+function addNewLinePoints (linePointsCache, lineItem, i, render, color) {
+  const { linePoint, linePosition, animationCurve, animationFrame } = lineItem
+
+  let { show, radius, style } = linePoint
+
+  style = mergePointColor(style, i, color)
+
+  linePointsCache[i] = linePosition.map(pos => render.add({
+    name: 'circle',
+    visible: show,
+    animationCurve,
+    animationFrame,
+    shape: {
+      r: 1,
+      rx: pos[0],
+      ry: pos[1]
+    },
+    style
+  }))
+
+  linePointsCache[i].forEach(g => {
+    g.animation('shape', { r: radius }, true)
   })
 }
 
@@ -437,70 +440,81 @@ function updateLabels (lines, chart, color) {
   const { render, lineLabels: lineLabelsCache } = chart
 
   lines.forEach((lineItem, i) => {
-    let { data, label, linePosition, lineFillBottomPos } = lineItem
-
-    let { show, position, offset, style, formatter } = label
-
-    data = formatterData (data, formatter)
-
-    style = mergeLabelColor(style, i, color)
-
-    const labelPosition = getLabelPosition(linePosition, lineFillBottomPos, position, offset)
-
-    const labelsNum = linePosition.length
-
     const cache = lineLabelsCache[i]
 
     if (cache) {
-      const cacheNum = cache.length
-
-      if (cacheNum > labelsNum) {
-        const needDelGraphs = cache.splice(labelsNum)
-
-        needDelGraphs.forEach(g => render.delGraph(g))
-      } else if (cacheNum < labelsNum) {
-        const lastLabelShape = cache[cacheNum - 1].shape
-
-        const needAddGraphs = new Array(labelsNum - cacheNum)
-          .fill(0)
-          .map(foo => render.add({
-            name: 'text',
-            visible: show,
-            animationCurve: 'easeOutCubic',
-            shape: {
-              ...lastLabelShape
-            },
-            style
-          }))
-
-        cache.push(...needAddGraphs)
-      }
-
-      cache.forEach((g, i) => {
-        g.visible = show
-        g.animation('shape', {
-          content: data[i],
-          position: labelPosition[i]
-        }, true)
-        g.animation('style', {
-          ...style
-        }, true)
-      })
-
-      return
+      changeLineLabels(cache, lineItem, i, color, render)
+    } else {
+      addNewLineLabels(lineLabelsCache, lineItem, i, color, render)
     }
-
-    lineLabelsCache[i] = labelPosition.map(pos => render.add({
-      name: 'text',
-      visible: show,
-      animationCurve: 'easeOutCubic',
-      shape: {
-        content: data[i],
-        position: pos
-      },
-      style
-    }))
   })
+}
+
+function changeLineLabels (cache, lineItem, i, color, render) {
+  let { data, label, linePosition, lineFillBottomPos, animationCurve, animationFrame } = lineItem
+
+  let { show, position, offset, style, formatter } = label
+
+  data = formatterData (data, formatter)
+  style = mergeLabelColor(style, i, color)
+  const labelPosition = getLabelPosition(linePosition, lineFillBottomPos, position, offset)
+
+  const labelsNum = linePosition.length
+  const cacheNum = cache.length
+
+  if (cacheNum > labelsNum) {
+    cache.splice(labelsNum).forEach(g => render.delGraph(g))
+  } else if (cacheNum < labelsNum) {
+    const lastLabelShape = cache[cacheNum - 1].shape
+
+    const needAddGraphs = new Array(labelsNum - cacheNum)
+      .fill(0)
+      .map(foo => render.add({
+        name: 'text',
+        visible: show,
+        animationCurve,
+        animationFrame,
+        shape: lastLabelShape,
+        style
+      }))
+
+    cache.push(...needAddGraphs)
+  }
+
+  cache.forEach((g, j) => {
+    g.visible = show
+    g.animationCurve = animationCurve
+    g.animationFrame = animationFrame
+    g.animation('shape', {
+      content: data[j],
+      position: labelPosition[j]
+    }, true)
+    g.animation('style', style, true)
+  })
+}
+
+function addNewLineLabels (lineLabelsCache, lineItem, i, color, render) {
+  let { data, label, linePosition, lineFillBottomPos, animationCurve, animationFrame } = lineItem
+
+  let { show, position, offset, style, formatter } = label
+
+  data = formatterData (data, formatter)
+
+  style = mergeLabelColor(style, i, color)
+
+  const labelPosition = getLabelPosition(linePosition, lineFillBottomPos, position, offset)
+
+  lineLabelsCache[i] = labelPosition.map((pos, j) => render.add({
+    name: 'text',
+    visible: show,
+    animationCurve,
+    animationFrame,
+    shape: {
+      content: data[j],
+      position: pos
+    },
+    style
+  }))
 }
 
 function formatterData (data, formatter) {

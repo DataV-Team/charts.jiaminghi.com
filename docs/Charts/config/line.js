@@ -30,5 +30,7 @@ export const lineConfig = {
     style: {
       opacity: 0.5
     }
-  }
+  },
+  animationCurve: 'easeOutCubic',
+  animationFrame: 50
 }
