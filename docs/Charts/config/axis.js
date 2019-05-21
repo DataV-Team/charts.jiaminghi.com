@@ -13,7 +13,7 @@ const xAxisConfig = {
   interval: null,
   minInterval: null,
   maxInterval: null,
-  boundaryGap: true,
+  boundaryGap: null,
   splitNumber: 5,
   axisLine: {
     show: true,
@@ -63,7 +63,7 @@ const yAxisConfig = {
   interval: null,
   minInterval: null,
   maxInterval: null,
-  boundaryGap: false,
+  boundaryGap: null,
   splitNumber: 5,
   axisLine: {
     show: true,

@@ -13,12 +13,13 @@ export function axis (chart, option = {}) {
 
   if (!xAxis || !yAxis || !series) return removeAxis(chart)
 
-  xAxis = deepMerge(deepClone(xAxisConfig, true), xAxis)
-  yAxis = deepMerge(deepClone(yAxisConfig, true), yAxis)
-
   initChartAxis(chart)
 
   let allAxis = getAllAxis(xAxis, yAxis)
+
+  allAxis = mergeDefaultAxisConfig(allAxis)
+
+  allAxis = mergeDefaultBoundaryGap(allAxis)
 
   allAxis = calcAxisLabelData(allAxis, series)
 
@@ -85,6 +86,34 @@ function initChartAxis (chart) {
   if (!chart.axisLabel) chart.axisLabel = []
   if (!chart.axisName) chart.axisName = []
   if (!chart.splitLine) chart.splitLine = []
+}
+
+function mergeDefaultAxisConfig (allAxis) {
+  let xAxis = allAxis.filter(({ axis }) => axis === 'x')
+  let yAxis = allAxis.filter(({ axis }) => axis === 'y')
+
+  xAxis = xAxis.map(axis => deepMerge(deepClone(xAxisConfig), axis))
+  yAxis = yAxis.map(axis => deepMerge(deepClone(yAxisConfig), axis))
+
+  return [...xAxis, ...yAxis]
+}
+
+function mergeDefaultBoundaryGap (allAxis) {
+  const valueAxis = allAxis.filter(({ data }) => data === 'value')
+  const labelAxis = allAxis.filter(({ axis }) => axis !== 'value')
+
+  valueAxis.forEach(axis => {
+    if (typeof axis.boundaryGap === 'boolean') return
+
+    axis.boundaryGap = false
+  })
+  labelAxis.forEach(axis => {
+    if (typeof axis.boundaryGap === 'boolean') return
+
+    axis.boundaryGap = true
+  })
+
+  return [...valueAxis, ...labelAxis]
 }
 
 function getAllAxis (xAxis, yAxis) {
@@ -203,13 +232,10 @@ function getTrueMinMax ({ min, max, axis }, [minValue, maxValue]) {
     maxType = 'string'
   }
 
-  if (minType === 'number') min = minValue
-  if (maxType === 'number') max = maxValue
-
   if (minType === 'string') {
     min = parseInt(minValue - abs(minValue * parseFloat(min) / 100))
 
-    const lever = pow(10, abs(min).toString().length - 1)
+    const lever = getValueLever(min)
 
     min = floor(min / lever) * lever
   }
@@ -217,12 +243,26 @@ function getTrueMinMax ({ min, max, axis }, [minValue, maxValue]) {
   if (maxType === 'string') {
     max = parseInt(maxValue + abs(maxValue * parseFloat(max) / 100))
 
-    const lever = pow(10, max.toString().length - 1)
+    const lever = getValueLever(max)
 
     max = ceil(max / lever) * lever
   }
 
   return [min, max]
+}
+
+function getValueLever (value) {
+  const valueString = abs(value).toString()
+
+  const valueLength = valueString.length
+
+  const firstZeroIndex = valueString.replace(/0*$/g, '').indexOf('0')
+
+  let pow10Num = valueLength - 1
+
+  if (firstZeroIndex !== -1) pow10Num -= firstZeroIndex
+
+  return pow(10, pow10Num)
 }
 
 function testMinMaxType (val) {
@@ -288,7 +328,9 @@ function getValueInterval (min, max, axis) {
 
   if (typeof interval === 'number') return interval
 
-  const valueInterval = (max - min) / (splitNumber - 1)
+  let valueInterval = parseInt((max - min) / (splitNumber - 1))
+
+  if (valueInterval.toString().length > 1) valueInterval = parseInt(valueInterval.toString().replace(/\d$/, '0'))
 
   if (typeof minInterval === 'number' && valueInterval < minInterval) return minInterval
 
@@ -606,7 +648,7 @@ function updateAxisLabel (allAxis, chart) {
   const { axisLabel: axisLabelCache } = chart
 
   allAxis.forEach(axisItem => {
-    const { axis: axisType, index, position } = axisItem
+    const { axis: axisType, index } = axisItem
 
     const axisIndex = axisType + index
 
@@ -653,6 +695,8 @@ function changeAxisLabel (labels, axisItem, chart) {
 
   graphs.forEach((labelItem, i) => {
     labelItem.visible = show
+    labelItem.animationCurve = animationCurve
+    labelItem.animationFrame = animationFrame
     labelItem.shape.content = label[i].toString()
     labelItem.animation('shape', { position: getAxisLabelRealPosition(tickPosition[i], position) }, true)
     labelItem.animation('style', style, true)
