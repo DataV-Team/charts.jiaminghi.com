@@ -7,9 +7,15 @@ import { deepMerge } from '../util'
 export function mergeColor (chart, option = {}) {
   const defaultColor = deepClone(colorConfig, true)
 
-  let { color } = option
+  let { color, series } = option
 
   if (!color) color = []
 
-  option.color = deepMerge(defaultColor, color)
+  option.color = color = deepMerge(defaultColor, color)
+
+  if (!series.length) return
+
+  const colorNum = color.length
+
+  series.forEach((item, i) => (item.color = color[i % colorNum]))
 }

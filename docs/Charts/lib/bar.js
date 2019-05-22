@@ -7,7 +7,7 @@ import { getColorFromRgbValue, getRgbaValue } from '@jiaminghi/color'
 import { deepMerge, mergeSameStackData, getLinearGradientColor } from '../util'
 
 export function bar (chart, option = {}) {
-  const { xAxis, yAxis, series, color } = option
+  const { xAxis, yAxis, series } = option
 
   if (!xAxis || !yAxis || !series) removeBars(chart)
 
@@ -27,9 +27,9 @@ export function bar (chart, option = {}) {
 
   bars.reverse()
 
-  updateBars(bars, chart, color)
+  updateBars(bars, chart)
 
-  updateBarLabels(bars, chart, color)
+  updateBarLabels(bars, chart)
 }
 
 function removeBars (chart) {
@@ -308,7 +308,7 @@ function getValuePos (min, max, value, linePosition, axis) {
   return pos + linePosition[0][coordinateIndex]
 }
 
-function updateBars (bars, chart, color) {
+function updateBars (bars, chart) {
   const { render, bar: barCache } = chart
 
   const cacheNum = barCache.length
@@ -332,27 +332,27 @@ function updateBars (bars, chart, color) {
     }
 
     if (cache) {
-      changeBars(cache, barItem, i, color, render)
+      changeBars(cache, barItem, render)
     } else {
-      addNewBars(barCache, barItem, i, color, render)
+      addNewBars(barCache, barItem, i, render)
     }
   })
 }
 
-function changeBars (cache, barItem, i, color, render) {
+function changeBars (cache, barItem, render) {
   const { shapeType } = barItem
 
   if (shapeType === 'leftEchelon' || shapeType === 'rightEchelon') {
-    changeEchelonBar(cache, barItem, render, color)
+    changeEchelonBar(cache, barItem, render)
   } else {
-    changeNormalBar(cache, barItem, render, color)
+    changeNormalBar(cache, barItem, render)
   }
 }
 
-function changeEchelonBar (cache, barItem, render, color) {
+function changeEchelonBar (cache, barItem, render) {
   const { animationCurve, animationFrame } = barItem
 
-  const style = mergeColorAndGradient(barItem, color)
+  const style = mergeColorAndGradient(barItem)
 
   cache.forEach((graph, i) => {
     const { points } = getEchelonBarShape(barItem, i)
@@ -378,15 +378,15 @@ function changeEchelonBar (cache, barItem, render, color) {
   })
 }
 
-function changeNormalBar (cache, barItem, render, color) {
+function changeNormalBar (cache, barItem, render) {
   const { animationCurve, animationFrame } = barItem
 
-  const style = mergeColorAndGradient(barItem, color)
+  const style = mergeColorAndGradient(barItem)
 
   cache.forEach((graph, i) => {
-    const shape = getNormalBarShape(barItem, j)
+    const shape = getNormalBarShape(barItem, i)
 
-    const gradientPos = getGradientPos(barItem, j)
+    const gradientPos = getGradientPos(barItem, i)
 
     graph.animationCurve = animationCurve
     graph.animationFrame = animationFrame
@@ -398,31 +398,31 @@ function changeNormalBar (cache, barItem, render, color) {
   })
 }
 
-function addNewBars (barCache, barItem, i, color, render) {
+function addNewBars (barCache, barItem, i, render) {
   const { shapeType } = barItem
 
   const graphs = []
 
   if (shapeType === 'leftEchelon' || shapeType === 'rightEchelon') {
-    graphs.push(...addEchelonBar(barItem, render, color))
+    graphs.push(...addEchelonBar(barItem, render))
   } else {
-    graphs.push(...addNewNormalBar(barItem, render, color))
+    graphs.push(...addNewNormalBar(barItem, render))
   }
 
   barCache[i] = graphs
 }
 
-function addEchelonBar(barItem, render, color) {
+function addEchelonBar(barItem, render) {
   const { shapeType, animationCurve, animationFrame } = barItem
 
   const graphNum = barItem.labelAxis.tickPosition.length
 
-  const style = mergeColorAndGradient(barItem, color)
+  const style = mergeColorAndGradient(barItem)
 
-  return new Array(graphNum).fill(0).map((foo, j) => {
-    const shape = getEchelonBarShape(barItem, j)
+  return new Array(graphNum).fill(0).map((foo, i) => {
+    const shape = getEchelonBarShape(barItem, i)
 
-    const gradientPos = getGradientPos(barItem, j)
+    const gradientPos = getGradientPos(barItem, i)
 
     const startShape = getEchelonBarStartShape(shape, barItem)
 
@@ -551,12 +551,12 @@ function getRightEchelonShapeBarStartShape (shape, barItem) {
   return shape
 }
 
-function addNewNormalBar(barItem, render, color) {
+function addNewNormalBar(barItem, render) {
   const { shapeType, animationCurve, animationFrame } = barItem
 
   const graphNum = barItem.labelAxis.tickPosition.length
 
-  const style = mergeColorAndGradient(barItem, color)
+  const style = mergeColorAndGradient(barItem)
 
   return new Array(graphNum).fill(0).map((foo, j) => {
     const shape = getNormalBarShape(barItem, j)
@@ -609,12 +609,10 @@ function getNormalBarShape (barItem, i) {
   return shape
 }
 
-function mergeColorAndGradient (barItem, color) {
-  const { barStyle, gradient, colorIndex } = barItem
+function mergeColorAndGradient (barItem) {
+  const { barStyle, gradient, color } = barItem
 
-  const colorNum = color.length
-
-  let style = deepMerge({ fill: color[colorIndex % colorNum] }, barStyle)
+  let style = deepMerge({ fill: color }, barStyle)
 
   style = {
     ...style,
@@ -677,27 +675,27 @@ function barBeforeDraw ({ style }, { ctx }) {
   ctx.fillStyle = getLinearGradientColor(ctx, begin, end, color)
 }
 
-function updateBarLabels(bars, chart, color) {
+function updateBarLabels(bars, chart) {
   const { render, barLabels: barLabelsCache } = chart
 
   bars.forEach((barItem, i) => {
     const cache = barLabelsCache[i]
 
     if (cache) {
-      changeBarLabels(cache, barItem, i, color, render)
+      changeBarLabels(cache, barItem, render)
     } else {
-      addNewBarLabels(barLabelsCache, barItem, i, color, render)
+      addNewBarLabels(barLabelsCache, barItem, i, render)
     }
   })
 }
 
-function changeBarLabels (cache, barItem, i, color, render) {
+function changeBarLabels (cache, barItem, render) {
   let { data, label, barLabelAxisPos, animationCurve, animationFrame } = barItem
 
-  let { show, style, formatter } = label
+  let { show, formatter } = label
 
   data = formatterData (data, formatter)
-  style = mergeLabelColor(style, barItem, color)
+  const style = mergeLabelColor(barItem)
   const labelPosition = getLabelPosition(barItem)
 
   const labelsNum = barLabelAxisPos.length
@@ -734,14 +732,14 @@ function changeBarLabels (cache, barItem, i, color, render) {
   })
 }
 
-function addNewBarLabels (barLabelsCache, barItem, i, color, render) {
+function addNewBarLabels (barLabelsCache, barItem, i, render) {
   let { data, label, animationCurve, animationFrame } = barItem
 
-  let { show, style, formatter } = label
+  let { show, formatter } = label
 
   data = formatterData (data, formatter)
 
-  style = mergeLabelColor(style, barItem, color)
+  const style = mergeLabelColor(barItem)
 
   const labelPosition = getLabelPosition(barItem)
 
@@ -772,16 +770,12 @@ function formatterData (data, formatter) {
   return data
 }
 
-function mergeLabelColor (style, barItem, color) {
-  const { colorIndex, gradient: { color: gc } } = barItem
+function mergeLabelColor (barItem) {
+  let { color, label: { style }, gradient: { color: gc } } = barItem
 
-  const colorNum = color.length
-  
-  let fillColor = color[colorIndex % colorNum]
+  if (gc.length) color = gc[0]
 
-  if (gc.length) fillColor = gc[0]
-
-  style = deepMerge({ fill: fillColor }, style)
+  style = deepMerge({ fill: color }, style)
 
   return style
 }

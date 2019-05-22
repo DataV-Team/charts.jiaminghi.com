@@ -11,7 +11,7 @@ import { deepMerge, mergeSameStackData, getTwoPointDistance, mulAdd, getLinearGr
 const { polylineToBezierCurve, getBezierCurveLength } = bezierCurve
 
 export function line (chart, option = {}) {
-  const { xAxis, yAxis, series, color } = option
+  const { xAxis, yAxis, series } = option
 
   if (!xAxis || !yAxis || !series) removeLines(chart)
 
@@ -19,27 +19,31 @@ export function line (chart, option = {}) {
 
   let lines = series.filter(({ type }) => type === 'line')
 
+  if (!lines.length) return removeLines(chart)
+
   lines = mergeLineDefaultConfig(lines)
 
   lines = filterShowLines(lines)
 
   lines = calcLinesPosition(lines, chart)
 
-  updateLines(lines, chart, color)
+  updateLines(lines, chart)
 
-  updatePoints(lines, chart, color)
+  updatePoints(lines, chart)
 
-  updateLabels(lines, chart, color)
+  updateLabels(lines, chart)
 }
 
 function removeLines (chart) {
-  const { line, render } = chart
+  const { line, linePoints, lineLabels, render } = chart
 
-  if (!line) return
-
-  line.forEach(l => render.delGraph(l))
+  if (line) line.forEach(lineItem => lineItem.forEach(l => render.delGraph(l)))
+  if (linePoints) linePoints.forEach(pointItem => pointItem.forEach(l => render.delGraph(l)))
+  if (lineLabels) lineLabels.forEach(labelItem => labelItem.forEach(l => render.delGraph(l)))
 
   chart.line = null
+  chart.linePoints = null
+  chart.lineLabels = null
 }
 
 function initChartLine (chart) {
@@ -138,7 +142,7 @@ function getLineFillBottomPos (lineAxis) {
   }
 }
 
-function updateLines (lines, chart, color) {
+function updateLines (lines, chart) {
   const { render, line: lineCache } = chart
 
   const cacheNum = lineCache.length
@@ -164,23 +168,21 @@ function updateLines (lines, chart, color) {
     }
 
     if (cache) {
-      changeLineFill(cache[0], lineItem, i, color)
-      changeLine(cache[1], lineItem, i, color)
+      changeLineFill(cache[0], lineItem)
+      changeLine(cache[1], lineItem)
     } else {
-      addNewLineFill(lineCache, lineItem, i, color, render, graphName)
-      addNewLine(lineCache, lineItem, i, color, render, graphName)
+      addNewLineFill(lineCache, lineItem, i, render, graphName)
+      addNewLine(lineCache, lineItem, i, render, graphName)
     }
   })
 }
 
-function changeLineFill (graph, lineItem, i, color) {
-  const { fill, lineFillBottomPos, linePosition, animationCurve, animationFrame } = lineItem
+function changeLineFill (graph, lineItem) {
+  const { lineFillBottomPos, linePosition, animationCurve, animationFrame } = lineItem
 
-  let { show, gradient, style } = fill
+  style = mergeLineFillStyle(lineItem)
 
-  style = mergeLineFillStyle(style, i, color, gradient)
-
-  graph.visible = show
+  graph.visible = lineItem.fill.show
   graph.animationCurve = animationCurve
   graph.animationFrame = animationFrame
   graph.lineFillBottomPos = lineFillBottomPos
@@ -188,39 +190,41 @@ function changeLineFill (graph, lineItem, i, color) {
   graph.animation('style', { ...style }, true)
 }
 
-function mergeLineFillStyle (lineFillStyle, i, color, gradient) {
-  const colorNum = color.length
+function mergeLineFillStyle (lineItem) {
+  const { fill, color } = lineItem
 
-  lineFillStyle = deepMerge({ fill: color[i % colorNum] }, lineFillStyle)
+  let { gradient, style } = fill
+
+  style = deepMerge({ fill: color }, style)
 
   return {
     gradient: gradient.map(c => getRgbaValue(c)),
-    ...lineFillStyle
+    ...style
   }
 }
 
-function changeLine (graph, lineItem, i, color) {
-  let { show, lineStyle, linePosition, animationCurve, animationFrame } = lineItem
+function changeLine (graph, lineItem) {
+  let { show, linePosition, animationCurve, animationFrame } = lineItem
 
-  lineStyle = mergeLineColor(lineStyle, i, color)
+  const style = mergeLineColor(lineItem)
 
   graph.visible = show
   graph.animationCurve = animationCurve
   graph.animationFrame = animationFrame
   graph.animation('shape', { points: linePosition }, true)
-  graph.animation('style', { ...lineStyle }, true)
+  graph.animation('style', style, true)
 }
 
-function mergeLineColor (lineStyle, i, color) {
-  const colorNum = color.length
+function mergeLineColor (lineItem) {
+  const { lineStyle, color } = lineItem
 
-  return deepMerge({ stroke: color[i % colorNum] }, lineStyle)
+  return deepMerge({ stroke: color }, lineStyle)
 }
 
-function addNewLine (lineCache, lineItem, i, color, render, graphName) {
+function addNewLine (lineCache, lineItem, i, render, graphName) {
   let { show, lineStyle, linePosition, smooth, animationCurve, animationFrame } = lineItem
 
-  lineStyle = mergeLineColor(lineStyle, i, color)
+  lineStyle = mergeLineColor(lineItem)
 
   const lineLength = getLineLength(linePosition, smooth)
 
@@ -248,12 +252,10 @@ function addNewLine (lineCache, lineItem, i, color, render, graphName) {
   lineCache[i][1] = lineGraph
 }
 
-function addNewLineFill (lineCache, lineItem, i, color, render, graphName) {
-  const { linePosition, fill, lineFillBottomPos, animationCurve, animationFrame } = lineItem
+function addNewLineFill (lineCache, lineItem, i, render, graphName) {
+  const { linePosition, lineFillBottomPos, animationCurve, animationFrame } = lineItem
 
-  let { show: fillShow, gradient, style: lineFillStyle } = fill
-
-  lineFillStyle = mergeLineFillStyle(lineFillStyle, i, color, gradient)
+  const lineFillStyle = mergeLineFillStyle(lineItem)
 
   const { opacity, gradient: gradientColor } = lineFillStyle
 
@@ -262,7 +264,7 @@ function addNewLineFill (lineCache, lineItem, i, color, render, graphName) {
 
   const lineFillGraph = render.add({
     name: graphName,
-    visible: fillShow,
+    visible: lineItem.fill.show,
     animationCurve,
     animationFrame,
     lineFillBottomPos,
@@ -355,26 +357,26 @@ function getPolylineLength (points) {
   return mulAdd(lengths)
 }
 
-function updatePoints (lines, chart, color) {
+function updatePoints (lines, chart) {
   const { render, linePoints: linePointsCache } = chart
 
   lines.forEach((lineItem, i) => {
     const cache = linePointsCache[i]
 
     if (cache) {
-      changeLinePoints(cache, lineItem, i, render, color)
+      changeLinePoints(cache, lineItem, render)
     } else {
-      addNewLinePoints(linePointsCache, lineItem, i, render, color)
+      addNewLinePoints(linePointsCache, lineItem, i, render)
     }
   })
 }
 
-function changeLinePoints (cache, lineItem, i, render, color) {
+function changeLinePoints (cache, lineItem, render) {
   const { linePoint, linePosition, animationCurve, animationFrame } = lineItem
 
-  let { show, radius, style } = linePoint
+  let { show, radius } = linePoint
 
-  style = mergePointColor(style, i, color)
+  const style = mergePointColor(lineItem)
 
   const pointsNum = linePosition.length
   const cacheNum = cache.length
@@ -411,12 +413,12 @@ function changeLinePoints (cache, lineItem, i, render, color) {
   })
 }
 
-function addNewLinePoints (linePointsCache, lineItem, i, render, color) {
+function addNewLinePoints (linePointsCache, lineItem, i, render) {
   let { linePoint, linePosition, animationCurve, animationFrame } = lineItem
 
-  let { show, radius, style } = linePoint
+  let { show, radius } = linePoint
 
-  style = mergePointColor(style, i, color)
+  const style = mergePointColor(lineItem)
 
   linePointsCache[i] = linePosition.map(pos => render.add({
     name: 'circle',
@@ -436,35 +438,33 @@ function addNewLinePoints (linePointsCache, lineItem, i, render, color) {
   })
 }
 
-function mergePointColor (style, i, color) {
-  const colorNum = color.length
-  
-  style = deepMerge({ stroke: color[i % colorNum] }, style)
+function mergePointColor (lineItem) {
+  let { color, linePoint: { style } } = lineItem
 
-  return style
+  return deepMerge({ stroke: color }, style)
 }
 
-function updateLabels (lines, chart, color) {
+function updateLabels (lines, chart) {
   const { render, lineLabels: lineLabelsCache } = chart
 
   lines.forEach((lineItem, i) => {
     const cache = lineLabelsCache[i]
 
     if (cache) {
-      changeLineLabels(cache, lineItem, i, color, render)
+      changeLineLabels(cache, lineItem, render)
     } else {
-      addNewLineLabels(lineLabelsCache, lineItem, i, color, render)
+      addNewLineLabels(lineLabelsCache, lineItem, i, render)
     }
   })
 }
 
-function changeLineLabels (cache, lineItem, i, color, render) {
+function changeLineLabels (cache, lineItem, render) {
   let { data, label, linePosition, lineFillBottomPos, animationCurve, animationFrame } = lineItem
 
-  let { show, position, offset, style, formatter } = label
+  let { show, position, offset, formatter } = label
 
   data = formatterData (data, formatter)
-  style = mergeLabelColor(style, i, color)
+  const style = mergeLabelColor(lineItem)
   const labelPosition = getLabelPosition(linePosition, lineFillBottomPos, position, offset)
 
   const labelsNum = linePosition.length
@@ -501,14 +501,14 @@ function changeLineLabels (cache, lineItem, i, color, render) {
   })
 }
 
-function addNewLineLabels (lineLabelsCache, lineItem, i, color, render) {
+function addNewLineLabels (lineLabelsCache, lineItem, i, render) {
   let { data, label, linePosition, lineFillBottomPos, animationCurve, animationFrame } = lineItem
 
-  let { show, position, offset, style, formatter } = label
+  let { show, position, offset, formatter } = label
 
   data = formatterData (data, formatter)
 
-  style = mergeLabelColor(style, i, color)
+  const style = mergeLabelColor(lineItem)
 
   const labelPosition = getLabelPosition(linePosition, lineFillBottomPos, position, offset)
 
@@ -539,12 +539,10 @@ function formatterData (data, formatter) {
   return data
 }
 
-function mergeLabelColor (style, i, color) {
-  const colorNum = color.length
+function mergeLabelColor (lineItem) {
+  const { color, label: { style } } = lineItem
 
-  style = deepMerge({ fill: color[i % colorNum] }, style)
-
-  return style
+  return deepMerge({ fill: color }, style)
 }
 
 function getLabelPosition (linePosition, lineFillBottomPos, position, offset) {
