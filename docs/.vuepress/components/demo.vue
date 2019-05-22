@@ -31,20 +31,23 @@ export default {
         },
         xAxis: {
           name: "WeekDay",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+          data: 'value',
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         },
         yAxis: {
           name: "Count",
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
           data: "value",
           axisLabel: {
-            formatter: "{value} KG"
+            formatter: '{value} KG'
           },
         },
         series: [
           {
             data: [50, 113, 387, 155, 377, 322],
-            type: "bar",
-            stack: "a",
+            type: 'bar',
+            shapeType: 'leftEchelon',
+            // stack: "a",
             smooth: true,
             fill: {
               show: true,
@@ -55,58 +58,69 @@ export default {
             },
             label: {
               show: true
-            }
+            },
+            gradient: {
+              color: ['#ffec93', '#ac3550'],
+              local: false
+            },
           },
           {
             data: [150, 213, 487, 255, 477, 422],
-            type: "bar",
-            stack: "a"
+            type: 'bar',
+            shapeType: 'rightEchelon',
+            // stack: "a"
           }
         ]
       })
 
       setTimeout(() => {
-        // myChart.setOption({
-        //   title: {
-        //     text: "This is a Chart"
-        //   },
-        //   xAxis: {
-        //     name: "WeekDay",
-        //     data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-        //     // data: "value"
-        //   },
-        //   yAxis: {
-        //     name: "Count",
-        //     data: "value",
-        //     axisLabel: {
-        //       formatter: "{value} KG"
-        //     },
-        //     // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        //   },
-        //   series: [
-        //     {
-        //       data: [50, 113, 387, 155, 377, 322],
-        //       type: "line",
-        //       stack: "a",
-        //       smooth: true,
-        //       fill: {
-        //         show: true,
-        //         gradient: ['rgba(255, 231, 147, .5)', 'rgba(255, 231, 147, .1)']
-        //       },
-        //       lineStyle: {
-        //         lineDash: [5, 5]
-        //       },
-        //       label: {
-        //         show: true
-        //       }
-        //     },
-        //     {
-        //       data: [150, 213, 487, 255, 477, 422],
-        //       type: "bar",
-        //       stack: "a"
-        //     }
-        //   ]
-        // })
+        myChart.setOption({
+          title: {
+            text: "This is a Chart"
+          },
+          xAxis: {
+            name: "WeekDay",
+            data: 'value',
+            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+          },
+          yAxis: {
+            name: "Count",
+            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            data: "value",
+            axisLabel: {
+              formatter: "{value} KG"
+            },
+          },
+          series: [
+            {
+              data: [250, 313, 327, 255, 277, 222],
+              type: "bar",
+              shapeType: 'leftEchelon',
+              // stack: "a",
+              smooth: true,
+              fill: {
+                show: true,
+                gradient: ['rgba(255, 231, 147, .5)', 'rgba(255, 231, 147, .1)']
+              },
+              lineStyle: {
+                lineDash: [5, 5]
+              },
+              label: {
+                show: true
+              },
+              gradient: {
+                color: ['#ffec93', '#ac3550'],
+                local: false
+              },
+            },
+            {
+              data: [255, 213, 422, 150 , 477, 266],
+              type: "bar",
+              shapeType: 'rightEchelon',
+              // stack: "a"
+            }
+          ]
+        })
       }, 2000)
 
       console.warn(myChart)

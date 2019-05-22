@@ -1,6 +1,8 @@
 export const barConfig = {
   show: true,
-  shape: '',
+  shapeType: 'normal',
+  echelonOffset: 10,
+  barWidth: 'auto',
   barGap: '30%',
   barCategoryGap: '20%',
   xAxisIndex: 0,
@@ -13,6 +15,10 @@ export const barConfig = {
     style: {
       fontSize: 10
     }
+  },
+  gradient: {
+    color: [],
+    local: true
   },
   barStyle: {},
   animationCurve: 'easeOutCubic',
