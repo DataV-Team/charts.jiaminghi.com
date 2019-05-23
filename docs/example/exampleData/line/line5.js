@@ -13,7 +13,11 @@ const option1 = {
   series: [
     {
       data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
-      type: 'line'
+      type: 'line',
+      fill: {
+        show: true,
+        gradient: ['rgba(239, 239, 216, 0.8)', 'rgba(239, 239, 216, 0)']
+      }
     }
   ]
 }
@@ -33,7 +37,11 @@ const option2 = {
   series: [
     {
       data: [2339, 1899, 2118, 1790, 3265, 4465, 3996],
-      type: 'line'
+      type: 'line',
+      fill: {
+        show: true,
+        gradient: ['rgba(239, 239, 216, 0.8)', 'rgba(239, 239, 216, 0)']
+      }
     }
   ]
 }
