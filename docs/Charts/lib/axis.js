@@ -241,7 +241,7 @@ function getTrueMinMax ({ min, max, axis }, [minValue, maxValue]) {
 
     const lever = getValueLever(min)
 
-    min = floor(min / lever) * lever
+    min = parseFloat((min / lever - 0.1).toFixed(1)) * lever
   }
 
   if (maxType === 'string') {
@@ -249,7 +249,7 @@ function getTrueMinMax ({ min, max, axis }, [minValue, maxValue]) {
 
     const lever = getValueLever(max)
 
-    max = ceil(max / lever) * lever
+    max = parseFloat((max / lever + 0.1).toFixed(1)) * lever
   }
 
   return [min, max]

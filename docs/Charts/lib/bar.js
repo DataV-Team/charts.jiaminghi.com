@@ -15,6 +15,8 @@ export function bar (chart, option = {}) {
 
   let bars = series.filter(({ type }) => type === 'bar')
 
+  if (!bars.length) return removeBars(chart)
+
   bars = mergeBarDefaultConfig(bars)
 
   bars = filterShowBars(bars)
@@ -33,13 +35,13 @@ export function bar (chart, option = {}) {
 }
 
 function removeBars (chart) {
-  const { bar, render } = chart
+  const { bar, barLabels, render } = chart
 
-  if (!bar) return
-
-  bar.forEach(l => render.delGraph(l))
+  if (bar) bar.forEach(barItem => barItem.forEach(l => render.delGraph(l)))
+  if (barLabels) barLabels.forEach(labelItem => labelItem.forEach(l => render.delGraph(l)))
 
   chart.bar = null
+  chart.barLabels = null
 }
 
 function initChartBar (chart) {
@@ -87,7 +89,6 @@ function setBarPositionData (bars, chart) {
     setBarCategoryWidth(group, chart)
     setBarWidthAndGap(group)
     setBarAllWidthAndGap(group)
-    setBarColorIndex(group)
   })
 
   return bars
@@ -231,13 +232,11 @@ function setBarAllWidthAndGap (bars) {
   bars.forEach(bar => (bar.barAllWidthAndGap = barAllWidthAndGap))
 }
 
-function setBarColorIndex (bars) {
-  bars.forEach((bar, i) => (bar.colorIndex = i))
-}
-
 function calcBarsPosition (bars, chart) {
-  bars = calcBarLabelAxisCoordinate(bars)
   bars = calcBarValueAxisCoordinate(bars)
+  bars = calcBarLabelAxisCoordinate(bars)
+  bars = eliminateNullBarLabelAxis(bars)
+  bars = keepSameNumBetweenBarAndData(bars)
 
   return bars
 }
@@ -267,7 +266,9 @@ function calcBarLabelAxisCoordinate (bars) {
 
 function calcBarValueAxisCoordinate (bars) {
   return bars.map(bar => {
-    const data = mergeSameStackData(bar, bars)
+    let data = mergeSameStackData(bar, bars)
+
+    data = eliminateNonNumberData(bar, data)
 
     const { axis, minValue, maxValue, linePosition } = bar.valueAxis
 
@@ -291,12 +292,55 @@ function calcBarValueAxisCoordinate (bars) {
 
     return {
       ...bar,
-      barValueAxisPos
+      barValueAxisPos: barValueAxisPos
     }
   })
 }
 
+function eliminateNonNumberData (barItem, barData) {
+  const { data } = barItem
+
+  return barData
+    .map((v, i) => typeof data[i] === 'number' ? v : null)
+    .filter(d => d !== null)
+}
+
+function eliminateNullBarLabelAxis (bars) {
+  return bars.map(bar => {
+    const { barLabelAxisPos, data } = bar
+
+    data.forEach((d, i) => {
+      if (typeof d === 'number') return
+
+      barLabelAxisPos[i] = null
+    })
+
+    return {
+      ...bar,
+      barLabelAxisPos: barLabelAxisPos.filter(p => p !== null)
+    }
+  })
+}
+
+function keepSameNumBetweenBarAndData (bars) {
+  bars.forEach(bar => {
+    const { data, barLabelAxisPos, barValueAxisPos } = bar
+
+    const dataNum = data.length
+    const axisPosNum = barLabelAxisPos.length
+
+    if (axisPosNum > dataNum) {
+      barLabelAxisPos.splice(dataNum)
+      barValueAxisPos.splice(dataNum)
+    }
+  })
+  
+  return bars
+}
+
 function getValuePos (min, max, value, linePosition, axis) {
+  if (typeof value !== 'number') return null
+
   const valueMinus = max - min
 
   const coordinateIndex = axis === 'x' ? 0 : 1
@@ -352,6 +396,8 @@ function changeBars (cache, barItem, render) {
 function changeEchelonBar (cache, barItem, render) {
   const { animationCurve, animationFrame } = barItem
 
+  balanceBarNum(cache, barItem, render)
+
   const style = mergeColorAndGradient(barItem)
 
   cache.forEach((graph, i) => {
@@ -381,6 +427,8 @@ function changeEchelonBar (cache, barItem, render) {
 function changeNormalBar (cache, barItem, render) {
   const { animationCurve, animationFrame } = barItem
 
+  balanceBarNum(cache, barItem, render)
+
   const style = mergeColorAndGradient(barItem)
 
   cache.forEach((graph, i) => {
@@ -398,13 +446,40 @@ function changeNormalBar (cache, barItem, render) {
   })
 }
 
+function balanceBarNum (cache, barItem, render) {
+  const cacheGraphNum = cache.length
+  const barNum = barItem.barLabelAxisPos.length
+
+  const style = mergeColorAndGradient(barItem)
+
+  if (barNum > cacheGraphNum) {
+    const lastCacheBar = cache.slice(-1)[0]
+    const needAddBars = new Array(barNum - cacheGraphNum).fill(0)
+      .map(foo => render.add({
+        name: lastCacheBar.name,
+        shapeType: lastCacheBar.shapeType,
+        animationCurve: lastCacheBar.animationCurve,
+        animationFrame: lastCacheBar.animationFrame,
+        shape: deepClone(lastCacheBar.shape, true),
+        style: {
+          ...style,
+          gradientPos: deepClone(lastCacheBar.style.gradientPos)
+        },
+        beforeDraw: lastCacheBar.beforeDraw
+      }))
+    cache.push(...needAddBars)
+  } else if (barNum < cacheGraphNum) {
+    cache.splice(barNum)
+  }
+}
+
 function addNewBars (barCache, barItem, i, render) {
   const { shapeType } = barItem
 
   const graphs = []
 
   if (shapeType === 'leftEchelon' || shapeType === 'rightEchelon') {
-    graphs.push(...addEchelonBar(barItem, render))
+    graphs.push(...addNewEchelonBar(barItem, render))
   } else {
     graphs.push(...addNewNormalBar(barItem, render))
   }
@@ -412,10 +487,10 @@ function addNewBars (barCache, barItem, i, render) {
   barCache[i] = graphs
 }
 
-function addEchelonBar(barItem, render) {
+function addNewEchelonBar(barItem, render) {
   const { shapeType, animationCurve, animationFrame } = barItem
 
-  const graphNum = barItem.labelAxis.tickPosition.length
+  const graphNum = barItem.barLabelAxisPos.length
 
   const style = mergeColorAndGradient(barItem)
 
@@ -440,7 +515,6 @@ function addEchelonBar(barItem, render) {
     })
 
     graph.animation('shape', shape, true)
-
     return graph
   })
 }
@@ -554,7 +628,7 @@ function getRightEchelonShapeBarStartShape (shape, barItem) {
 function addNewNormalBar(barItem, render) {
   const { shapeType, animationCurve, animationFrame } = barItem
 
-  const graphNum = barItem.labelAxis.tickPosition.length
+  const graphNum = barItem.barLabelAxisPos.length
 
   const style = mergeColorAndGradient(barItem)
 
@@ -638,7 +712,7 @@ function getGradientPos (barItem, i) {
   let endPos = end
 
   if (!barItem.gradient.local) {
-    endPos = value < 0 ? linelineStartEnd[valueAxisIndex] : lineEnd[valueAxisIndex]
+    endPos = value < 0 ? lineStart[valueAxisIndex] : lineEnd[valueAxisIndex]
   }
 
   const position = [[endPos, labelAxisPos], [start, labelAxisPos]]
@@ -757,7 +831,7 @@ function addNewBarLabels (barLabelsCache, barItem, i, render) {
 }
 
 function formatterData (data, formatter) {
-  data = data.map(d => d.toString())
+  data = data.filter(d => typeof d === 'number').map(d => d.toString())
 
   if (!formatter) return data
 

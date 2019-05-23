@@ -50,9 +50,9 @@ Charts.prototype.setOption = function (option) {
 
   title(this, option)
 
-  line(this, option)
-
   bar(this, option)
+
+  line(this, option)
 
   this.option = option
 

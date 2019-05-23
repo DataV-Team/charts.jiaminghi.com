@@ -20,7 +20,7 @@ module.exports = {
     '/EN/': {
       lang: 'en-US',
       title: 'Charts',
-      description: 'Lightweight interactive charting.'
+      description: 'Lightweight charting.'
     }
   },
   themeConfig: {
@@ -34,13 +34,25 @@ module.exports = {
             link: '/guide/'
           },
           {
+            text: '配置项',
+            link: '/config/'
+          },
+          {
+            text: '实例',
+            link: '/example/'
+          },
+          {
             text: 'GitHub',
             link: 'https://github.com/jiaming743/charts.jiaminghi.com'
           }
         ],
         sidebar: {
-          '/guide/': [
+          '/config/': [
             ''
+          ],
+          '/example/': [
+            '',
+            'line'
           ]
         }
       },

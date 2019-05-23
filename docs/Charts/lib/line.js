@@ -64,7 +64,9 @@ function calcLinesPosition (lines, chart) {
   const { axisData, grid } = chart
 
   return lines.map(lineItem => {
-    const lineData = mergeSameStackData(lineItem, lines)
+    let lineData = mergeSameStackData(lineItem, lines)
+
+    lineData = mergeNonNumber(lineItem, lineData)
 
     const lineAxis = getLineAxis(lineItem, axisData)
 
@@ -74,10 +76,16 @@ function calcLinesPosition (lines, chart) {
 
     return {
       ...lineItem,
-      linePosition,
+      linePosition: linePosition.filter(p => p),
       lineFillBottomPos
     }
   })
+}
+
+function mergeNonNumber (lineItem, lineData) {
+  const { data } = lineItem
+
+  return lineData.map((v, i) => typeof data[i] === 'number' ? v : null)
 }
 
 function getLineAxis (line, axisData) {
@@ -96,6 +104,8 @@ function getLinePosition (lineData, lineAxis) {
   const labelAxis = lineAxis[1 - valueAxisIndex]
 
   const { linePosition, axis } = valueAxis
+  const { tickPosition } = labelAxis
+  const tickNum = tickPosition.length
 
   const valueAxisPosIndex = axis === 'x' ? 0 : 1
 
@@ -105,14 +115,13 @@ function getLinePosition (lineData, lineAxis) {
   const { maxValue, minValue } = valueAxis
   const valueMinus = maxValue - minValue
 
-  const position = lineData.map(v => {
-    if (typeof v !== 'number') return null
+  const position = new Array(tickNum).fill(0)
+    .map((foo, i) => {
+      const v = lineData[i]
+      if (typeof v !== 'number') return null
 
-    return (v - minValue) / valueMinus * valueAxisPosMinus + valueAxisStartPos
-  })
-
-  const { tickPosition } = labelAxis
-  const tickNum = tickPosition.length
+      return (v - minValue) / valueMinus * valueAxisPosMinus + valueAxisStartPos
+    })
 
   return position.map((vPos, i) => {
     if (i >= tickNum || typeof vPos !== 'number') return null
@@ -130,11 +139,19 @@ function getLinePosition (lineData, lineAxis) {
 function getLineFillBottomPos (lineAxis) {
   const valueAxis = lineAxis.find(({ data }) => data === 'value')
 
-  const { axis, linePosition } = valueAxis
+  const { axis, linePosition, minValue, maxValue } = valueAxis
 
   const changeIndex = axis === 'x' ? 0 : 1
 
-  const changeValue = linePosition[0][changeIndex]
+  let changeValue = linePosition[0][changeIndex]
+
+  if (minValue < 0 && maxValue > 0) {
+    const valueMinus = maxValue - minValue
+    const posMinus = Math.abs(linePosition[0][changeIndex] - linePosition[1][changeIndex])
+    let offset = Math.abs(minValue) / valueMinus * posMinus
+    if (axis === 'y') offset *= -1
+    changeValue += offset
+  }
 
   return {
     changeIndex,
@@ -180,7 +197,9 @@ function updateLines (lines, chart) {
 function changeLineFill (graph, lineItem) {
   const { lineFillBottomPos, linePosition, animationCurve, animationFrame } = lineItem
 
-  style = mergeLineFillStyle(lineItem)
+  const style = mergeLineFillStyle(lineItem)
+
+  mergePointsNum(graph, linePosition)
 
   graph.visible = lineItem.fill.show
   graph.animationCurve = animationCurve
@@ -203,10 +222,30 @@ function mergeLineFillStyle (lineItem) {
   }
 }
 
+function mergePointsNum (graph, points) {
+  const graphPoints = graph.shape.points
+
+  const graphPointsNum = graphPoints.length
+  const pointsNum = points.length
+
+  if (pointsNum > graphPointsNum) {
+    const lastPoint = graphPoints.slice(-1)[0]
+
+    const newAddPoints = new Array(pointsNum - graphPointsNum)
+    .fill(0).map(foo => ([...lastPoint]))
+
+    graphPoints.push(...newAddPoints)
+  } else if (pointsNum < graphPointsNum) {
+    graphPoints.splice(linePointsNum)
+  }
+}
+
 function changeLine (graph, lineItem) {
   let { show, linePosition, animationCurve, animationFrame } = lineItem
 
   const style = mergeLineColor(lineItem)
+
+  mergePointsNum(graph, linePosition)
 
   graph.visible = show
   graph.animationCurve = animationCurve
@@ -229,7 +268,7 @@ function addNewLine (lineCache, lineItem, i, render, graphName) {
   const lineLength = getLineLength(linePosition, smooth)
 
   const { lineDash } = lineStyle
-  
+
   const lineGraph = render.add({
     name: graphName,
     visible: show,
@@ -526,7 +565,7 @@ function addNewLineLabels (lineLabelsCache, lineItem, i, render) {
 }
 
 function formatterData (data, formatter) {
-  data = data.map(d => d.toString())
+  data = data.filter(d => typeof d === 'number').map(d => d.toString())
 
   if (!formatter) return data
 
@@ -547,8 +586,6 @@ function mergeLabelColor (lineItem) {
 
 function getLabelPosition (linePosition, lineFillBottomPos, position, offset) {
   let { changeIndex, changeValue } = lineFillBottomPos
-
-  linePosition = linePosition.filter(p => p)
 
   return linePosition.map(pos => {
     if (position === 'bottom') {
