@@ -27,6 +27,10 @@ export function bar (chart, option = {}) {
 
   bars = calcBarsPosition(bars, chart)
 
+  delRedundanceBars(bars, chart)
+
+  updateBackgroundBars(bars, chart)
+
   bars.reverse()
 
   updateBars(bars, chart)
@@ -35,18 +39,21 @@ export function bar (chart, option = {}) {
 }
 
 function removeBars (chart) {
-  const { bar, barLabels, render } = chart
+  const { bar, barLabels, backgroundBars, render } = chart
 
   if (bar) bar.forEach(barItem => barItem.forEach(l => render.delGraph(l)))
   if (barLabels) barLabels.forEach(labelItem => labelItem.forEach(l => render.delGraph(l)))
+  if (backgroundBars) backgroundBars.forEach(b => render.delGraph(b))
 
   chart.bar = null
   chart.barLabels = null
+  chart.backgroundBars = null
 }
 
 function initChartBar (chart) {
   if (!chart.bar) chart.bar = []
   if (!chart.barLabels) chart.barLabels = []
+  if (!chart.backgroundBars) chart.backgroundBars = []
 }
 
 function mergeBarDefaultConfig (bars) {
@@ -326,7 +333,7 @@ function keepSameNumBetweenBarAndData (bars) {
   bars.forEach(bar => {
     const { data, barLabelAxisPos, barValueAxisPos } = bar
 
-    const dataNum = data.length
+    const dataNum = data.filter(d => typeof d === 'number').length
     const axisPosNum = barLabelAxisPos.length
 
     if (axisPosNum > dataNum) {
@@ -352,17 +359,134 @@ function getValuePos (min, max, value, linePosition, axis) {
   return pos + linePosition[0][coordinateIndex]
 }
 
-function updateBars (bars, chart) {
-  const { render, bar: barCache } = chart
+function delRedundanceBars (bars, chart) {
+  const { bar, barLabels, render } = chart
 
-  const cacheNum = barCache.length
   const barsNum = bars.length
+  const cacheNum = bar.length
 
   if (cacheNum > barsNum) {
-    const needDelBars = barCache.splice(barsNum)
+    const needDelBars = bar.splice(barsNum)
+    const needDelBarLabels = barLabels.splice(linesNum)
 
-    needDelBars.forEach(item => item.forEach(g => render.delGraph(g)))
+    needDelBars.forEach(barItem => barItem.forEach(l => render.delGraph(l)))
+    needDelBarLabels.forEach(labelItem => labelItem.forEach(l => render.delGraph(l)))
   }
+}
+
+function updateBackgroundBars (bars, chart) {
+  const { backgroundBars, render } = chart
+
+  const lastBar = bars.slice(-1)[0]
+
+  if (backgroundBars.length) {
+    changeBackgroundBar(backgroundBars, lastBar, render)
+  } else {
+    addBackgroundBar(lastBar, backgroundBars, render)
+  }
+}
+
+function changeBackgroundBar (cache, lastBar, render) {
+  const { animationCurve, animationFrame, backgroundBar } = lastBar
+
+  const { show, style } = backgroundBar
+
+  const width = getBackgroundBarWidth(lastBar)
+  const shapes = getBackgroundBarsShapes(lastBar, width)
+
+  balanceBackgroundBarNum(cache, shapes.length, lastBar, render)
+
+  cache.forEach((graph, i) => {
+    graph.visible = show
+    graph.animationCurve = animationCurve
+    graph.animationFrame = animationFrame
+
+    graph.animation('shape', shapes[i], true)
+    graph.animation('style', style, true)
+  })
+}
+
+function balanceBackgroundBarNum (cache, num, lastBar, render) {
+  const cacheNum = cache.length
+
+  const { style } = lastBar.backgroundBar
+
+  if (num > cacheNum) {
+    const lastCacheBar = cache.slice(-1)[0]
+    const needAddBars = new Array(num - cacheNum).fill(0)
+      .map(foo => render.add({
+        name: 'rect',
+        animationCurve: lastCacheBar.animationCurve,
+        animationFrame: lastCacheBar.animationFrame,
+        shape: deepClone(lastCacheBar.shape, true),
+        style
+      }))
+
+    cache.push(...needAddBars)
+  } else if (num < cacheNum) {
+    const needDelCache = cache.splice(num)
+
+    needDelCache.forEach(b => render.delGraph(b))
+  }
+}
+
+function addBackgroundBar (lastBar, backgroundBars, render) {
+  const { animationCurve, animationFrame, backgroundBar } = lastBar
+
+  const { show, style } = backgroundBar
+
+  const width = getBackgroundBarWidth(lastBar)
+
+  const shapes = getBackgroundBarsShapes(lastBar, width)
+
+  backgroundBars.push(...shapes.map(shape => render.add({
+    name: 'rect',
+    visible: show,
+    animationCurve,
+    animationFrame,
+    shape,
+    style
+  })))
+}
+
+function getBackgroundBarWidth (lastBar) {
+  const { barAllWidthAndGap, barCategoryWidth, backgroundBar } = lastBar
+
+  const { width } = backgroundBar
+
+  if (typeof width === 'number') return width
+
+  if (width === 'auto') return barAllWidthAndGap
+
+  return parseInt(width) / 100 * barCategoryWidth
+}
+
+function getBackgroundBarsShapes (lastBar, width) {
+  const { labelAxis, valueAxis } = lastBar
+
+  const { tickPosition } = labelAxis
+
+  const { axis, linePosition } = valueAxis
+
+  const haltWidth = width / 2
+
+  const posIndex = axis === 'x' ? 0 : 1
+
+  const centerPos = tickPosition.map(p => p[1 - posIndex])
+
+  const [start, end] = [linePosition[0][posIndex], linePosition[1][posIndex]]
+
+  return centerPos.map(center => {
+    if (axis === 'x') {
+      return { x: start, y: center - haltWidth, w: end - start, h: width }
+    } else {
+      return { x: center - haltWidth, y: end, w: width, h: start - end }
+    }
+  })
+}
+
+function updateBars (bars, chart) {
+  const { render, bar: barCache } = chart
 
   bars.forEach((barItem, i) => {
     const { shapeType } = barItem
@@ -469,7 +593,9 @@ function balanceBarNum (cache, barItem, render) {
       }))
     cache.push(...needAddBars)
   } else if (barNum < cacheGraphNum) {
-    cache.splice(barNum)
+    const needDelCache = cache.splice(barNum)
+
+    needDelCache.forEach(g => render.delGraph(g))
   }
 }
 
@@ -764,35 +890,15 @@ function updateBarLabels(bars, chart) {
 }
 
 function changeBarLabels (cache, barItem, render) {
-  let { data, label, barLabelAxisPos, animationCurve, animationFrame } = barItem
+  let { data, label, animationCurve, animationFrame } = barItem
 
   let { show, formatter } = label
+
+  balanceBarLabelsNum(cache, barItem, render)
 
   data = formatterData (data, formatter)
   const style = mergeLabelColor(barItem)
   const labelPosition = getLabelPosition(barItem)
-
-  const labelsNum = barLabelAxisPos.length
-  const cacheNum = cache.length
-
-  if (cacheNum > labelsNum) {
-    cache.splice(labelsNum).forEach(g => render.delGraph(g))
-  } else if (cacheNum < labelsNum) {
-    const lastLabelShape = cache[cacheNum - 1].shape
-
-    const needAddGraphs = new Array(labelsNum - cacheNum)
-      .fill(0)
-      .map(foo => render.add({
-        name: 'text',
-        visible: show,
-        animationCurve,
-        animationFrame,
-        shape: lastLabelShape,
-        style
-      }))
-
-    cache.push(...needAddGraphs)
-  }
 
   cache.forEach((g, j) => {
     g.visible = show
@@ -804,6 +910,34 @@ function changeBarLabels (cache, barItem, render) {
     }, true)
     g.animation('style', style, true)
   })
+}
+
+function balanceBarLabelsNum (cache, barItem, render) {
+  let { barLabelAxisPos } = barItem
+
+  const style = mergeLabelColor(barItem)
+
+  const labelsNum = barLabelAxisPos.length
+  const cacheNum = cache.length
+
+  if (cacheNum > labelsNum) {
+    cache.splice(labelsNum).forEach(g => render.delGraph(g))
+  } else if (cacheNum < labelsNum) {
+    const lastLabelGraph = cache[cacheNum - 1]
+
+    const needAddGraphs = new Array(labelsNum - cacheNum)
+      .fill(0)
+      .map(foo => render.add({
+        name: 'text',
+        visible: lastLabelGraph.visible,
+        animationCurve: lastLabelGraph.animationCurve,
+        animationFrame: lastLabelGraph.animationFrame,
+        shape: deepClone(lastLabelGraph.shape, true),
+        style
+      }))
+
+    cache.push(...needAddGraphs)
+  }
 }
 
 function addNewBarLabels (barLabelsCache, barItem, i, render) {

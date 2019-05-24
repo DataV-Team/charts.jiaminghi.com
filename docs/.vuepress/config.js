@@ -52,7 +52,8 @@ module.exports = {
           ],
           '/example/': [
             '',
-            'line'
+            'line',
+            'bar'
           ]
         }
       },

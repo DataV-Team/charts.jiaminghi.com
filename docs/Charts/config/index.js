@@ -9,3 +9,5 @@ export { titleConfig } from './title'
 export { lineConfig } from './line'
 
 export { barConfig } from './bar'
+
+export { pieConfig } from './pie'

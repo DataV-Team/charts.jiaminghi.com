@@ -13,7 +13,7 @@ const option1 = {
   series: [
     {
       data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
-      type: 'line'
+      type: 'bar'
     }
   ]
 }
@@ -33,7 +33,7 @@ const option2 = {
   series: [
     {
       data: [2339, 1899, 2118, 1790, 3265, 4465, 3996],
-      type: 'line'
+      type: 'bar'
     }
   ]
 }

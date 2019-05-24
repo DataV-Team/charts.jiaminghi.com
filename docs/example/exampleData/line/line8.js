@@ -4,7 +4,8 @@ const option1 = {
   },
   xAxis: {
     name: '第一周',
-    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+    boundaryGap: false
   },
   yAxis: {
     name: '销售额',

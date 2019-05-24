@@ -1,8 +1,10 @@
+import '../extend/index'
+
 import CRender from '@jiaminghi/c-render'
 
 import { deepClone } from '@jiaminghi/c-render/lib/util'
 
-import { mergeColor, title, grid, axis } from '../lib'
+import { mergeColor, title, grid, axis, pie } from '../lib'
 
 import { line, bar } from '../lib'
 
@@ -54,7 +56,11 @@ Charts.prototype.setOption = function (option) {
 
   line(this, option)
 
+  pie(this, option)
+
   this.option = option
 
   this.render.launchAnimation()
+
+  // console.warn(this)
 }

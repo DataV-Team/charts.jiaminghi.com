@@ -9,7 +9,7 @@ import Charts from "../../Charts/index.js"
 
 export default {
   name: "Demo",
-  props: ['option'],
+  props: ['option', 'debug'],
   data () {
     return {
       myChart: null,
@@ -25,7 +25,7 @@ export default {
       setOption()
     },
     setOption () {
-      const { myChart, optionIndex, option } = this
+      const { myChart, optionIndex, option, debug } = this
 
       myChart.setOption(option[optionIndex])
 
@@ -34,6 +34,8 @@ export default {
       this.optionIndex++
 
       if (optionIndex + 1 >= optionNum) this.optionIndex = 0
+
+      if (debug) console.warn(myChart)
     }
   },
   async mounted () {

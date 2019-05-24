@@ -1,5 +1,5 @@
 <template>
-  <div class="demo">
+  <div class="dev">
     <div
       class="chart"
       ref="chart"
@@ -15,7 +15,7 @@ import transition from "@jiaminghi/transition"
 import CRender from "@jiaminghi/c-render"
 
 export default {
-  name: "Demo",
+  name: "Dev",
   data () {
     return {}
   },
@@ -27,106 +27,83 @@ export default {
 
       myChart.setOption({
         title: {
-          text: "This is a Chart"
-        },
-        xAxis: {
-          name: "WeekDay",
-          data: 'value',
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        },
-        yAxis: {
-          name: "Count",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-          data: "value",
-          axisLabel: {
-            formatter: '{value} KG'
-          },
+          text: 'This is a Chart'
         },
         series: [
           {
-            data: [50, 113, null, 155, 377, 322],
-            type: 'line',
-            shapeType: 'leftEchelon',
-            // stack: "a",
-            smooth: true,
-            fill: {
-              show: true,
-              gradient: ['rgba(255, 231, 147, .5)', 'rgba(255, 231, 147, .1)']
-            },
-            lineStyle: {
-              lineDash: [5, 5]
-            },
+            type: 'pie',
+            data: [
+              {
+                name: 'itemA',
+                value: 93
+              },
+              {
+                name: 'itemB',
+                value: 32
+              },
+              {
+                name: 'itemC',
+                value: 65
+              },
+              {
+                name: 'itemD',
+                value: 44
+              },
+              {
+                name: 'itemE',
+                value: 32
+              }
+            ],
+            radius: ['40%', '50%']
           },
           {
-            data: [150, 213, 199, null, 477, 422],
-            type: 'line',
-            shapeType: 'rightEchelon',
-            // stack: "a"
+            type: 'pie',
+            data: [
+              {
+                name: 'itemA',
+                value: 93
+              },
+              {
+                name: 'itemB',
+                value: 32
+              },
+              {
+                name: 'itemC',
+                value: 65
+              },
+              {
+                name: 'itemD',
+                value: 44
+              },
+              {
+                name: 'itemE',
+                value: 32
+              }
+            ],
+            radius: ['0%', '30%'],
+            roseType: true
           }
         ]
       })
 
-      setTimeout(() => {
-        myChart.setOption({
-          title: {
-            text: "This is a Chart"
-          },
-          xAxis: {
-            name: "WeekDay",
-            data: 'value',
-            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-          },
-          yAxis: {
-            name: "Count",
-            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-            data: "value",
-            axisLabel: {
-              formatter: "{value} KG"
-            },
-          },
-          series: [
-            {
-              data: [150, 223, null, 167, 415, 350],
-              type: 'line',
-              shapeType: 'leftEchelon',
-              // stack: "a",
-              smooth: true,
-              fill: {
-                show: true,
-                gradient: ['rgba(255, 231, 147, .5)', 'rgba(255, 231, 147, .1)']
-              },
-              lineStyle: {
-                lineDash: [5, 5]
-              },
-            },
-            {
-              data: [255, 213, 422, 150, 477, 255],
-              type: "line",
-              label: {
-                show: true
-              },
-              shapeType: 'rightEchelon',
-              // stack: "a"
-            }
-          ]
-        })
-      }, 2000)
+      // setTimeout(() => {
+      //   myChart.setOption({
+      //   })
+      // }, 2000)
 
       console.warn(myChart)
     }
   },
   async mounted () {
-    // await new Promise(resolve => setTimeout(resolve, 1000))
-
     this.init()
   }
 };
 </script>
 
 <style lang="less">
-.demo {
+.dev {
   height: 500px;
-  box-shadow: 0 0 3px #46bd87;
+  box-shadow: 0 0 1px #46bd87;
 
   .chart {
     width: 100%;

@@ -1,6 +1,6 @@
 const option1 = {
   title: {
-    text: "周销售额趋势"
+    text: '周销售额趋势'
   },
   xAxis: {
     name: '第一周',
@@ -8,7 +8,7 @@ const option1 = {
   },
   yAxis: {
     name: '销售额',
-    data: "value"
+    data: 'value'
   },
   series: [
     {
@@ -21,7 +21,7 @@ const option1 = {
 
 const option2 = {
   title: {
-    text: "周销售额趋势"
+    text: '周销售额趋势'
   },
   xAxis: {
     name: '第二周',
@@ -29,7 +29,7 @@ const option2 = {
   },
   yAxis: {
     name: '销售额',
-    data: "value"
+    data: 'value'
   },
   series: [
     {

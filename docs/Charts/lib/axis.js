@@ -168,6 +168,8 @@ function calcValueAxisLabelData (valueAxis, series) {
       label = getValueAxisLabelFromMin(min, max, interval)
     }
 
+    label = label.map(l => parseFloat(l.toFixed(2)))
+
     return {
       ...axis,
       maxValue: label.slice(-1)[0],
@@ -178,7 +180,13 @@ function calcValueAxisLabelData (valueAxis, series) {
 }
 
 function getValueAxisMaxMinValue (axis, series) {
-  series = series.filter(({ show }) => show !== false)
+  series = series.filter(({ show, type }) => {
+    if (show === false) return false
+
+    if (type === 'pie') return false
+
+    return true
+  })
 
   if (series.length === 0) return [0, 0]
   
@@ -212,15 +220,15 @@ function getSeriesMinMaxValue (series) {
 }
 
 function mergeStackData (series) {
-  series = deepClone(series, true)
+  const seriesCloned = deepClone(series, true)
 
-  return series.map(item => {
+  series.forEach((item, i) => {
     const data = mergeSameStackData(item, series)
 
-    item.data = data
-
-    return item
+    seriesCloned[i].data = data
   })
+
+  return seriesCloned
 }
 
 function getTrueMinMax ({ min, max, axis }, [minValue, maxValue]) {
@@ -290,7 +298,7 @@ function getValueAxisLabelFromZero (min, max, interval) {
     positive.push(currentPositive += interval)
   } while (currentPositive < max)
 
-  return [...negative, 0, ...positive]
+  return [...negative.reverse(), 0, ...positive]
 }
 
 function getValueAxisLabelFromMin (min, max, interval) {

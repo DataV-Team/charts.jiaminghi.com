@@ -7,6 +7,13 @@ export const barConfig = {
   barCategoryGap: '20%',
   xAxisIndex: 0,
   yAxisIndex: 0,
+  backgroundBar: {
+    show: false,
+    width: 'auto',
+    style: {
+      fill: 'rgba(200, 200, 200, .4)'
+    }
+  },
   label: {
     show: false,
     position: 'top',
