@@ -5,13 +5,21 @@ export const pieConfig = {
   startAngle: -Math.PI / 2,
   roseType: false,
   roseIncrement: '15%',
-  label: {
+  insideLabel: {
     show: false,
-    position: 'outsides',
-    offset: [0, -10],
     formatter: null,
+    offset: [0, 0],
     style: {
-      fontSize: 10
+      fontSize: 10,
+      fill: '#fff'
+    }
+  },
+  outsideLable: {
+    show: true,
+    formatter: null,
+    offset: [0, 0],
+    style: {
+      fontSize: 10,
     }
   },
   pieStyle: {
@@ -19,6 +27,6 @@ export const pieConfig = {
     shadowBlur: 5
   },
   percentToFixed: 0,
-  animationCurve: 'easeOutCubic',
+  animationCurve: 'easeOutBack',
   animationFrame: 50
 }

@@ -81,7 +81,7 @@ export default {
               }
             ],
             radius: ['0%', '30%'],
-            roseType: true
+            // roseType: true
           }
         ]
       })

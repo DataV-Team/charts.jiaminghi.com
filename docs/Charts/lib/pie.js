@@ -1,6 +1,6 @@
 import { pieConfig } from '../config/pie'
 
-import { deepClone } from '@jiaminghi/c-render/lib/util'
+import { deepClone, getCircleRadianPoint } from '@jiaminghi/c-render/lib/util'
 
 import { deepMerge, mulAdd } from '../util'
 
@@ -26,6 +26,10 @@ export function pie (chart, option = {}) {
   pies = calcPiesPercent(pies)
 
   pies = calcPiesAngle(pies, chart)
+
+  pies = calcPiesInsideLabelPos(pies)
+
+  pies = calcPiesOutSideLabelPos(pies)
 
   delRedundancePies(pies, chart)
 
@@ -195,6 +199,37 @@ function getDataAngle (data, i) {
   return [fullAngle * startPercent / 100, fullAngle * percentSum / 100]
 }
 
+function calcPiesInsideLabelPos (pies) {
+  pies.forEach(pieItem => {
+    const { data } = pieItem
+
+    data.forEach(item => {
+      item.insideLabelPos = getPieInsideLabelPos(pieItem, item)
+    })
+  })
+
+  return pies
+}
+
+function getPieInsideLabelPos (pieItem, dataItem) {
+  const { center } = pieItem
+
+  const { startAngle, endAngle, radius: [ir, or] } = dataItem
+
+  const radius = (ir + or) / 2
+  const angle = (startAngle + endAngle) / 2
+
+  return getCircleRadianPoint(...center, radius, angle)
+}
+
+function calcPiesOutSideLabelPos (pies) {
+  pies.forEach(pie => {
+    const { data, center } = pie
+  })
+
+  return pies
+}
+
 function delRedundancePies (pies, chart) {
   const { pie, render } = chart
 
@@ -222,32 +257,60 @@ function updatePies (pies, chart) {
   })
 }
 
-function changePies () {
+function changePies (cache, pieItem, render) {
+  const { animationCurve, animationFrame, data, pieStyle } = pieItem
 
+  balancePieNum(cache, pieItem, render)
+
+  cache.forEach((graph, i) => {
+    graph.animationCurve = animationCurve
+    graph.animationFrame = animationFrame
+    graph.animationDelay = i * 60
+    graph.animation('shape', getPieShape(pieItem, data[i]), true)
+    graph.animation('style', mergePieColor(pieStyle, data[i]), true)
+  })
+}
+
+function balancePieNum (cache, pieItem, render) {
+  const { pieStyle, data } = pieItem
+
+  const cacheGraphNum = cache.length
+  const pieNum = pieItem.data.length
+
+  if (pieNum > cacheGraphNum) {
+    const lastCachePie = cache.slice(-1)[0]
+    const needAddPies = new Array(pieNum - cacheGraphNum).fill(0)
+      .map(foo => render.add({
+        name: 'pie',
+        animationCurve: lastCachePie.animationCurve,
+        animationFrame: lastCachePie.animationFrame,
+        shape: deepClone(lastCachePie.shape, true),
+        style: mergePieColor(pieStyle, data[cacheGraphNum - 1])
+      }))
+
+    cache.push(...needAddPies)
+  } else if (pieNum < cacheGraphNum) {
+    const needDelCache = cache.splice(pieNum)
+
+    needDelCache.forEach(g => render.delGraph(g))
+  }
 }
 
 function addNewPies (pieCache, pieItem, i, render) {
-  const { show, pieStyle, data, center } = pieItem
+  const { pieStyle, data } = pieItem
 
   const { animationCurve, animationFrame } = pieItem
 
   const graphs = data.map((item, i) => {
-    const { radius, startAngle, endAngle } = item
-
+    const shape = getPieShape(pieItem, item)
     const style = mergePieColor(pieStyle, item)
 
     return render.add({
       name: 'pie',
-      visible: show,
       animationCurve,
-      shape: {
-        startAngle,
-        endAngle,
-        ir: radius[0],
-        or: radius[0],
-        rx: center[0],
-        ry: center[1]
-      },
+      animationFrame,
+      animationDelay: i * 60,
+      shape,
       style
     })
   })
@@ -257,6 +320,21 @@ function addNewPies (pieCache, pieItem, i, render) {
   })
 
   pieCache[i] = graphs
+}
+
+function getPieShape (pieItem, dataItem) {
+  const { center } = pieItem
+
+  const { radius, startAngle, endAngle } = dataItem
+
+  return {
+    startAngle,
+    endAngle,
+    ir: radius[0],
+    or: radius[0],
+    rx: center[0],
+    ry: center[1]
+  }
 }
 
 function mergePieColor (pieStyle, dataItem) {
