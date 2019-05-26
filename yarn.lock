@@ -728,10 +728,10 @@
   resolved "https://registry.yarnpkg.com/@jiaminghi/bezier-curve/-/bezier-curve-0.0.4.tgz#2cc24cc47de00a670b18b83595d93f264cfc48c8"
   integrity sha512-Q38f9OqOclvsZRCoJ6r32GicshbEjZtpfS0QzWwZbRNK0CDZNkdsUAeSOBGBrd9eOTw+xSu1g24uH6sAB9dH3g==
 
-"@jiaminghi/c-render@^0.2.3":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@jiaminghi/c-render/-/c-render-0.2.7.tgz#da47606cf6aa2d06b75f7d788e8d15fef7d1cbd8"
-  integrity sha512-9TS8cExSh/dPwXOirTiOW9utAKi5l315ZsaWSi4N2Ff3KohJ96L+WaPq0noneEeqUAC1gt+tXNQGVqDsa9ia5g==
+"@jiaminghi/c-render@^0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@jiaminghi/c-render/-/c-render-0.2.9.tgz#43bdd8ccc28557105f999b4561b2d71edb826351"
+  integrity sha512-cp5IujbMxiF0TXTof7BFp4f/5dOrDwExUiZlCl3goNx6SpBJYhl9o/gOwmUHIqt7AujbZ++6kXzrfM3yAuMuyA==
   dependencies:
     "@jiaminghi/bezier-curve" "^0.0.4"
     "@jiaminghi/color" "^0.0.2"
@@ -751,6 +751,11 @@
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/@jiaminghi/transition/-/transition-1.1.5.tgz#5c7c89db56b851f26dfbfc20c72cd08eff1fcab1"
   integrity sha512-JwOgBQy2Zw3LACa2IbgICdHCv9GkVfN2s3Nv6eNFr6FBi1g3YSFLWophLIwgvb13t4QRqdA8SgHIZ0bKKhPMmA==
+
+"@jiaminghi/transition@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@jiaminghi/transition/-/transition-1.1.6.tgz#ea50db2cd6b7389e9bd0dee94a96650f29092a6c"
+  integrity sha512-bWtFK2obbKWoDp5WY/xluQJvwT2GJ3PsjNY6Z7p8DzAK13OdgUmFTEtMCupqKzjiFaFa7XJ2W7PQSEemR8bTSQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"

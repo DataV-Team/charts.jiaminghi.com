@@ -7,26 +7,30 @@ export const pieConfig = {
   roseIncrement: '15%',
   insideLabel: {
     show: false,
-    formatter: null,
-    offset: [0, 0],
+    formatter: '{percent}%',
     style: {
       fontSize: 10,
       fill: '#fff'
     }
   },
-  outsideLable: {
+  outsideLabel: {
     show: true,
-    formatter: null,
-    offset: [0, 0],
+    formatter: '{name}',
     style: {
-      fontSize: 10,
-    }
+      fontSize: 11,
+    },
+    labelLineStyle: {
+    },
+    labelLineBendGap: '20%',
+    labelLineEndLength: 50
   },
   pieStyle: {
     shadowColor: '#888',
     shadowBlur: 5
   },
   percentToFixed: 0,
-  animationCurve: 'easeOutBack',
-  animationFrame: 50
+  animationDelayGap: 60,
+  animationCurve: 'easeOutCubic',
+  startAnimationCurve: 'easeOutBack',
+  animationFrame: 50,
 }

@@ -58,3 +58,13 @@ export function getLinearGradientColor (ctx, begin, end, color) {
 
   return linearGradientColor
 }
+
+export function getPolylineLength (points) {
+  const lineSegments = new Array(points.length - 1)
+    .fill(0)
+    .map((foo, i) => [points[i], points[i + 1]])
+
+  const lengths = lineSegments.map(item => getTwoPointDistance(...item))
+
+  return mulAdd(lengths)
+}

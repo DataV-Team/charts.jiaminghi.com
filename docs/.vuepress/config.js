@@ -53,7 +53,8 @@ module.exports = {
           '/example/': [
             '',
             'line',
-            'bar'
+            'bar',
+            'pie'
           ]
         }
       },

@@ -33,14 +33,14 @@ const pie = {
     rx = parseInt(rx) + 0.5
     ry = parseInt(ry) + 0.5
 
-    ctx.arc(rx, ry, ir, startAngle, endAngle, !clockWise)
+    ctx.arc(rx, ry, ir > 0 ? ir : 0, startAngle, endAngle, !clockWise)
 
     const connectPoint1 = getCircleRadianPoint(rx, ry, or, endAngle).map(p => parseInt(p) + 0.5)
     const connectPoint2 = getCircleRadianPoint(rx, ry, ir, startAngle).map(p => parseInt(p) + 0.5)
 
     ctx.lineTo(...connectPoint1)
 
-    ctx.arc(rx, ry, or, endAngle, startAngle, clockWise)
+    ctx.arc(rx, ry, or > 0 ? or : 0, endAngle, startAngle, clockWise)
 
     ctx.lineTo(...connectPoint2)
 

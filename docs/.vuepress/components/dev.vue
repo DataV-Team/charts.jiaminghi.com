@@ -48,10 +48,6 @@ export default {
               {
                 name: 'itemD',
                 value: 44
-              },
-              {
-                name: 'itemE',
-                value: 32
               }
             ],
             radius: ['40%', '50%']
@@ -74,22 +70,89 @@ export default {
               {
                 name: 'itemD',
                 value: 44
-              },
-              {
-                name: 'itemE',
-                value: 32
               }
             ],
             radius: ['0%', '30%'],
+            insideLabel: {
+              show: true
+            },
+            outsideLabel: {
+              show: false
+            }
             // roseType: true
           }
         ]
       })
 
-      // setTimeout(() => {
-      //   myChart.setOption({
-      //   })
-      // }, 2000)
+      setTimeout(() => {
+        myChart.setOption({
+          title: {
+            text: 'This is a Chart'
+          },
+          series: [
+            {
+              type: 'pie',
+              data: [
+                {
+                  name: 'itemA',
+                  value: 93
+                },
+                {
+                  name: 'itemB',
+                  value: 32
+                },
+                {
+                  name: 'itemC',
+                  value: 65
+                },
+                {
+                  name: 'itemD',
+                  value: 44
+                },
+                {
+                  name: 'itemE',
+                  value: 32
+                }
+              ],
+              radius: ['40%', '50%']
+            },
+            {
+              show: false,
+              type: 'pie',
+              data: [
+                {
+                  name: 'itemA',
+                  value: 93
+                },
+                {
+                  name: 'itemB',
+                  value: 32
+                },
+                {
+                  name: 'itemC',
+                  value: 65
+                },
+                {
+                  name: 'itemD',
+                  value: 44
+                },
+                {
+                  name: 'itemE',
+                  value: 32
+                }
+              ],
+              radius: ['0%', '30%'],
+              insideLabel: {
+                show: true
+              },
+              outsideLabel: {
+                show: false
+              },
+              roseType: true
+            }
+          ]
+        })
+      }, 2000)
 
       console.warn(myChart)
     }

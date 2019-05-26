@@ -6,7 +6,7 @@ import bezierCurve from '@jiaminghi/bezier-curve'
 
 import { getColorFromRgbValue, getRgbaValue } from '@jiaminghi/color'
 
-import { deepMerge, mergeSameStackData, getTwoPointDistance, mulAdd, getLinearGradientColor } from '../util'
+import { deepMerge, mergeSameStackData, getPolylineLength, getLinearGradientColor } from '../util'
 
 const { polylineToBezierCurve, getBezierCurveLength } = bezierCurve
 
@@ -394,16 +394,6 @@ function getLineLength (points, smooth = false) {
   const curve = polylineToBezierCurve(points)
   
   return getBezierCurveLength(curve)
-}
-
-function getPolylineLength (points) {
-  const lineSegments = new Array(points.length - 1)
-    .fill(0)
-    .map((foo, i) => [points[i], points[i + 1]])
-
-  const lengths = lineSegments.map(item => getTwoPointDistance(...item))
-
-  return mulAdd(lengths)
 }
 
 function updatePoints (lines, chart) {
