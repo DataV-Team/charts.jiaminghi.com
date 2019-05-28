@@ -33,6 +33,8 @@ export function axis (chart, option = {}) {
 
   allAxis = calcSplitLinePosition(allAxis, chart)
 
+  delRedundanceAxisGraph(allAxis, chart)
+
   updateAxisLine(allAxis, chart)
 
   updateAxisTick(allAxis, chart)
@@ -96,6 +98,67 @@ function mergeDefaultAxisConfig (allAxis) {
   yAxis = yAxis.map(axis => deepMerge(deepClone(yAxisConfig), axis))
 
   return [...xAxis, ...yAxis]
+}
+
+function delRedundanceAxisGraph (allAxis, chart) {
+  const { axisLabel, axisLine, axisName, axisTick, splitLine, render } = chart
+
+  const axis = allAxis.map(({ axis, index }) => axis + index)
+
+  const needDelAxisLabels = axisLabel.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
+
+  if (needDelAxisLabels.length) {
+    needDelAxisLabels.forEach(item => {
+      item.graphs.forEach(g => render.delGraph(g))
+      item.graphs = null
+    })
+
+    chart.axisLabel = axisLabel.filter(item => item.graphs)
+  }
+
+  const needDelAxisLines = axisLine.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
+
+  if (needDelAxisLines.length) {
+    needDelAxisLines.forEach(g => {
+      render.delGraph(g)
+      g.needDel = true
+    })
+
+    chart.axisLine = axisLine.filter(({ needDel }) => !needDel)
+  }
+
+  const needDelAxisNames = axisName.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
+
+  if (needDelAxisNames.length) {
+    needDelAxisNames.forEach(g => {
+      render.delGraph(g)
+      g.needDel = true
+    })
+
+    chart.axisName = axisName.filter(({ needDel }) => !needDel)
+  }
+
+  const needDelAxisTicks = axisTick.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
+
+  if (needDelAxisTicks.length) {
+    needDelAxisTicks.forEach(item => {
+      item.graphs.forEach(g => render.delGraph(g))
+      item.graphs = null
+    })
+
+    chart.axisTick = axisTick.filter(item => item.graphs)
+  }
+
+  const needDelSplitLine = splitLine.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
+
+  if (needDelSplitLine.length) {
+    needDelSplitLine.forEach(item => {
+      item.graphs.forEach(g => render.delGraph(g))
+      item.graphs = null
+    })
+
+    chart.splitLine = splitLine.filter(item => item.graphs)
+  }
 }
 
 function mergeDefaultBoundaryGap (allAxis) {
@@ -706,12 +769,13 @@ function changeAxisLabel (labels, axisItem, chart) {
   }
 
   graphs.forEach((labelItem, i) => {
+    const shapePosition = getAxisLabelRealPosition(tickPosition[i], position)
     labelItem.visible = show
     labelItem.animationCurve = animationCurve
     labelItem.animationFrame = animationFrame
     labelItem.shape.content = label[i].toString()
-    labelItem.animation('shape', { position: getAxisLabelRealPosition(tickPosition[i], position) }, true)
-    labelItem.animation('style', style, true)
+    labelItem.animation('shape', { position: shapePosition }, true)
+    labelItem.animation('style', { ...style, graphCenter: shapePosition }, true)
   })
 }
 

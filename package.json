@@ -8,7 +8,7 @@
     "dev": "vuepress dev docs"
   },
   "dependencies": {
-    "@jiaminghi/c-render": "^0.2.9",
+    "@jiaminghi/c-render": "^0.2.10",
     "@jiaminghi/color": "^0.0.3",
     "@jiaminghi/transition": "^1.1.6",
     "less": "^3.9.0",

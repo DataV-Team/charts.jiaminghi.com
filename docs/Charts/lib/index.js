@@ -11,3 +11,7 @@ export { line } from './line'
 export { bar } from './bar'
 
 export { pie } from './pie'
+
+export { radarAxis } from './radarAxis'
+
+export { radar } from './radar'

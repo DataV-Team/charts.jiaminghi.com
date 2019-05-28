@@ -728,10 +728,10 @@
   resolved "https://registry.yarnpkg.com/@jiaminghi/bezier-curve/-/bezier-curve-0.0.4.tgz#2cc24cc47de00a670b18b83595d93f264cfc48c8"
   integrity sha512-Q38f9OqOclvsZRCoJ6r32GicshbEjZtpfS0QzWwZbRNK0CDZNkdsUAeSOBGBrd9eOTw+xSu1g24uH6sAB9dH3g==
 
-"@jiaminghi/c-render@^0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@jiaminghi/c-render/-/c-render-0.2.9.tgz#43bdd8ccc28557105f999b4561b2d71edb826351"
-  integrity sha512-cp5IujbMxiF0TXTof7BFp4f/5dOrDwExUiZlCl3goNx6SpBJYhl9o/gOwmUHIqt7AujbZ++6kXzrfM3yAuMuyA==
+"@jiaminghi/c-render@^0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@jiaminghi/c-render/-/c-render-0.2.10.tgz#916a72e17789be7307f0f7cb6a80a204c615d9cf"
+  integrity sha512-h/bIJsvnb8XN1n7U8GyPiGVnSBaJX6/7ZO4mM5NXDFsPNQfa5yhSpY2qwRkKq2UWHwrjVEQWllJ+18ddhVYo4w==
   dependencies:
     "@jiaminghi/bezier-curve" "^0.0.4"
     "@jiaminghi/color" "^0.0.2"

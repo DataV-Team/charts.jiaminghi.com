@@ -560,6 +560,7 @@ function changeNormalBar (cache, barItem, render) {
 
     const gradientPos = getGradientPos(barItem, i)
 
+    mergeGradientColorNum(graph, style)
     graph.animationCurve = animationCurve
     graph.animationFrame = animationFrame
     graph.animation('shape', shape, true)
@@ -568,6 +569,20 @@ function changeNormalBar (cache, barItem, render) {
       gradientPos
     }, true)
   })
+}
+
+function mergeGradientColorNum (graph, style) {
+  const gradientColorNum = style.gradient.length
+  const graphGradientColorNum = graph.style.gradient.length
+
+  if (gradientColorNum > graphGradientColorNum) {
+    const needAddGradientColor = new Array(gradientColorNum - graphGradientColorNum).fill(0)
+      .map(foo => [0, 0, 0, 0])
+
+    graph.style.gradient.push(...needAddGradientColor)
+  } else {
+    graph.style.gradient.splice(gradientColorNum)
+  }
 }
 
 function balanceBarNum (cache, barItem, render) {

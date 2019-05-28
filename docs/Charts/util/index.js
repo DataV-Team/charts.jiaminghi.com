@@ -68,3 +68,11 @@ export function getPolylineLength (points) {
 
   return mulAdd(lengths)
 }
+
+export function getPointToLineDistance (point, linePointOne, linePointTwo) {
+  const a = getTwoPointDistance(point, linePointOne)
+  const b = getTwoPointDistance(point, linePointTwo)
+  const c = getTwoPointDistance(linePointOne, linePointTwo)
+
+  return 0.5 * Math.sqrt((a + b + c) * (a + b - c) * (a + c - b) * (b + c - a)) / c
+}

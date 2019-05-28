@@ -7,7 +7,7 @@ import { deepMerge, mulAdd, getPolylineLength } from '../util'
 export function pie (chart, option = {}) {
   const { series } = option
 
-  if (!series) removePies(chart)
+  if (!series) return removePies(chart)
 
   initChartPie(chart)
 

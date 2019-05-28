@@ -29,130 +29,44 @@ export default {
         title: {
           text: 'This is a Chart'
         },
+        radar: {
+          indicator: [
+            { name: 'item1', max: 500 },
+            { name: 'item2', max: 500 },
+            { name: 'item3', max: 500 },
+            { name: 'item4', max: 500 },
+            { name: 'item5', max: 500 },
+          ]
+        },
         series: [
           {
-            type: 'pie',
-            data: [
-              {
-                name: 'itemA',
-                value: 93
-              },
-              {
-                name: 'itemB',
-                value: 32
-              },
-              {
-                name: 'itemC',
-                value: 65
-              },
-              {
-                name: 'itemD',
-                value: 44
-              }
-            ],
-            radius: ['40%', '50%']
-          },
-          {
-            type: 'pie',
-            data: [
-              {
-                name: 'itemA',
-                value: 93
-              },
-              {
-                name: 'itemB',
-                value: 32
-              },
-              {
-                name: 'itemC',
-                value: 65
-              },
-              {
-                name: 'itemD',
-                value: 44
-              }
-            ],
-            radius: ['0%', '30%'],
-            insideLabel: {
-              show: true
-            },
-            outsideLabel: {
-              show: false
-            }
-            // roseType: true
+            type: 'radar',
+            data: [350, 200, 130, 450, 322]
           }
         ]
       })
 
-      setTimeout(() => {
-        myChart.setOption({
-          title: {
-            text: 'This is a Chart'
-          },
-          series: [
-            {
-              type: 'pie',
-              data: [
-                {
-                  name: 'itemA',
-                  value: 93
-                },
-                {
-                  name: 'itemB',
-                  value: 32
-                },
-                {
-                  name: 'itemC',
-                  value: 65
-                },
-                {
-                  name: 'itemD',
-                  value: 44
-                },
-                {
-                  name: 'itemE',
-                  value: 32
-                }
-              ],
-              radius: ['40%', '50%']
-            },
-            {
-              show: false,
-              type: 'pie',
-              data: [
-                {
-                  name: 'itemA',
-                  value: 93
-                },
-                {
-                  name: 'itemB',
-                  value: 32
-                },
-                {
-                  name: 'itemC',
-                  value: 65
-                },
-                {
-                  name: 'itemD',
-                  value: 44
-                },
-                {
-                  name: 'itemE',
-                  value: 32
-                }
-              ],
-              radius: ['0%', '30%'],
-              insideLabel: {
-                show: true
-              },
-              outsideLabel: {
-                show: false
-              },
-              roseType: true
-            }
-          ]
-        })
-      }, 2000)
+      // setTimeout(() => {
+      //   myChart.setOption({
+      //     title: {
+      //       text: 'This is a Chart'
+      //     },
+      //     radar: {
+      //       indicator: [
+      //         { name: 'item1', max: 500 },
+      //         { name: 'item2', max: 500 },
+      //         { name: 'item3', max: 500 },
+      //         { name: 'item4', max: 500 },
+      //         { name: 'item4', max: 500 },
+      //         { name: 'item4', max: 500 },
+      //       ],
+      //       splitNum: 4
+      //     },
+      //     series: [
+            
+      //     ]
+      //   })
+      // }, 2000)
 
       console.warn(myChart)
     }

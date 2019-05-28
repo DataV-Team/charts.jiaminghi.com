@@ -34,7 +34,8 @@ const xAxisConfig = {
     formatter: null,
     style: {
       fill: '#333',
-      fontSize: 10
+      fontSize: 10,
+      rotate: 0
     }
   },
   splitLine: {
@@ -84,7 +85,8 @@ const yAxisConfig = {
     formatter: null,
     style: {
       fill: '#333',
-      fontSize: 10
+      fontSize: 10,
+      rotate: 0
     }
   },
   splitLine: {

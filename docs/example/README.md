@@ -20,7 +20,7 @@
 
 ## 线柱混用
 
-<demo :option="example3" />
+<demo :option="example3" :debug="true" />
 
 <fold-box>
 <<< @/docs/example/exampleData/example/example3.js

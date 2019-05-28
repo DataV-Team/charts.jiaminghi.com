@@ -4,9 +4,9 @@ import CRender from '@jiaminghi/c-render'
 
 import { deepClone } from '@jiaminghi/c-render/lib/util'
 
-import { mergeColor, title, grid, axis, pie } from '../lib'
+import { mergeColor, title, grid, axis, radarAxis } from '../lib'
 
-import { line, bar } from '../lib'
+import { pie, line, bar, radar } from '../lib'
 
 export default class Charts {
   constructor (dom) {
@@ -50,6 +50,8 @@ Charts.prototype.setOption = function (option) {
 
   axis(this, option)
 
+  radarAxis(this, option)
+
   title(this, option)
 
   bar(this, option)
@@ -57,6 +59,8 @@ Charts.prototype.setOption = function (option) {
   line(this, option)
 
   pie(this, option)
+
+  radar(this, option)
 
   this.option = option
 
