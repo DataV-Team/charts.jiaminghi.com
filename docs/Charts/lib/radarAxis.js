@@ -37,10 +37,10 @@ export function radarAxis (chart, option = {}) {
 function removeRadarAxis (chart) {
   const { radarAxisLine, radarAxisSplitLine, radarAxisSplitArea, radarAxisName, render  } = chart
 
-  if  (radarAxisLine.length) radarAxisLine.forEach(g => render.delGraph(g))
-  if  (radarAxisSplitLine.length) radarAxisSplitLine.forEach(g => render.delGraph(g))
-  if  (radarAxisSplitArea.length) radarAxisSplitArea.forEach(g => render.delGraph(g))
-  if  (radarAxisName.length) radarAxisName.forEach(g => render.delGraph(g))
+  if  (radarAxisLine) radarAxisLine.forEach(g => render.delGraph(g))
+  if  (radarAxisSplitLine) radarAxisSplitLine.forEach(g => render.delGraph(g))
+  if  (radarAxisSplitArea) radarAxisSplitArea.forEach(g => render.delGraph(g))
+  if  (radarAxisName) radarAxisName.forEach(g => render.delGraph(g))
 
   chart.radarAxisLine = null
   chart.radarAxisSplitLine = null

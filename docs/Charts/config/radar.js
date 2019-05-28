@@ -1,26 +1,19 @@
 export const radarConfig = {
   show: true,
-  line: {
-    show: true,
-    style: {
-      lineWidth: 1
-    }
+  radarStyle: {
+    lineWidth: 1
   },
   point: {
     show: true,
+    radius: 2,
     style: {
-      radius: 2
-    }
-  },
-  fill: {
-    show: true,
-    style: {
-      opacity: 0.5
+      fill: '#fff'
     }
   },
   label: {
-    show: false,
-    offset: [0, -10],
+    show: true,
+    offset: [0, 0],
+    labelGap: 5,
     formatter: null,
     style: {
       fontSize: 10

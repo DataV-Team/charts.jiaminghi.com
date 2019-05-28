@@ -246,7 +246,7 @@ function mergePointsNum (graph, points) {
 
     graphPoints.push(...newAddPoints)
   } else if (pointsNum < graphPointsNum) {
-    graphPoints.splice(linePointsNum)
+    graphPoints.splice(pointsNum)
   }
 }
 
