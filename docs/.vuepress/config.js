@@ -1,15 +1,10 @@
-// const dev = 'pc'
-const dev = 'mac'
-
-const host = dev === 'pc' ? '192.168.10.150' : 'localhost'
-
 module.exports = {
   title: 'Charts',
   description: 'Just playing around',
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }]
   ],
-  host,
+  host: 'localhost',
   port: 5003,
   locales: {
     '/': {
@@ -20,7 +15,7 @@ module.exports = {
     '/EN/': {
       lang: 'en-US',
       title: 'Charts',
-      description: 'Lightweight charting.'
+      description: 'Lightweight charting'
     }
   },
   themeConfig: {

@@ -57,8 +57,8 @@ export default {
               { name: 'item2', max: 500 },
               { name: 'item3', max: 500 },
               { name: 'item4', max: 500 },
-              { name: 'item4', max: 500 },
-              { name: 'item4', max: 500 },
+              // { name: 'item4', max: 500 },
+              // { name: 'item4', max: 500 },
             ],
             splitNum: 4
           },

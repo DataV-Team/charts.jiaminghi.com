@@ -41,7 +41,7 @@ function removeRadars (chart) {
 
   if (radar) radar.forEach(g => render.delGraph(g))
   if (radarPoint) radarPoint.forEach(item => item.forEach(g => render.delGraph(g)))
-  if (radarLabel) radarLine.forEach(item => item.forEach(g => render.delGraph(g)))
+  if (radarLabel) radarLabel.forEach(item => item.forEach(g => render.delGraph(g)))
 }
 
 function initChartRadar (chart) {
@@ -70,8 +70,8 @@ function calcRadarPosition (radars, chart) {
 
     radarItem.dataRadius = []
 
-    radarItem.radarPosition = data.map((v, i) => {
-      let { max, min } = indicator[i]
+    radarItem.radarPosition = indicator.map(({ max, min }, i) => {
+      let v = data[i]
 
       if (typeof max !== 'number') max = v
       if (typeof min !== 'number') min = 0
