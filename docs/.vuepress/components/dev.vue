@@ -17,13 +17,15 @@ import CRender from "@jiaminghi/c-render"
 export default {
   name: "Dev",
   data () {
-    return {}
+    return {
+      myChart: null
+    }
   },
   methods: {
     init () {
       const { $refs } = this;
 
-      const myChart = new Charts($refs["chart"])
+      const myChart = this.myChart = new Charts($refs["chart"])
 
       myChart.setOption({
         title: {
@@ -69,8 +71,12 @@ export default {
   },
   async mounted () {
     this.init()
+
+    window.addEventListener('resize', e => {
+      this.myChart.resize()
+    })
   }
-};
+}
 </script>
 
 <style lang="less">
