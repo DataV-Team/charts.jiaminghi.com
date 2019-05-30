@@ -130,9 +130,11 @@ function calcRosePiesRadius (pies, chart) {
   const rosePie = pies.filter(({ roseType }) => roseType)
 
   rosePie.forEach(pie => {
-    let { radius, data } = pie
+    let { radius, data, roseSort } = pie
 
     const roseIncrement = getRoseIncrement(pie)
+
+    const dataCopy = [...data]
 
     data = sortData(data)
 
@@ -140,7 +142,11 @@ function calcRosePiesRadius (pies, chart) {
       item.radius[1] = radius[1] - roseIncrement * i
     })
 
-    data.reverse()
+    if (roseSort) {
+      data.reverse()
+    } else {
+      pie.data = dataCopy
+    }
 
     pie.roseIncrement = roseIncrement
   })
@@ -160,6 +166,17 @@ function getRoseIncrement (pie) {
   const { radius, roseIncrement } = pie
 
   if (typeof roseIncrement === 'number') return roseIncrement
+
+  if (roseIncrement === 'auto') {
+    const { data } = pie
+
+    const allRadius = data.reduce((all, { radius }) => [...all, ...radius], [])
+
+    const minRadius = Math.min(...allRadius)
+    const maxRadius = Math.max(...allRadius)
+
+    return (maxRadius - minRadius)  * 0.6 / (data.length - 1)
+  }
 
   return parseInt(roseIncrement) / 100 * radius[1]
 }
@@ -568,6 +585,7 @@ function getPieInsideLabelShape (pieItem, i) {
   if (formatterType === 'string') {
     label = formatter.replace('{name}', dataItem.name)
     label = label.replace('{percent}', dataItem.percent)
+    label = label.replace('{value}', dataItem.value)
   }
 
   if (formatterType === 'function') {
@@ -756,7 +774,7 @@ function getPieOutsideLabelShape (pieItem, i) {
 
   const { formatter } = outsideLabel
 
-  const { labelLine, name, percent } = data[i]
+  const { labelLine, name, percent, value } = data[i]
 
   const formatterType = typeof formatter
 
@@ -765,6 +783,7 @@ function getPieOutsideLabelShape (pieItem, i) {
   if (formatterType === 'string') {
     label = formatter.replace('{name}', name)
     label = label.replace('{percent}', percent)
+    label = label.replace('{value}', value)
   }
 
   if (formatterType === 'function') {
@@ -773,7 +792,7 @@ function getPieOutsideLabelShape (pieItem, i) {
 
   return {
     content: label,
-    position: labelLine[2]
+    position: labelLine[2],
   }
 }
 

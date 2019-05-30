@@ -6,7 +6,7 @@ import { deepClone } from '@jiaminghi/c-render/lib/util'
 
 import { mergeColor, title, grid, axis, radarAxis } from '../lib'
 
-import { pie, line, bar, radar } from '../lib'
+import { pie, line, bar, radar, gauge } from '../lib'
 
 export default class Charts {
   constructor (dom) {
@@ -27,6 +27,7 @@ export default class Charts {
 
     const attribute = {
       container: dom,
+      canvas,
       render: new CRender(canvas),
       option: null
     }
@@ -42,29 +43,44 @@ Charts.prototype.setOption = function (option) {
     return false
   }
 
-  option = deepClone(option, true)
+  const optionCloned = deepClone(option, true)
 
-  mergeColor(this, option)
+  mergeColor(this, optionCloned)
 
-  grid(this, option)
+  grid(this, optionCloned)
 
-  axis(this, option)
+  axis(this, optionCloned)
 
-  radarAxis(this, option)
+  radarAxis(this, optionCloned)
 
-  title(this, option)
+  title(this, optionCloned)
 
-  bar(this, option)
+  bar(this, optionCloned)
 
-  line(this, option)
+  line(this, optionCloned)
 
-  pie(this, option)
+  pie(this, optionCloned)
 
-  radar(this, option)
+  radar(this, optionCloned)
+
+  gauge(this, optionCloned)
 
   this.option = option
 
   this.render.launchAnimation()
 
   // console.warn(this)
+}
+
+Charts.prototype.resize = function () {
+  const { container, canvas, render, option } = this
+
+  const { clientWidth, clientHeight } = container
+
+  canvas.setAttribute('width', clientWidth)
+  canvas.setAttribute('height', clientHeight)
+
+  render.area = [clientWidth, clientHeight]
+
+  this.setOption(option)
 }

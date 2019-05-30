@@ -37,7 +37,10 @@ function removeGauge (chart) {
 }
 
 function initChartGauge (chart) {
+  const { gaugeBackgroundArc, gaugeArc } = chart
 
+  if (!gaugeBackgroundArc) chart.gaugeBackgroundArc = null
+  if (!gaugeArc) chart.gaugeArc = []
 }
 
 function mergeGaugeDefaultConfig (gauges) {
@@ -63,7 +66,7 @@ function calcGaugesCenter (gauges, chart) {
     gaugeItem.center = center
   })
 
-  return pies
+  return gauges
 }
 
 function calcGaugesRadius (gauges, chart) {
@@ -93,7 +96,7 @@ function calcGaugesDataRadiusAndLineWidth (gauges, chart) {
     const { radius, data, arcLineWidth } = gaugeItem
 
     data.forEach(item => {
-      const { radius: arcRadius, lineWidth } = item
+      let { radius: arcRadius, lineWidth } = item
 
       if (!arcRadius) arcRadius = radius
 
@@ -135,7 +138,7 @@ function calcGaugesDataGradient (gauges, chart) {
     const { data } = gaugeItem
 
     data.forEach(item => {
-      const { color, gradient } = item
+      let { color, gradient } = item
 
       if (!gradient) gradient = color
 
