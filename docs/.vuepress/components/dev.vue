@@ -29,47 +29,40 @@ export default {
         title: {
           text: 'This is a Chart'
         },
-        radar: {
-          indicator: [
-            { name: 'item1', max: 500 },
-            { name: 'item2', max: 500 },
-            { name: 'item3', max: 500 },
-            { name: 'item4', max: 500 },
-            { name: 'item5', max: 500 },
-          ]
-        },
         series: [
           {
-            type: 'radar',
-            data: [350, 200, 130, 450, 322]
+            type: 'gauge',
+            data: [
+              { name: 'itemA', value: 55 }
+            ]
           }
         ]
       })
 
-      setTimeout(() => {
-        myChart.setOption({
-          title: {
-            text: 'This is a Chart'
-          },
-          radar: {
-            indicator: [
-              { name: 'item1', max: 500 },
-              { name: 'item2', max: 500 },
-              { name: 'item3', max: 500 },
-              { name: 'item4', max: 500 },
-              { name: 'item4', max: 500 },
-              { name: 'item4', max: 500 },
-            ],
-            splitNum: 4
-          },
-          series: [
-            {
-              type: 'radar',
-              data: [300, 250, 210, 299, 299, 299]
-            }
-          ]
-        })
-      }, 2000)
+      // setTimeout(() => {
+      //   myChart.setOption({
+      //     title: {
+      //       text: 'This is a Chart'
+      //     },
+      //     radar: {
+      //       indicator: [
+      //         { name: 'item1', max: 500 },
+      //         { name: 'item2', max: 500 },
+      //         { name: 'item3', max: 500 },
+      //         { name: 'item4', max: 500 },
+      //         { name: 'item4', max: 500 },
+      //         { name: 'item4', max: 500 },
+      //       ],
+      //       splitNum: 4
+      //     },
+      //     series: [
+      //       {
+      //         type: 'radar',
+      //         data: [300, 250, 210, 299, 299, 299]
+      //       }
+      //     ]
+      //   })
+      // }, 2000)
 
       console.warn(myChart)
     }
