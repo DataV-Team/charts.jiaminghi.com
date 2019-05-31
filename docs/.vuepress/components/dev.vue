@@ -35,36 +35,67 @@ export default {
           {
             type: 'gauge',
             data: [
-              { name: 'itemA', value: 55 }
-            ]
+              {
+                name: 'itemA',
+                value: 55,
+                gradient: ['#f51007', '#f97c03', '#fedc00']
+              },
+              // {
+              //   name: 'itemB',
+              //   value: 65,
+              //   radius: '20%',
+              //   gradient: ['#f51007', '#f97c03', '#fedc00']
+              // },
+              // {
+              //   name: 'itemC',
+              //   value: 75,
+              //   radius: '10%',
+              //   gradient: ['#f51007', '#f97c03', '#fedc00']
+              // },
+            ],
+            splitNum: 7,
+            axisLabel: {
+              data: ['差', '', '中', '', '良', '', '优']
+            }
           }
         ]
       })
 
-      // setTimeout(() => {
-      //   myChart.setOption({
-      //     title: {
-      //       text: 'This is a Chart'
-      //     },
-      //     radar: {
-      //       indicator: [
-      //         { name: 'item1', max: 500 },
-      //         { name: 'item2', max: 500 },
-      //         { name: 'item3', max: 500 },
-      //         { name: 'item4', max: 500 },
-      //         { name: 'item4', max: 500 },
-      //         { name: 'item4', max: 500 },
-      //       ],
-      //       splitNum: 4
-      //     },
-      //     series: [
-      //       {
-      //         type: 'radar',
-      //         data: [300, 250, 210, 299, 299, 299]
-      //       }
-      //     ]
-      //   })
-      // }, 2000)
+      setTimeout(() => {
+        myChart.setOption({
+        title: {
+          text: 'This is a Chart'
+        },
+        series: [
+          {
+            type: 'gauge',
+            data: [
+              {
+                name: 'itemA',
+                value: 65,
+                gradient: ['#f51007', '#f97c03', '#fedc00']
+              },
+              // {
+              //   name: 'itemB',
+              //   value: 65,
+              //   radius: '20%',
+              //   gradient: ['#f51007', '#f97c03', '#fedc00']
+              // },
+              // {
+              //   name: 'itemC',
+              //   value: 75,
+              //   radius: '10%',
+              //   gradient: ['#f51007', '#f97c03', '#fedc00']
+              // },
+            ],
+            splitNum: 7,
+            axisLabel: {
+              data: ['差', '', '中', '', '良', '', '优']
+            }
+          }
+        ]
+      })
+      }, 2000)
 
       console.warn(myChart)
     }
