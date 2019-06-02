@@ -43,7 +43,8 @@ module.exports = {
         ],
         sidebar: {
           '/config/': [
-            ''
+            '',
+            'gauge'
           ],
           '/example/': [
             '',

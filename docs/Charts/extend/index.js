@@ -61,7 +61,9 @@ const agArc = {
     ry: 0,
     r: 0,
     startAngle: 0,
-    endAngle: 0
+    endAngle: 0,
+    gradientStartAngle: null,
+    gradientEndAngle: null
   },
 
   validator ({ shape }) {
@@ -87,9 +89,12 @@ const agArc = {
 
     const gradientArcNum = gradient.length - 1
 
-    const { startAngle, endAngle, r, rx, ry } = shape
+    let { gradientStartAngle, gradientEndAngle, startAngle, endAngle, r, rx, ry } = shape
 
-    const angleGap = (endAngle - startAngle) / gradientArcNum
+    if (gradientStartAngle === null) gradientStartAngle = startAngle
+    if (gradientEndAngle === null) gradientEndAngle = endAngle
+
+    const angleGap = (gradientEndAngle - gradientStartAngle) / gradientArcNum
 
     for (let i = 0; i < gradientArcNum; i++) {
       ctx.beginPath()
@@ -99,11 +104,24 @@ const agArc = {
 
       const color = getLinearGradientColor(ctx, startPoint, endPoint, [gradient[i], gradient[i + 1]])
 
-      ctx.arc(rx, ry, r, startAngle + angleGap * i, startAngle + angleGap * (i + 1))
+      const arcStartAngle = startAngle + angleGap * i
+      let arcEndAngle = startAngle + angleGap * (i + 1)
+
+      let doBreak = false
+
+      if (arcEndAngle > endAngle) {
+        arcEndAngle = endAngle
+
+        doBreak = true
+      }
+
+      ctx.arc(rx, ry, r, arcStartAngle, arcEndAngle)
 
       ctx.strokeStyle = color
 
       ctx.stroke()
+
+      if (doBreak) break
     }
   }
 }

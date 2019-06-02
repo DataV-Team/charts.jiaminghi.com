@@ -723,36 +723,31 @@
     lodash "^4.17.5"
     to-fast-properties "^2.0.0"
 
-"@jiaminghi/bezier-curve@^0.0.4":
+"@jiaminghi/bezier-curve@*":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@jiaminghi/bezier-curve/-/bezier-curve-0.0.4.tgz#2cc24cc47de00a670b18b83595d93f264cfc48c8"
   integrity sha512-Q38f9OqOclvsZRCoJ6r32GicshbEjZtpfS0QzWwZbRNK0CDZNkdsUAeSOBGBrd9eOTw+xSu1g24uH6sAB9dH3g==
 
-"@jiaminghi/c-render@^0.2.10":
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/@jiaminghi/c-render/-/c-render-0.2.10.tgz#916a72e17789be7307f0f7cb6a80a204c615d9cf"
-  integrity sha512-h/bIJsvnb8XN1n7U8GyPiGVnSBaJX6/7ZO4mM5NXDFsPNQfa5yhSpY2qwRkKq2UWHwrjVEQWllJ+18ddhVYo4w==
+"@jiaminghi/c-render@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@jiaminghi/c-render/-/c-render-0.3.0.tgz#e102c034849f078a91912564055fe249dd1e2790"
+  integrity sha512-AKdtDoXxAZpI2XQAT4rkjras096F0+9t2PNb/Jvg23VvsRWhe9yJAU+KD2w6A1bk7USBTZx2Dma+AEmzqfAPbQ==
   dependencies:
-    "@jiaminghi/bezier-curve" "^0.0.4"
-    "@jiaminghi/color" "^0.0.2"
-    "@jiaminghi/transition" "^1.1.2"
+    "@jiaminghi/bezier-curve" "*"
+    "@jiaminghi/color" "*"
+    "@jiaminghi/transition" "*"
 
-"@jiaminghi/color@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@jiaminghi/color/-/color-0.0.2.tgz#8c86ae9078659fed20daaf05be23b63c098dbd24"
-  integrity sha512-04nBP+a7KjwuyIvJzqIWPDz4+5P9heY5IRZjFGJbYfVE4wcg7DmyhlXiLsx7g9UDkYxaFZLZ0w3zSHwsYPqPJg==
+"@jiaminghi/color@*":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@jiaminghi/color/-/color-0.0.4.tgz#bad2fbdb284c44e7ebac5ca247eb1f4b0e791013"
+  integrity sha512-13gfWzgHVPyyNIX50oYlNcBq1VNfFrK5j6XmxxxwnMCOUQAJpLjJPb/34N5EfngSn3Fn71fsptF/eQSas1l/Kw==
 
 "@jiaminghi/color@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@jiaminghi/color/-/color-0.0.3.tgz#5931209c6341df99b610d9de98670c247f20dbbd"
   integrity sha512-Ya8lHZwB6YTLGBKVpjHv2OubwrkMYrHr+vqap+2L5As/CYY5NHfPBCooJvl0J5i3qmV76gGODgdKkGMqiTLScw==
 
-"@jiaminghi/transition@^1.1.2":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@jiaminghi/transition/-/transition-1.1.5.tgz#5c7c89db56b851f26dfbfc20c72cd08eff1fcab1"
-  integrity sha512-JwOgBQy2Zw3LACa2IbgICdHCv9GkVfN2s3Nv6eNFr6FBi1g3YSFLWophLIwgvb13t4QRqdA8SgHIZ0bKKhPMmA==
-
-"@jiaminghi/transition@^1.1.6":
+"@jiaminghi/transition@*", "@jiaminghi/transition@^1.1.6":
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/@jiaminghi/transition/-/transition-1.1.6.tgz#ea50db2cd6b7389e9bd0dee94a96650f29092a6c"
   integrity sha512-bWtFK2obbKWoDp5WY/xluQJvwT2GJ3PsjNY6Z7p8DzAK13OdgUmFTEtMCupqKzjiFaFa7XJ2W7PQSEemR8bTSQ==

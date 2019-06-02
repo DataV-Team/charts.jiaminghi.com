@@ -56,6 +56,14 @@ export default {
             splitNum: 7,
             axisLabel: {
               data: ['差', '', '中', '', '良', '', '优']
+            },
+            details: {
+              show: true,
+              formatter: '{value}%',
+              offset: [0, 40],
+              style: {
+                fontSize: 25
+              }
             }
           }
         ]
@@ -72,7 +80,7 @@ export default {
             data: [
               {
                 name: 'itemA',
-                value: 65,
+                value: 99,
                 gradient: ['#f51007', '#f97c03', '#fedc00']
               },
               // {
@@ -91,6 +99,14 @@ export default {
             splitNum: 7,
             axisLabel: {
               data: ['差', '', '中', '', '良', '', '优']
+            },
+            details: {
+              show: true,
+              formatter: '{value}%',
+              offset: [0, 40],
+              style: {
+                fontSize: 25
+              }
             }
           }
         ]
