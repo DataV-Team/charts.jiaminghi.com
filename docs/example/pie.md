@@ -39,13 +39,13 @@ import pie3 from './exampleData/pie/pie3.js'
 import pie4 from './exampleData/pie/pie4.js'
 
 export default{
-    data () {
-        return {
-            pie1,
-            pie2,
-            pie3,
-            pie4
-        }
+  data () {
+    return {
+      pie1,
+      pie2,
+      pie3,
+      pie4
     }
+  }
 }
 </script>

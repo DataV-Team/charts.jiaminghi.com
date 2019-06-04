@@ -1,8 +1,8 @@
-import { Updater } from '../class/updater.class'
+import { doUpdate } from '../class/updater.class'
 
 import { gaugeConfig } from '../config/gauge'
 
-import { deepClone, getCircleRadianPoint } from '@jiaminghi/c-render/lib/util'
+import { getCircleRadianPoint } from '@jiaminghi/c-render/lib/util'
 
 import { deepMerge, initNeedSeries, radianToAngle } from '../util'
 
@@ -35,68 +35,50 @@ export function gauge (chart, option = {}) {
 
   gauges = calcGaugesDetailsContent(gauges, chart)
 
-  if (chart.gaugeAxisTick) {
-    chart.gaugeAxisTick.update(gauges)
-  } else {
-    chart.gaugeAxisTick = new Updater({
-      chart,
-      key: 'gaugeAxisTick',
-      getGraphConfig: getAxisTickConfig
-    }, gauges)
-  }
+  doUpdate({
+    chart,
+    series: gauges,
+    key: 'gaugeAxisTick',
+    getGraphConfig: getAxisTickConfig
+  })
 
-  if (chart.gaugeAxisLabel) {
-    chart.gaugeAxisLabel.update(gauges)
-  } else {
-    chart.gaugeAxisLabel = new Updater({
-      chart,
-      key: 'gaugeAxisLabel',
-      getGraphConfig: getAxisLabelConfig
-    }, gauges)
-  }
+  doUpdate({
+    chart,
+    series: gauges,
+    key: 'gaugeAxisLabel',
+    getGraphConfig: getAxisLabelConfig
+  })
 
-  if (chart.gaugeBackgroundArc) {
-    chart.gaugeBackgroundArc.update(gauges)
-  } else {
-    chart.gaugeBackgroundArc = new Updater({
-      chart,
-      key: 'gaugeBackgroundArc',
-      getGraphConfig: getBackgroundArcConfig,
-      getStartGraphConfig: getStartBackgroundArcConfig
-    }, gauges)
-  }
+  doUpdate({
+    chart,
+    series: gauges,
+    key: 'gaugeBackgroundArc',
+    getGraphConfig: getBackgroundArcConfig,
+    getStartGraphConfig: getStartBackgroundArcConfig
+  })
 
-  if (chart.gaugeArc) {
-    chart.gaugeArc.update(gauges)
-  } else {
-    chart.gaugeArc = new Updater({
-      chart,
-      key: 'gaugeArc',
-      getGraphConfig: getArcConfig,
-      getStartGraphConfig: getStartArcConfig
-    }, gauges)
-  }
+  doUpdate({
+    chart,
+    series: gauges,
+    key: 'gaugeArc',
+    getGraphConfig: getArcConfig,
+    getStartGraphConfig: getStartArcConfig
+  })
 
-  if (chart.gaugePointer) {
-    chart.gaugePointer.update(gauges)
-  } else {
-    chart.gaugePointer = new Updater({
-      chart,
-      key: 'gaugePointer',
-      getGraphConfig: getPointerConfig,
-      getStartGraphConfig: getStartPointerConfig
-    }, gauges)
-  }
+  doUpdate({
+    chart,
+    series: gauges,
+    key: 'gaugePointer',
+    getGraphConfig: getPointerConfig,
+    getStartGraphConfig: getStartPointerConfig
+  })
 
-  if (chart.gaugeDetails) {
-    chart.gaugeDetails.update(gauges)
-  } else {
-    chart.gaugeDetails = new Updater({
-      chart,
-      key: 'gaugeDetails',
-      getGraphConfig: getDetailsConfig
-    }, gauges)
-  }
+  doUpdate({
+    chart,
+    series: gauges,
+    key: 'gaugeDetails',
+    getGraphConfig: getDetailsConfig
+  })
 }
 
 function calcGaugesCenter (gauges, chart) {
@@ -138,7 +120,7 @@ function calcGaugesRadius (gauges, chart) {
 function calcGaugesDataRadiusAndLineWidth (gauges, chart) {
   const { area } = chart.render
 
-  const maxRadius = Math.min(...area)
+  const maxRadius = Math.min(...area) / 2
 
   gauges.forEach(gaugeItem => {
     const { radius, data, arcLineWidth } = gaugeItem
@@ -165,7 +147,7 @@ function calcGaugesDataAngles (gauges, chart) {
   gauges.forEach(gaugeItem => {
     const { startAngle, endAngle, data, min, max } = gaugeItem
     
-    const angleMinus = startAngle - endAngle
+    const angleMinus = endAngle - startAngle
     const valueMinus = max - min
 
     data.forEach(item => {
@@ -331,7 +313,7 @@ function calcGaugesDetailsContent (gauges, chart) {
       let content = dataItem.value
 
       if (formatterType === 'string') {
-        content = formatter.replace('{value}', dataItem.value)
+        content = formatter.replace('{value}', '{nt}')
         content = content.replace('{name}', dataItem.name)
       }
 
@@ -563,7 +545,7 @@ function getDetailsConfig (gaugeItem) {
   const visible = gaugeItem.details.show
 
   return detailsPosition.map((foo, i) => ({
-    name: 'text',
+    name: 'numberText',
     visible,
     animationCurve,
     animationFrame,
@@ -573,12 +555,15 @@ function getDetailsConfig (gaugeItem) {
 }
 
 function getDetailsShape (gaugeItem, i) {
-  const { detailsPosition, detailsContent } = gaugeItem
+  const { detailsPosition, detailsContent, data } = gaugeItem
 
   const position = detailsPosition[i]
   const content = detailsContent[i]
 
+  const dataValue = data[i].value
+
   return {
+    number: [dataValue],
     content,
     position
   }

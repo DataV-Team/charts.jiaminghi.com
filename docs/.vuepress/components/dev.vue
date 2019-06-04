@@ -31,40 +31,20 @@ export default {
         title: {
           text: 'This is a Chart'
         },
+        radar: {
+          polygon: true,
+          indicator: [
+            { name: 'A', max: 500 },
+            { name: 'B', max: 500 },
+            { name: 'C', max: 500 },
+            { name: 'D', max: 500 },
+            { name: 'E', max: 500 },
+          ]
+        },
         series: [
           {
-            type: 'gauge',
-            data: [
-              {
-                name: 'itemA',
-                value: 55,
-                gradient: ['#f51007', '#f97c03', '#fedc00']
-              },
-              // {
-              //   name: 'itemB',
-              //   value: 65,
-              //   radius: '20%',
-              //   gradient: ['#f51007', '#f97c03', '#fedc00']
-              // },
-              // {
-              //   name: 'itemC',
-              //   value: 75,
-              //   radius: '10%',
-              //   gradient: ['#f51007', '#f97c03', '#fedc00']
-              // },
-            ],
-            splitNum: 7,
-            axisLabel: {
-              data: ['差', '', '中', '', '良', '', '优']
-            },
-            details: {
-              show: true,
-              formatter: '{value}%',
-              offset: [0, 40],
-              style: {
-                fontSize: 25
-              }
-            }
+            type: 'radar',
+            data: [233, 200, 197, 450, 411]
           }
         ]
       })
@@ -74,40 +54,20 @@ export default {
         title: {
           text: 'This is a Chart'
         },
+        radar: {
+          polygon: true,
+          indicator: [
+            { name: 'A', max: 500 },
+            { name: 'B', max: 500 },
+            { name: 'C', max: 500 },
+            { name: 'D', max: 500 },
+            // { name: 'E', max: 500 },
+          ],
+        },
         series: [
           {
-            type: 'gauge',
-            data: [
-              {
-                name: 'itemA',
-                value: 99,
-                gradient: ['#f51007', '#f97c03', '#fedc00']
-              },
-              // {
-              //   name: 'itemB',
-              //   value: 65,
-              //   radius: '20%',
-              //   gradient: ['#f51007', '#f97c03', '#fedc00']
-              // },
-              // {
-              //   name: 'itemC',
-              //   value: 75,
-              //   radius: '10%',
-              //   gradient: ['#f51007', '#f97c03', '#fedc00']
-              // },
-            ],
-            splitNum: 7,
-            axisLabel: {
-              data: ['差', '', '中', '', '良', '', '优']
-            },
-            details: {
-              show: true,
-              formatter: '{value}%',
-              offset: [0, 40],
-              style: {
-                fontSize: 25
-              }
-            }
+            type: 'radar',
+            data: [233, 200, 197, 450]
           }
         ]
       })

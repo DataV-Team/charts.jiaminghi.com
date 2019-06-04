@@ -9,7 +9,7 @@ import { deepMerge, mergeSameStackData, getLinearGradientColor } from '../util'
 export function bar (chart, option = {}) {
   const { xAxis, yAxis, series } = option
 
-  if (!xAxis || !yAxis || !series) removeBars(chart)
+  if (!xAxis || !yAxis || !series) return removeBars(chart)
 
   initChartBar(chart)
 

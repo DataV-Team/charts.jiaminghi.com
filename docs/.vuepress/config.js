@@ -44,13 +44,17 @@ module.exports = {
         sidebar: {
           '/config/': [
             '',
+            'radarAxis',
+            'radar',
             'gauge'
           ],
           '/example/': [
             '',
             'line',
             'bar',
-            'pie'
+            'pie',
+            'radar',
+            'gauge'
           ]
         }
       },

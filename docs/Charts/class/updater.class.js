@@ -17,13 +17,17 @@ export class Updater {
 }
 
 Updater.prototype.update = function (series) {
-  const { graphs } = this
+  const { graphs, beforeUpdate } = this
 
   delRedundanceGraph(this, series)
 
   if (!series.length) return
 
+  const beforeUpdateType = typeof beforeUpdate
+
   series.forEach((seriesItem, i) => {
+    if (beforeUpdateType === 'function') beforeUpdate(graphs, seriesItem, i, this)
+
     const cache = graphs[i]
 
     if (cache) {
@@ -48,16 +52,16 @@ function delRedundanceGraph (updater, series) {
 }
 
 function changeGraphs (cache, seriesItem, i, updater) {
-  const { getGraphConfig, chart: { render }, beforeUpdate } = updater
+  const { getGraphConfig, chart: { render }, beforeChange } = updater
 
-  const configs = getGraphConfig(seriesItem)
+  const configs = getGraphConfig(seriesItem, updater)
 
   balanceGraphsNum(cache, configs, render)
 
   cache.forEach((graph, j) => {
     const config = configs[j]
-    
-    if (typeof beforeUpdate === 'function') beforeUpdate(graph, config)
+
+    if (typeof beforeChange === 'function') beforeChange(graph, config)
 
     updateGraphConfigByKey(graph, config)
   })
@@ -89,9 +93,9 @@ function addGraphs (graphs, seriesItem, i, updater) {
 
   let startConfigs = null
 
-  if (typeof getStartGraphConfig === 'function') startConfigs = getStartGraphConfig(seriesItem)
+  if (typeof getStartGraphConfig === 'function') startConfigs = getStartGraphConfig(seriesItem, updater)
 
-  const configs = getGraphConfig(seriesItem)
+  const configs = getGraphConfig(seriesItem, updater)
 
   if (startConfigs) {
     graphs[i] = startConfigs.map(config => render.add(config))
@@ -116,4 +120,27 @@ function updateGraphConfigByKey (graph, config) {
       graph[key] = config[key]
     }
   })
+}
+
+export function doUpdate ({
+  chart,
+  series,
+  key,
+  getGraphConfig,
+  getStartGraphConfig,
+  beforeChange,
+  beforeUpdate
+} = {}) {
+  if (chart[key]) {
+    chart[key].update(series)
+  } else {
+    chart[key] = new Updater({
+      chart,
+      key,
+      getGraphConfig,
+      getStartGraphConfig,
+      beforeChange,
+      beforeUpdate
+    }, series)
+  }
 }

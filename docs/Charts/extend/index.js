@@ -21,7 +21,7 @@ const pie = {
     const keys = ['rx', 'ry', 'ir', 'or', 'startAngle', 'endAngle']
 
     if (keys.find(key => typeof shape[key] !== 'number')) {
-      console.error('Shape configuration is abnormal!')
+      console.error('Pie shape configuration is abnormal!')
 
       return false
     }
@@ -70,7 +70,7 @@ const agArc = {
     const keys = ['rx', 'ry', 'r', 'startAngle', 'endAngle']
 
     if (keys.find(key => typeof shape[key] !== 'number')) {
-      console.error('Shape configuration is abnormal!')
+      console.error('AgArc shape configuration is abnormal!')
 
       return false
     }
@@ -94,7 +94,9 @@ const agArc = {
     if (gradientStartAngle === null) gradientStartAngle = startAngle
     if (gradientEndAngle === null) gradientEndAngle = endAngle
 
-    const angleGap = (gradientEndAngle - gradientStartAngle) / gradientArcNum
+    let angleGap = (gradientEndAngle - gradientStartAngle) / gradientArcNum
+
+    if (angleGap === Math.PI * 2) angleGap = Math.PI * 2 - 0.001
 
     for (let i = 0; i < gradientArcNum; i++) {
       ctx.beginPath()
@@ -126,5 +128,55 @@ const agArc = {
   }
 }
 
+const numberText = {
+  shape: {
+    number: [],
+    content: '',
+    position: [0, 0],
+    toFixed: 0
+  },
+
+  validator ({ shape }) {
+    const { number, content, position } = shape
+
+    if (!(number instanceof Array) || typeof content !== 'string' || !(position instanceof Array)) {
+
+      console.error('NumberText shape configuration is abnormal!')
+
+      return false
+    }
+
+    return true
+  },
+
+  draw ({ ctx }, { shape }) {
+    ctx.beginPath()
+
+    const { number, content, position, toFixed } = shape
+
+    const textSegments = content.split('{nt}')
+
+    const lastSegmentIndex = textSegments.length - 1
+
+    let textString = ''
+
+    textSegments.forEach((t, i) => {
+      let currentNumber = number[i]
+
+      if (i === lastSegmentIndex) currentNumber = ''
+
+      if (typeof currentNumber === 'number') currentNumber = currentNumber.toFixed(toFixed)
+
+      textString += t + (currentNumber || '')
+    })
+
+    ctx.closePath()
+
+    ctx.strokeText(textString, ...position)
+    ctx.fillText(textString, ...position)
+  }
+}
+
 extendNewGraph('pie', pie)
 extendNewGraph('agArc', agArc)
+extendNewGraph('numberText', numberText)

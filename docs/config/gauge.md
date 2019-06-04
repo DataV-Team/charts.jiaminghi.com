@@ -119,7 +119,7 @@ sidebarDepth: 2
  */
 ```
 
-### data.name
+### data[i].name
 
 ```js
 /**
@@ -129,7 +129,7 @@ sidebarDepth: 2
  */
 ```
 
-### data.value
+### data[i].value
 
 ```js
 /**
@@ -139,7 +139,7 @@ sidebarDepth: 2
  */
 ```
 
-### data.radius
+### data[i].radius
 
 ```js
 /**
@@ -149,23 +149,33 @@ sidebarDepth: 2
  */
 ```
 
-### data.lineWidth
+### data[i].lineWidth
 
 ```js
 /**
- * @description 构成仪表盘的圆弧的线条宽度 (默认与根属性arcLineWidth的值相
+ * @description 构成仪表盘的圆弧的线条宽度 (默认与根属性arcLineWidth的值相)
  * @type {Number}
  * @example lineWidth = 10
  */
 ```
 
-### data.gradient
+### data[i].gradient
 
 ```js
 /**
  * @description 构成仪表盘的圆弧的渐变色 (Hex|rgb|rgba)
  * @type {Array}
  * @example gradient = ['#000', 'rgb(10, 10, 10)', 'rgba(10, 10, 10, 1)']
+ */
+```
+
+### data[i].localGradient
+
+```js
+/**
+ * @description 渐变色是否应用局部渐变
+ * @type {Boolean}
+ * @default localGradient = false
  */
 ```
 
