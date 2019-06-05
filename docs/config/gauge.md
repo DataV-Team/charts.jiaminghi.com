@@ -388,6 +388,12 @@ pointer.style: {
  * @type {Object}
  * @default style = {Class Style的配置项}
  */
+style: {
+  fontSize: 20,
+  fontWeight: 'bold',
+  textAlign: 'center',
+  textBaseline: 'middle'
+}
 ```
 
 ## backgroundArc

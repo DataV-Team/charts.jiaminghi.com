@@ -10,10 +10,6 @@
 <script>
 import Charts from "../../Charts/index.js"
 
-import transition from "@jiaminghi/transition"
-
-import CRender from "@jiaminghi/c-render"
-
 export default {
   name: "Dev",
   data () {
@@ -29,49 +25,30 @@ export default {
 
       myChart.setOption({
         title: {
-          text: 'This is a Chart'
-        },
-        radar: {
-          polygon: true,
-          indicator: [
-            { name: 'A', max: 500 },
-            { name: 'B', max: 500 },
-            { name: 'C', max: 500 },
-            { name: 'D', max: 500 },
-            { name: 'E', max: 500 },
-          ]
+            text: '畅销饮料占比饼状图'
         },
         series: [
           {
-            type: 'radar',
-            data: [233, 200, 197, 450, 411]
+            type: 'pie',
+            roseType: true,
+            data: [
+              { name: '可口可乐', value: 95 },
+              { name: '百事可乐', value: 1 },
+              { name: '哇哈哈', value: 1 },
+              { name: '康师傅', value: 1 },
+              { name: '统一', value: 52 },
+            ],
+            insideLabel: {
+              show: true
+            }
           }
         ]
       })
 
-      setTimeout(() => {
-        myChart.setOption({
-        title: {
-          text: 'This is a Chart'
-        },
-        radar: {
-          polygon: true,
-          indicator: [
-            { name: 'A', max: 500 },
-            { name: 'B', max: 500 },
-            { name: 'C', max: 500 },
-            { name: 'D', max: 500 },
-            // { name: 'E', max: 500 },
-          ],
-        },
-        series: [
-          {
-            type: 'radar',
-            data: [233, 200, 197, 450]
-          }
-        ]
-      })
-      }, 2000)
+      // setTimeout(() => {
+      //   myChart.setOption({
+      //   })
+      // }, 2000)
 
       console.warn(myChart)
     }

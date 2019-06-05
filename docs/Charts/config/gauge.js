@@ -6,19 +6,19 @@ export const gaugeConfig = {
    */
   show: true,
   /**
-   * @description Center point of gauge
-   * @type {Array}
-   * @default center = ['50%','50%']
-   * @example center = ['50%','50%'] | [100, 100]
-   */
-  center: ['50%', '50%'],
-  /**
    * @description Radius of gauge
    * @type {String|Number}
    * @default radius = '60%'
    * @example radius = '60%' | 100
    */
   radius: '60%',
+  /**
+   * @description Center point of gauge
+   * @type {Array}
+   * @default center = ['50%','50%']
+   * @example center = ['50%','50%'] | [100, 100]
+   */
+  center: ['50%', '50%'],
   /**
    * @description Gauge start angle
    * @type {Number}

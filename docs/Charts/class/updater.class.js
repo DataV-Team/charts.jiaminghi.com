@@ -108,6 +108,10 @@ function addGraphs (graphs, seriesItem, i, updater) {
   } else {
     graphs[i] = configs.map(config => render.add(config))
   }
+
+  const { afterAddGraph } = updater
+
+  if (typeof afterAddGraph === 'function') afterAddGraph(graphs[i])
 }
 
 function updateGraphConfigByKey (graph, config) {
@@ -129,7 +133,8 @@ export function doUpdate ({
   getGraphConfig,
   getStartGraphConfig,
   beforeChange,
-  beforeUpdate
+  beforeUpdate,
+  afterAddGraph
 } = {}) {
   if (chart[key]) {
     chart[key].update(series)
@@ -140,7 +145,8 @@ export function doUpdate ({
       getGraphConfig,
       getStartGraphConfig,
       beforeChange,
-      beforeUpdate
+      beforeUpdate,
+      afterAddGraph
     }, series)
   }
 }

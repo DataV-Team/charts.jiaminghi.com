@@ -45,6 +45,7 @@ module.exports = {
           '/config/': [
             '',
             'radarAxis',
+            'pie',
             'radar',
             'gauge'
           ],

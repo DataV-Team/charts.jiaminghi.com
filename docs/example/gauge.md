@@ -32,11 +32,30 @@
 <<< @/docs/example/exampleData/gauge/gauge4.js
 </fold-box>
 
+
+## 百分比环
+
+<demo :option="gauge5" />
+
+<fold-box>
+<<< @/docs/example/exampleData/gauge/gauge5.js
+</fold-box>
+
+## 多同心百分比环
+
+<demo :option="gauge6" />
+
+<fold-box>
+<<< @/docs/example/exampleData/gauge/gauge6.js
+</fold-box>
+
 <script>
 import gauge1 from './exampleData/gauge/gauge1.js'
 import gauge2 from './exampleData/gauge/gauge2.js'
 import gauge3 from './exampleData/gauge/gauge3.js'
 import gauge4 from './exampleData/gauge/gauge4.js'
+import gauge5 from './exampleData/gauge/gauge5.js'
+import gauge6 from './exampleData/gauge/gauge6.js'
 
 export default {
   data () {
@@ -44,7 +63,9 @@ export default {
       gauge1,
       gauge2,
       gauge3,
-      gauge4
+      gauge4,
+      gauge5,
+      gauge6
     }
   }
 }

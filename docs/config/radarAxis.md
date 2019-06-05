@@ -4,7 +4,9 @@ sidebarDepth: 2
 
 # radar
 
+:::tip
 `radar`为雷达图提供坐标系支持，如果需要使用雷达图，则需要该配置。
+:::
 
 ## show
 
