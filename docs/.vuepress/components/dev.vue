@@ -17,49 +17,70 @@ export default {
       myChart: null
     }
   },
-  methods: {
-    init () {
-      const { $refs } = this;
+  // methods: {
+  //   init () {
+  //     const { $refs } = this;
 
-      const myChart = this.myChart = new Charts($refs["chart"])
+  //     const myChart = this.myChart = new Charts($refs["chart"])
 
-      myChart.setOption({
-        title: {
-            text: '畅销饮料占比饼状图'
-        },
-        series: [
-          {
-            type: 'pie',
-            roseType: true,
-            data: [
-              { name: '可口可乐', value: 95 },
-              { name: '百事可乐', value: 1 },
-              { name: '哇哈哈', value: 1 },
-              { name: '康师傅', value: 1 },
-              { name: '统一', value: 52 },
-            ],
-            insideLabel: {
-              show: true
-            }
-          }
-        ]
-      })
+  //     myChart.setOption({
+  //       title: {
+  //         text: '周销售额趋势'
+  //       },
+  //       xAxis: {
+  //         name: '第二周',
+  //         data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+  //       },
+  //       yAxis: {
+  //         name: '销售额',
+  //         data: 'value'
+  //       },
+  //       series: [
+  //         {
+  //           data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
+  //           type: 'line',
+  //           lineArea: {
+  //             show: true
+  //           }
+  //         }
+  //       ]
+  //     })
 
-      // setTimeout(() => {
-      //   myChart.setOption({
-      //   })
-      // }, 2000)
+  //     setTimeout(() => {
+  //       myChart.setOption({
+  //         title: {
+  //           text: '周销售额趋势'
+  //         },
+  //         xAxis: {
+  //           name: '第二周',
+  //           data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+  //         },
+  //         yAxis: {
+  //           name: '销售额',
+  //           data: 'value'
+  //         },
+  //         series: [
+  //           {
+  //             data: [2339, 1899, 2118, 1790, 3265, 4465, 3996],
+  //             type: 'line',
+  //             lineArea: {
+  //               show: true
+  //             }
+  //           }
+  //         ]
+  //       })
+  //     }, 2000)
 
-      console.warn(myChart)
-    }
-  },
-  async mounted () {
-    this.init()
+  //     console.warn(myChart)
+  //   }
+  // },
+  // async mounted () {
+  //   this.init()
 
-    window.addEventListener('resize', e => {
-      this.myChart.resize()
-    })
-  }
+  //   window.addEventListener('resize', e => {
+  //     this.myChart.resize()
+  //   })
+  // }
 }
 </script>
 

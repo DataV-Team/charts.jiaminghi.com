@@ -13,7 +13,7 @@
     "@jiaminghi/transition": "^1.1.6",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
-    "vuepress": "^0.14.9"
+    "vuepress": "^0.14.11"
   },
   "devDependencies": {},
   "keywords": [

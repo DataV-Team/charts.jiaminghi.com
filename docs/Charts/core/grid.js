@@ -1,4 +1,4 @@
-import { deepClone } from '@jiaminghi/c-render/lib/util'
+import { deepClone } from '@jiaminghi/c-render/lib/plugin/util'
 
 import { gridConfig } from '../config'
 

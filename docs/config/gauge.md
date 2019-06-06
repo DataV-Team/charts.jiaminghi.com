@@ -369,6 +369,16 @@ pointer.style: {
  */
 ```
 
+### details.valueToFixed
+
+```js
+/**
+ * @description 数值小数精度
+ * @type {Number}
+ * @default valueToFixed = 0
+ */
+```
+
 ### details.position
 
 ```js

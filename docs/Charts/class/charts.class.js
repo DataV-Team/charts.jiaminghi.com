@@ -2,11 +2,11 @@ import '../extend/index'
 
 import CRender from '@jiaminghi/c-render'
 
-import { deepClone } from '@jiaminghi/c-render/lib/util'
+import { deepClone } from '@jiaminghi/c-render/lib/plugin/util'
 
-import { mergeColor, title, grid, axis, radarAxis } from '../lib'
+import { mergeColor, title, grid, axis, radarAxis } from '../core'
 
-import { pie, line, bar, radar, gauge } from '../lib'
+import { pie, line, bar, radar, gauge } from '../core'
 
 export default class Charts {
   constructor (dom) {

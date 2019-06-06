@@ -3,15 +3,6 @@ export const lineConfig = {
   smooth: false,
   xAxisIndex: 0,
   yAxisIndex: 0,
-  label: {
-    show: false,
-    position: 'top',
-    offset: [0, -10],
-    formatter: null,
-    style: {
-      fontSize: 10
-    }
-  },
   lineStyle: {
     lineWidth: 1
   },
@@ -23,11 +14,20 @@ export const lineConfig = {
       lineWidth: 1
     }
   },
-  fill: {
+  lineArea: {
     show: false,
     gradient: [],
     style: {
       opacity: 0.5
+    }
+  },
+  label: {
+    show: false,
+    position: 'top',
+    offset: [0, -10],
+    formatter: null,
+    style: {
+      fontSize: 10
     }
   },
   animationCurve: 'easeOutCubic',

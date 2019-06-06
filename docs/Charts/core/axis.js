@@ -4,7 +4,7 @@ import { axisConfig } from '../config'
 
 import { filterNonNumber, deepMerge, mergeSameStackData } from '../util'
 
-import { deepClone } from '@jiaminghi/c-render/lib/util'
+import { deepClone } from '@jiaminghi/c-render/lib/plugin/util'
 
 const { xAxisConfig, yAxisConfig } = axisConfig
 
