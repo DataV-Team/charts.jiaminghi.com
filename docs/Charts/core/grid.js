@@ -1,3 +1,5 @@
+import { doUpdate } from '../class/updater.class'
+
 import { deepClone } from '@jiaminghi/c-render/lib/plugin/util'
 
 import { gridConfig } from '../config'
@@ -9,37 +11,38 @@ export function grid (chart, option = {}) {
 
   grid = deepMerge(deepClone(gridConfig, true), grid || {})
 
-  const gridCache = chart.grid
-
-  if (gridCache) {
-    changeGrid(gridCache, grid, chart)
-  } else {
-    addGrid(grid, chart)
-  }
+  doUpdate({
+    chart,
+    series: [grid],
+    key: 'grid',
+    getGraphConfig: getGridConfig
+  })
 }
 
-function changeGrid (gridCache, grid, chart) {
-  const gridGraph = gridCache.graph
+function getGridConfig (gridItem, updater) {
+  const { animationCurve, animationFrame } = gridItem
 
-  const { animationCurve, animationFrame, style } = grid
+  const shape = getGridShape(gridItem, updater)
+  const style = getGridStyle(gridItem)
 
-  const shape = getGridShape(grid, chart)
+  updater.chart.gridArea = { ...shape }
 
-  grid.animationCurve = animationCurve
-  grid.animationFrame = animationFrame
-  gridGraph.animation('shape', { ...shape }, true)
-  gridGraph.animation('style', { ...style }, true)
-
-  gridCache.area = { ...shape }
+  return [{
+    name: 'rect',
+    animationCurve,
+    animationFrame,
+    shape,
+    style
+  }]
 }
 
-function getGridShape (grid, chart) {
-  const [w, h] = chart.render.area
+function getGridShape (gridItem, updater) {
+  const [w, h] = updater.chart.render.area
 
-  const left = getNumberValue(grid.left, w)
-  const right = getNumberValue(grid.right, w)
-  const top = getNumberValue(grid.top, h)
-  const bottom = getNumberValue(grid.bottom, h)
+  const left = getNumberValue(gridItem.left, w)
+  const right = getNumberValue(gridItem.right, w)
+  const top = getNumberValue(gridItem.top, h)
+  const bottom = getNumberValue(gridItem.bottom, h)
 
   const width = w - left - right
   const height = h - top - bottom
@@ -55,25 +58,8 @@ function getNumberValue (val, all) {
   return all * parseInt(val) / 100
 }
 
-function addGrid (grid, chart) {
-  const { render } = chart
+function getGridStyle (gridItem) {
+  const { style } = gridItem
 
-  const { animationCurve, animationFrame, style } = grid
-
-  const shape = getGridShape(grid, chart)
-
-  const graph = render.add({
-    name: 'rect',
-    animationCurve,
-    animationFrame,
-    shape,
-    style: { ...style }
-  })
-
-  chart.grid = {
-    graph,
-    area: {
-      ...shape
-    }
-  }
+  return style
 }

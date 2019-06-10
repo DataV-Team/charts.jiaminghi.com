@@ -1,4 +1,4 @@
-const { min, max, abs, pow, ceil, floor } = Math
+import { doUpdate } from '../class/updater.class'
 
 import { axisConfig } from '../config'
 
@@ -8,175 +8,71 @@ import { deepClone } from '@jiaminghi/c-render/lib/plugin/util'
 
 const { xAxisConfig, yAxisConfig } = axisConfig
 
+const { min, max, abs, pow } = Math
+
 export function axis (chart, option = {}) {
   let { xAxis, yAxis, series } = option
 
-  if (!xAxis || !yAxis || !series) return removeAxis(chart)
+  let allAxis = []
 
-  initChartAxis(chart)
+  if (xAxis && yAxis && series) {
+    allAxis = getAllAxis(xAxis, yAxis)
 
-  let allAxis = getAllAxis(xAxis, yAxis)
+    allAxis = mergeDefaultAxisConfig(allAxis)
 
-  allAxis = mergeDefaultAxisConfig(allAxis)
-
-  allAxis = mergeDefaultBoundaryGap(allAxis)
-
-  allAxis = calcAxisLabelData(allAxis, series)
-
-  allAxis = setAxisPosition(allAxis)
-
-  allAxis = calcAxisLinePosition(allAxis, chart)
-
-  allAxis = calcAxisTickPosition(allAxis, chart)
-
-  allAxis = calcAxisNamePosition(allAxis, chart)
-
-  allAxis = calcSplitLinePosition(allAxis, chart)
-
-  delRedundanceAxisGraph(allAxis, chart)
-
-  updateAxisLine(allAxis, chart)
-
-  updateAxisTick(allAxis, chart)
-
-  updateAxisLabel(allAxis, chart)
+    allAxis = allAxis.filter(({ show }) => show)
   
-  updateAxisName(allAxis, chart)
+    allAxis = mergeDefaultBoundaryGap(allAxis)
+  
+    allAxis = calcAxisLabelData(allAxis, series)
+  
+    allAxis = setAxisPosition(allAxis)
+  
+    allAxis = calcAxisLinePosition(allAxis, chart)
+  
+    allAxis = calcAxisTickPosition(allAxis, chart)
+  
+    allAxis = calcAxisNamePosition(allAxis, chart)
+  
+    allAxis = calcSplitLinePosition(allAxis, chart)
+  }
 
-  updateSplitLine(allAxis, chart)
+  doUpdate({
+    chart,
+    series: allAxis,
+    key: 'axisLine',
+    getGraphConfig: getLineConfig
+  })
+
+  doUpdate({
+    chart,
+    series: allAxis,
+    key: 'axisTick',
+    getGraphConfig: getTickConfig
+  })
+
+  doUpdate({
+    chart,
+    series: allAxis,
+    key: 'axisLabel',
+    getGraphConfig: getLabelConfig
+  })
+
+  doUpdate({
+    chart,
+    series: allAxis,
+    key: 'axisName',
+    getGraphConfig: getNameConfig
+  })
+
+  doUpdate({
+    chart,
+    series: allAxis,
+    key: 'splitLine',
+    getGraphConfig: getSplitLineConfig
+  })
 
   chart.axisData = allAxis
-}
-
-function removeAxis (chart) {
-  const { axisLabel, axisLine, axisName, axisTick, splitLine, render } = chart
-
-  if (axisLabel) {
-    axisLabel.map(({ graphs }) => graphs.forEach(g => render.delGraph(g)))
-
-    chart.axisLabel = []
-  }
-
-  if (axisLine) {
-    axisLine.forEach(g => render.delGraph(g))
-
-    chart.axisLine = []
-  }
-
-  if (axisName) {
-    axisName.forEach(g => render.delGraph(g))
-
-    chart.axisName = []
-  }
-
-  if (axisTick) {
-    axisTick.map(({ graphs }) => graphs.forEach(g => render.delGraph(g)))
-
-    chart.axisTick = []
-  }
-
-  if (splitLine) {
-    axisTick.map(({ graphs }) => graphs.forEach(g => render.delGraph(g)))
-
-    chart.splitLine = []
-  }
-}
-
-function initChartAxis (chart) {
-  if (!chart.axisLine) chart.axisLine = []
-  if (!chart.axisTick) chart.axisTick = []
-  if (!chart.axisLabel) chart.axisLabel = []
-  if (!chart.axisName) chart.axisName = []
-  if (!chart.splitLine) chart.splitLine = []
-}
-
-function mergeDefaultAxisConfig (allAxis) {
-  let xAxis = allAxis.filter(({ axis }) => axis === 'x')
-  let yAxis = allAxis.filter(({ axis }) => axis === 'y')
-
-  xAxis = xAxis.map(axis => deepMerge(deepClone(xAxisConfig), axis))
-  yAxis = yAxis.map(axis => deepMerge(deepClone(yAxisConfig), axis))
-
-  return [...xAxis, ...yAxis]
-}
-
-function delRedundanceAxisGraph (allAxis, chart) {
-  const { axisLabel, axisLine, axisName, axisTick, splitLine, render } = chart
-
-  const axis = allAxis.map(({ axis, index }) => axis + index)
-
-  const needDelAxisLabels = axisLabel.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
-
-  if (needDelAxisLabels.length) {
-    needDelAxisLabels.forEach(item => {
-      item.graphs.forEach(g => render.delGraph(g))
-      item.graphs = null
-    })
-
-    chart.axisLabel = axisLabel.filter(item => item.graphs)
-  }
-
-  const needDelAxisLines = axisLine.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
-
-  if (needDelAxisLines.length) {
-    needDelAxisLines.forEach(g => {
-      render.delGraph(g)
-      g.needDel = true
-    })
-
-    chart.axisLine = axisLine.filter(({ needDel }) => !needDel)
-  }
-
-  const needDelAxisNames = axisName.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
-
-  if (needDelAxisNames.length) {
-    needDelAxisNames.forEach(g => {
-      render.delGraph(g)
-      g.needDel = true
-    })
-
-    chart.axisName = axisName.filter(({ needDel }) => !needDel)
-  }
-
-  const needDelAxisTicks = axisTick.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
-
-  if (needDelAxisTicks.length) {
-    needDelAxisTicks.forEach(item => {
-      item.graphs.forEach(g => render.delGraph(g))
-      item.graphs = null
-    })
-
-    chart.axisTick = axisTick.filter(item => item.graphs)
-  }
-
-  const needDelSplitLine = splitLine.filter(({ axisIndex }) => !axis.find(ai => ai === axisIndex))
-
-  if (needDelSplitLine.length) {
-    needDelSplitLine.forEach(item => {
-      item.graphs.forEach(g => render.delGraph(g))
-      item.graphs = null
-    })
-
-    chart.splitLine = splitLine.filter(item => item.graphs)
-  }
-}
-
-function mergeDefaultBoundaryGap (allAxis) {
-  const valueAxis = allAxis.filter(({ data }) => data === 'value')
-  const labelAxis = allAxis.filter(({ data }) => data !== 'value')
-
-  valueAxis.forEach(axis => {
-    if (typeof axis.boundaryGap === 'boolean') return
-
-    axis.boundaryGap = false
-  })
-  labelAxis.forEach(axis => {
-    if (typeof axis.boundaryGap === 'boolean') return
-
-    axis.boundaryGap = true
-  })
-
-  return [...valueAxis, ...labelAxis]
 }
 
 function getAllAxis (xAxis, yAxis) {
@@ -203,6 +99,34 @@ function getAllAxis (xAxis, yAxis) {
   return [...allXAxis, ...allYAxis]
 }
 
+function mergeDefaultAxisConfig (allAxis) {
+  let xAxis = allAxis.filter(({ axis }) => axis === 'x')
+  let yAxis = allAxis.filter(({ axis }) => axis === 'y')
+
+  xAxis = xAxis.map(axis => deepMerge(deepClone(xAxisConfig), axis))
+  yAxis = yAxis.map(axis => deepMerge(deepClone(yAxisConfig), axis))
+
+  return [...xAxis, ...yAxis]
+}
+
+function mergeDefaultBoundaryGap (allAxis) {
+  const valueAxis = allAxis.filter(({ data }) => data === 'value')
+  const labelAxis = allAxis.filter(({ data }) => data !== 'value')
+
+  valueAxis.forEach(axis => {
+    if (typeof axis.boundaryGap === 'boolean') return
+
+    axis.boundaryGap = false
+  })
+  labelAxis.forEach(axis => {
+    if (typeof axis.boundaryGap === 'boolean') return
+
+    axis.boundaryGap = true
+  })
+
+  return [...valueAxis, ...labelAxis]
+}
+
 function calcAxisLabelData (allAxis, series) {
   let valueAxis = allAxis.filter(({ data }) => data === 'value')
   let labelAxis = allAxis.filter(({ data }) => data instanceof Array)
@@ -225,7 +149,9 @@ function calcValueAxisLabelData (valueAxis, series) {
 
     let label = []
 
-    if (min < 0 && max > 0) {
+    if (minMaxValue[0] === minMaxValue[1]) {
+      label = minMaxValue
+    } else if (min < 0 && max > 0) {
       label = getValueAxisLabelFromZero(min, max, interval)
     } else {
       label = getValueAxisLabelFromMin(min, max, interval)
@@ -378,7 +304,7 @@ function getAfterFormatterLabel (label, formatter) {
   if (!formatter) return label
 
   if (typeof formatter === 'string') label = label.map(l => formatter.replace('{value}', l))
-  if (typeof formatter === 'function') label = label.map(l => formatter(l))
+  if (typeof formatter === 'function') label = label.map((value, index) => formatter({ value, index }))
 
   return label
 }
@@ -432,7 +358,7 @@ function setAxisPosition (allAxis) {
 }
 
 function calcAxisLinePosition (allAxis, chart) {
-  const { x, y, w, h } = chart.grid.area
+  const { x, y, w, h } = chart.gridArea
 
   allAxis = allAxis.map(axis => {
     const { position } = axis
@@ -560,7 +486,7 @@ function calcAxisNamePosition (allAxis, chart) {
 }
 
 function calcSplitLinePosition (allAxis, chart) {
-  const { w, h } = chart.grid.area
+  const { w, h } = chart.gridArea
 
   return allAxis.map(axisItem => {
     const { tickLinePosition, position, boundaryGap } = axisItem
@@ -589,225 +515,99 @@ function calcSplitLinePosition (allAxis, chart) {
   })
 }
 
-function updateAxisLine (allAxis, chart) {
-  const { axisLine: axisLineCache } = chart
+function getLineConfig (axisItem) {
+  const { animationCurve, animationFrame } = axisItem
 
-  allAxis.forEach(axisItem => {
-    const { axis: axisType, index } = axisItem
-
-    const axisIndex = axisType + index
-
-    let graph = axisLineCache.find(({ axisIndex: ai }) => axisIndex === ai)
-
-    if (graph) {
-      changeAxisLine(graph, axisItem)
-    } else {
-      addAxisLine(axisLineCache, axisItem, chart, axisIndex)
-    }
-  })
-}
-
-function changeAxisLine (axisLineGraph, axisItem) {
-  const { linePosition, axisLine, animationCurve, animationFrame } = axisItem
-
-  const { show, style } = axisLine
-
-  axisLineGraph.visible = show
-  axisLineGraph.animationCurve = animationCurve
-  axisLineGraph.animationFrame = animationFrame
-  axisLineGraph.animation('shape', { points: linePosition }, true)
-  axisLineGraph.animation('style', style, true)
-}
-
-function addAxisLine (axisLineCache, axisItem, chart, axisIndex) {
-  const { render } = chart
-
-  const { linePosition, axisLine, animationCurve, animationFrame } = axisItem
-
-  const { show, style } = axisLine
-
-  axisLineCache.push(render.add({
-    axisIndex,
+  return [{
     name: 'polyline',
+    visible: axisItem.axisLine.show,
     animationCurve,
     animationFrame,
-    visible: show,
-    shape: {
-      points: linePosition
-    },
-    style: style
-  }))
+    shape: getLineShape(axisItem),
+    style: getLineStyle(axisItem)
+  }]
 }
 
-function updateAxisTick (allAxis, chart) {
-  const { axisTick: axisTickCache } = chart
+function getLineShape (axisItem) {
+  const { linePosition } = axisItem
 
-  allAxis.forEach(axisItem => {
-    const { axis: axisType, index } = axisItem
-
-    const axisIndex = axisType + index
-
-    let ticks = axisTickCache.find(({ axisIndex: ai }) => axisIndex === ai)
-
-    if (ticks) {
-      changeAxisTick(ticks, axisItem, chart)
-    } else {
-      addAxisTick(axisTickCache, axisItem, chart, axisIndex)
-    }
-  })
-}
-
-function changeAxisTick (ticks, axisItem, chart) {
-  const { render } = chart
-
-  const { graphs } = ticks
-
-  const { tickLinePosition, axisTick, animationCurve, animationFrame } = axisItem
-
-  const { show, style } = axisTick
-
-  const graphsNum = graphs.length
-  const ticksNum = tickLinePosition.length
-
-  if (graphsNum > ticksNum) {
-    graphs.splice(ticksNum).forEach(t => render.delGraph(t))
-  } else if (graphsNum < ticksNum) {
-    const lastTickGraphShape = graphs[graphsNum - 1].shape
-
-    graphs.push(...new Array(ticksNum - graphsNum)
-      .fill(0)
-      .map(foo => render.add({
-        name: 'polyline',
-        animationCurve,
-        animationFrame,
-        visible: show,
-        shape: lastTickGraphShape,
-        style
-      })))
+  return {
+    points: linePosition
   }
-
-  graphs.forEach((tick, i) => {
-    tick.visible = show
-    tick.animationCurve = animationCurve
-    tick.animationFrame = animationFrame
-    tick.animation('shape', { points: tickLinePosition[i] }, true)
-    tick.animation('style', style, true)
-  })
 }
 
-function addAxisTick (axisTickCache, axisItem, chart, axisIndex) {
-  const { render } = chart
+function getLineStyle (axisItem) {
+  return axisItem.axisLine.style
+}
 
-  const { tickLinePosition, axisTick, animationCurve, animationFrame } = axisItem
+function getTickConfig (axisItem) {
+  const { animationCurve, animationFrame } = axisItem
 
-  const { show, style } = axisTick
+  const shapes = getTickShapes(axisItem)
+  const style = getTickStyle(axisItem)
 
-  const graphs = tickLinePosition.map(points => render.add({
+  return shapes.map(shape => ({
     name: 'polyline',
-    visible: show,
+    visible: axisItem.axisTick.show,
     animationCurve,
     animationFrame,
-    shape: {
-      points
-    },
+    shape,
     style
   }))
-
-  axisTickCache.push({
-    axisIndex,
-    graphs
-  })
 }
 
-function updateAxisLabel (allAxis, chart) {
-  const { axisLabel: axisLabelCache } = chart
+function getTickShapes (axisItem) {
+  const { tickLinePosition } = axisItem
 
-  allAxis.forEach(axisItem => {
-    const { axis: axisType, index } = axisItem
-
-    const axisIndex = axisType + index
-
-    let labels = axisLabelCache.find(({ axisIndex: ai }) => axisIndex === ai)
-
-    if (labels) {
-      changeAxisLabel(labels, axisItem, chart)
-    } else {
-      addAxisLabel(axisLabelCache, axisItem, chart, axisIndex)
-    }
-  })
+  return tickLinePosition.map(points => ({ points }))
 }
 
-function changeAxisLabel (labels, axisItem, chart) {
-  const { render } = chart
-
-  const { graphs } = labels
-
-  const { tickPosition, label, axisLabel, position, animationCurve, animationFrame } = axisItem
-
-  let { show, style } = axisLabel
-
-  style = mergeAxisLabelAlign(style, position)
-
-  const graphsNum = graphs.length
-  const labelsNum = tickPosition.length
-
-  if (graphsNum > labelsNum) {
-    graphs.splice(labelsNum).forEach(l => render.delGraph(l))
-  } else if (graphsNum < labelsNum) {
-    const lastAxisLabelShape = graphs[graphsNum - 1].shape
-
-    graphs.push(...new Array(labelsNum - graphsNum)
-      .fill(0)
-      .map(foo => render.add({
-        name: 'text',
-        visible: show,
-        animationCurve,
-        animationFrame,
-        shape: lastAxisLabelShape,
-        style
-      })))
-  }
-
-  graphs.forEach((labelItem, i) => {
-    const shapePosition = getAxisLabelRealPosition(tickPosition[i], position)
-    labelItem.visible = show
-    labelItem.animationCurve = animationCurve
-    labelItem.animationFrame = animationFrame
-    labelItem.shape.content = label[i].toString()
-    labelItem.animation('shape', { position: shapePosition }, true)
-    labelItem.animation('style', { ...style, graphCenter: shapePosition }, true)
-  })
+function getTickStyle (axisItem) {
+  return axisItem.axisTick.style
 }
 
-function addAxisLabel (axisLabelCache, axisItem, chart, axisIndex) {
-  const { render } = chart
+function getLabelConfig (axisItem) {
+  const { animationCurve, animationFrame } = axisItem
 
-  const { tickPosition, label, axisLabel, position, animationCurve, animationFrame } = axisItem
+  const shapes = getLabelShapes(axisItem)
+  const style = getLabelStyle(axisItem)
 
-  let { show, style } = axisLabel
-
-  style = mergeAxisLabelAlign(style, position)
-
-  const graphs = tickPosition.map((labelPosition, i) => render.add({
+  return shapes.map(shape => ({
     name: 'text',
-    visible: show,
+    visible: axisItem.axisLabel.show,
     animationCurve,
     animationFrame,
-    position,
-    shape: {
-      content: label[i].toString(),
-      position: getAxisLabelRealPosition(labelPosition, position)
-    },
+    shape,
     style
   }))
-
-  axisLabelCache.push({
-    axisIndex,
-    graphs
-  })
 }
 
-function mergeAxisLabelAlign (style, position) {
+function getLabelShapes (axisItem) {
+  const { label, tickPosition, position } = axisItem
+
+  return tickPosition.map((point, i) => ({
+    position: getLabelRealPosition(point, position),
+    content: label[i].toString()
+  }))
+}
+
+function getLabelRealPosition (points, position) {
+  let [index, plus] = [0, 10]
+
+  if (position === 'top' || position === 'bottom') index = 1
+  if (position === 'top' || position === 'left') plus = -10
+
+  points = deepClone(points)
+  points[index] += plus
+
+  return points
+}
+
+function getLabelStyle (axisItem) {
+  const { position } = axisItem
+
+  const { style } = axisItem.axisLabel
+
   const align = getAxisLabelRealAlign(position)
 
   return deepMerge(align, style)
@@ -835,79 +635,36 @@ function getAxisLabelRealAlign (position) {
   }
 }
 
-function getAxisLabelRealPosition (points, position) {
-  let [index, plus] = [0, 10]
-
-  if (position === 'top' || position === 'bottom') index = 1
-  if (position === 'top' || position === 'left') plus = -10
-
-  points = deepClone(points)
-  points[index] += plus
-
-  return points
-}
-
-function updateAxisName (allAxis, chart) {
-  const { axisName: axisNameCache } = chart
-
-  allAxis.forEach(axisItem => {
-    const { axis: axisType, index } = axisItem
-
-    const axisIndex = axisType + index
-
-    let graph = axisNameCache.find(({ axisIndex: ai }) => axisIndex === ai)
-
-    if (graph) {
-      changeAxisName(graph, axisItem)
-    } else {
-      addAxisName(axisNameCache, chart, axisItem, axisIndex)
-    }
-  })
-}
-
-function changeAxisName (graph, axisItem) {
-  const { position, name, namePosition, nameTextStyle, nameLocation } = axisItem
-
+function getNameConfig (axisItem) {
   const { animationCurve, animationFrame } = axisItem
 
-  const style = mergeAxisNameAlign(nameTextStyle, position, nameLocation)
-
-  graph.shape.content = name
-  graph.animationCurve = animationCurve
-  graph.animationFrame = animationFrame
-  graph.animation('shape', { position: namePosition }, true)
-  graph.animation('style', style, true)
-}
-
-function addAxisName (axisNameCache, chart, axisItem, axisIndex) {
-  const { render } = chart
-
-  const { position, name, namePosition, nameTextStyle, nameLocation } = axisItem
-
-  const { animationCurve, animationFrame } = axisItem
-
-  const style = mergeAxisNameAlign(nameTextStyle, position, nameLocation)
-
-  axisNameCache.push(render.add({
-    axisIndex,
+  return [{
     name: 'text',
     animationCurve,
     animationFrame,
-    shape: {
-      content: name,
-      position: namePosition
-    },
-    style
-  }))
+    shape: getNameShape(axisItem),
+    style: getNameStyle(axisItem)
+  }]
 }
 
-function mergeAxisNameAlign (style, position, nameLocation) {
-  const align = getAxisNameRealAlign(position, nameLocation)
+function getNameShape (axisItem) {
+  const { name, namePosition } = axisItem
+
+  return {
+    content: name,
+    position: namePosition
+  }
+}
+
+function getNameStyle (axisItem) {
+  const { nameLocation, position, nameTextStyle: style } = axisItem
+
+  const align = getNameRealAlign(position, nameLocation)
 
   return deepMerge(align, style)
 }
 
-function getAxisNameRealAlign (position, location) {
+function getNameRealAlign (position, location) {
   if (
     (position === 'top' && location === 'start') ||
     (position === 'bottom' && location === 'start') ||
@@ -945,82 +702,28 @@ function getAxisNameRealAlign (position, location) {
   }
 }
 
-function updateSplitLine (allAxis, chart) {
-  const { splitLine: splitLineCache } = chart
+function getSplitLineConfig (axisItem) {
+  const { animationCurve, animationFrame } = axisItem
 
-  allAxis.forEach(axisItem => {
-    const { axis, index } = axisItem
+  const shapes = getSplitLineShapes(axisItem)
+  const style = getSplitLineStyle(axisItem)
 
-    const axisIndex = axis + index
-
-    let splitLines = splitLineCache.find(({ axisIndex: ai }) => axisIndex === ai)
-
-    if (splitLines) {
-      changeSplitLine(splitLines, axisItem, chart)
-    } else {
-      addSplitLine(splitLineCache, axisItem, chart, axisIndex)
-    }
-  })
-}
-
-function changeSplitLine (splitLines, axisItem, chart) {
-  const { render } = chart
-
-  let { splitLinePosition, splitLine, animationCurve, animationFrame } = axisItem
-
-  let { show, style } = splitLine
-
-  const { graphs } = splitLines
-
-  const graphsNum = graphs.length
-  const splitLinesNum = splitLinePosition.length
-
-  if (graphsNum > splitLinesNum) {
-    graphs.splice(splitLinesNum).forEach(t => render.delGraph(t))
-  } else if (graphsNum < splitLinesNum) {
-    const lastSplitLineShape = graphs[graphsNum - 1].shape
-
-    graphs.push(...new Array(splitLinesNum - graphsNum)
-      .fill(0)
-      .map(foo => render.add({
-        name: 'polyline',
-        animationCurve,
-        animationFrame,
-        visible: show,
-        shape: lastSplitLineShape,
-        style
-      })))
-  }
-
-  graphs.forEach((tick, i) => {
-    tick.visible = show
-    tick.animationCurve = animationCurve
-    tick.animationFrame = animationFrame
-    tick.animation('shape', { points: splitLinePosition[i] }, true)
-    tick.animation('style', style, true)
-  })
-}
-
-function addSplitLine (splitLineCache, axisItem, chart, axisIndex) {
-  const { render } = chart
-
-  let { splitLinePosition, splitLine, animationCurve, animationFrame } = axisItem
-
-  let { show, style } = splitLine
-
-  const graphs = splitLinePosition.map(points => render.add({
+  return shapes.map(shape => ({
     name: 'polyline',
-    visible: show,
+    visible: axisItem.splitLine.show,
     animationCurve,
     animationFrame,
-    shape: {
-      points
-    },
+    shape,
     style
   }))
+}
 
-  splitLineCache.push({
-    axisIndex,
-    graphs
-  })
+function getSplitLineShapes (axisItem) {
+  const { splitLinePosition } = axisItem
+
+  return splitLinePosition.map(points => ({ points }))
+}
+
+function getSplitLineStyle (axisItem) {
+  return axisItem.splitLine.style
 }

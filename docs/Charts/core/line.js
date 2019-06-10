@@ -57,7 +57,7 @@ export function line (chart, option = {}) {
 }
 
 function calcLinesPosition (lines, chart) {
-  const { axisData, grid } = chart
+  const { axisData } = chart
 
   return lines.map(lineItem => {
     let lineData = mergeSameStackData(lineItem, lines)
@@ -66,7 +66,7 @@ function calcLinesPosition (lines, chart) {
 
     const lineAxis = getLineAxis(lineItem, axisData)
 
-    const linePosition = getLinePosition(lineData, lineAxis, grid)
+    const linePosition = getLinePosition(lineData, lineAxis)
 
     const lineFillBottomPos = getLineFillBottomPos(lineAxis)
 
@@ -116,7 +116,11 @@ function getLinePosition (lineData, lineAxis) {
       const v = lineData[i]
       if (typeof v !== 'number') return null
 
-      return (v - minValue) / valueMinus * valueAxisPosMinus + valueAxisStartPos
+      let valuePercent = (v - minValue) / valueMinus
+
+      if (valueMinus === 0) valuePercent = 0
+
+      return valuePercent * valueAxisPosMinus + valueAxisStartPos
     })
 
   return position.map((vPos, i) => {

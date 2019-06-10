@@ -44,7 +44,12 @@ module.exports = {
         sidebar: {
           '/config/': [
             '',
+            'title',
+            'xAxis',
+            'yAxis',
+            'grid',
             'radarAxis',
+            'line',
             'bar',
             'pie',
             'radar',
