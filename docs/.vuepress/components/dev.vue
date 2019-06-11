@@ -33,11 +33,12 @@ export default {
         },
         yAxis: {
           name: '销售额',
-          data: 'value'
+          data: 'value',
+          min: 0
         },
         series: [
           {
-              data: [0, 0, 0, 0, 0, 0, 0],
+            data: [0, 0, 0, 1, 0, 0, 0],
             type: 'line',
             lineArea: {
               show: true
@@ -46,30 +47,30 @@ export default {
         ]
       })
 
-      setTimeout(() => {
-        myChart.setOption({
-          title: {
-            text: '周销售额趋势'
-          },
-          xAxis: {
-            name: '第二周',
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-          },
-          yAxis: {
-            name: '销售额',
-            data: 'value'
-          },
-          series: [
-            {
-            data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
-              type: 'line',
-              lineArea: {
-                show: true
-              }
-            }
-          ]
-        })
-      }, 2000)
+      // setTimeout(() => {
+      //   myChart.setOption({
+      //     title: {
+      //       text: '周销售额趋势'
+      //     },
+      //     xAxis: {
+      //       name: '第二周',
+      //       data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+      //     },
+      //     yAxis: {
+      //       name: '销售额',
+      //       data: 'value'
+      //     },
+      //     series: [
+      //       {
+      //       data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
+      //         type: 'line',
+      //         lineArea: {
+      //           show: true
+      //         }
+      //       }
+      //     ]
+      //   })
+      // }, 2000)
 
       console.warn(myChart)
     }
