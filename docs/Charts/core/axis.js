@@ -1,12 +1,12 @@
 import { doUpdate } from '../class/updater.class'
 
-import { axisConfig } from '../config'
+import { xAxisConfig, yAxisConfig } from '../config'
 
 import { filterNonNumber, deepMerge, mergeSameStackData } from '../util'
 
 import { deepClone } from '@jiaminghi/c-render/lib/plugin/util'
 
-const { xAxisConfig, yAxisConfig } = axisConfig
+const axisConfig = { xAxisConfig, yAxisConfig }
 
 const { min, max, abs, pow } = Math
 

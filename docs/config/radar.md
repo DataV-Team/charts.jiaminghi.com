@@ -20,6 +20,17 @@ sidebarDepth: 2
  */
 ```
 
+## data
+
+```js
+/**
+ * @description 构成雷达图的数据
+ * @type {Array}
+ * @default data = null
+ * @example data = [100, 200, 300]
+ */
+```
+
 ## radarStyle
 
 ```js

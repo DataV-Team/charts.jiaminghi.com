@@ -80,6 +80,33 @@ sidebarDepth: 2
  */
 ```
 
+## data
+
+```js
+/**
+ * @description 构成饼状图的数据
+ * @type {Array}
+ */
+```
+
+### data[i].name
+
+```js
+/**
+ * @description 构成饼状图的饼的名称
+ * @type {String}
+ */
+```
+
+### data[i].value
+
+```js
+/**
+ * @description 构成饼状图的饼的值
+ * @type {Number}
+ */
+```
+
 ## insideLabel
 
 ```js
@@ -214,8 +241,6 @@ labelLineStyle: {
  * @default style = {Class Style的配置项}
  */
 pieStyle: {
-  shadowColor: '#888',
-  shadowBlur: 5
 }
 ```
 

@@ -1,19 +1,79 @@
-export { colorConfig } from './color'
+import { colorConfig } from './color'
 
-export { gridConfig } from './grid'
+import { gridConfig } from './grid'
 
-export { axisConfig } from './axis'
+import { xAxisConfig, yAxisConfig } from './axis'
 
-export { titleConfig } from './title'
+import { titleConfig } from './title'
 
-export { lineConfig } from './line'
+import { lineConfig } from './line'
 
-export { barConfig } from './bar'
+import { barConfig } from './bar'
 
-export { pieConfig } from './pie'
+import { pieConfig } from './pie'
 
-export { radarAxisConfig } from './radarAxis'
+import { radarAxisConfig } from './radarAxis'
 
-export { radarConfig } from './radar'
+import { radarConfig } from './radar'
 
-export { gaugeConfig } from './gauge'
+import { gaugeConfig } from './gauge'
+
+import { deepMerge } from '../util'
+
+const allConfig = {
+  colorConfig,
+  gridConfig,
+  xAxisConfig,
+  yAxisConfig,
+  titleConfig,
+  lineConfig,
+  barConfig,
+  pieConfig,
+  radarAxisConfig,
+  radarConfig,
+  gaugeConfig
+}
+
+/**
+ * @description Change default configuration
+ * @param {String} key          Configuration key
+ * @param {Object|Array} config Your config
+ * @return {Undefined} No return
+ */
+export function changeDefaultConfig (key, config) {
+  if (!allConfig[`${key}Config`]) {
+    console.warn('Change default config Error - Invalid key!')
+
+    return
+  }
+
+  deepMerge(allConfig[`${key}Config`], config)
+}
+
+export const keys = [
+  'color',
+  'title',
+  'xAxis',
+  'yAxis',
+  'grid',
+  'radarAxis',
+  'line',
+  'bar',
+  'pie',
+  'radar',
+  'gauge'
+]
+
+export {
+  colorConfig,
+  gridConfig,
+  xAxisConfig,
+  yAxisConfig,
+  titleConfig,
+  lineConfig,
+  barConfig,
+  pieConfig,
+  radarAxisConfig,
+  radarConfig,
+  gaugeConfig
+}

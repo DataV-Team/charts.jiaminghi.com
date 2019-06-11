@@ -98,6 +98,17 @@ sidebarDepth: 2
  */
 ```
 
+## data
+
+```js
+/**
+ * @description 构成柱状图的数据
+ * @type {Array}
+ * @default data = null
+ * @example data = [100, 200, 300]
+ */
+```
+
 ## backgroundBar
 
 ```js

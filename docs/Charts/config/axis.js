@@ -1,4 +1,4 @@
-const xAxisConfig = {
+export const xAxisConfig = {
   /**
    * @description Axis name
    * @type {String}
@@ -195,7 +195,7 @@ const xAxisConfig = {
   animationFrame: 50
 }
 
-const yAxisConfig = {
+export const yAxisConfig = {
   /**
    * @description Axis name
    * @type {String}
@@ -390,9 +390,4 @@ const yAxisConfig = {
    * @default animationFrame = 50
    */
   animationFrame: 50
-}
-
-export const axisConfig = {
-  xAxisConfig,
-  yAxisConfig
 }

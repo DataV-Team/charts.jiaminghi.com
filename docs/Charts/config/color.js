@@ -1,10 +1,15 @@
 export const colorConfig = [
-  '#ee6d66',
-  '#ee66aa',
-  '#a866ee',
-  '#16c79e',
-  '#66a1ee',
-  '#66d7ee',
-  '#66eece',
-  '#66ee78'
+  '#37a2da',
+  '#32c5e9',
+  '#67e0e3',
+  '#9fe6b8',
+  '#ffdb5c',
+  '#ff9f7f',
+  '#fb7293',
+  '#e062ae',
+  '#e690d1',
+  '#e7bcf3',
+  '#9d96f5',
+  '#8378ea',
+  '#96bfff',
 ]
