@@ -322,7 +322,7 @@ axisTick.stype: {
 pointer.style: {
   // 可以调节scale的值放大缩小指针
   scale: [1, 1],
-  fill: '#f62606'
+  fill: '#fb7293'
 }
 ```
 

@@ -14,9 +14,9 @@ const option1 = {
     {
       data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
       type: 'line',
-      fill: {
+      lineArea: {
         show: true,
-        gradient: ['rgba(255, 231, 147, 0.6)', 'rgba(255, 231, 147, 0)']
+        gradient: ['rgba(55, 162, 218, 0.6)', 'rgba(55, 162, 218, 0)']
       }
     }
   ]
@@ -38,9 +38,9 @@ const option2 = {
     {
       data: [2339, 1899, 2118, 1790, 3265, 4465, 3996],
       type: 'line',
-      fill: {
+      lineArea: {
         show: true,
-        gradient: ['rgba(235, 57, 65, 0.6)', 'rgba(235, 57, 65, 0)']
+        gradient: ['rgba(251, 114, 147, 0.6)', 'rgba(251, 114, 147, 0)']
       }
     }
   ]

@@ -13,7 +13,8 @@ const option1 = {
         show: true,
         offset: [0, 40],
         formatter: '剩余{value}%'
-      }
+      },
+      animationCurve: 'easeOutBack'
     }
   ]
 }
@@ -33,7 +34,8 @@ const option2 = {
         show: true,
         offset: [0, 40],
         formatter: '剩余{value}%'
-      }
+      },
+      animationCurve: 'easeOutBack'
     }
   ]
 }

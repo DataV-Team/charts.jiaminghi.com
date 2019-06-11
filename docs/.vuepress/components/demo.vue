@@ -1,6 +1,10 @@
 <template>
   <div class="demo">
     <div class="chart" ref="chart" @click="setOption" title="点击以切换图表配置"/>
+    <div class="action">
+      <div class="btn blue" @click="setOption">切换数据</div>
+      <div class="btn green" @click="init(true)">重置</div>
+    </div>
   </div>
 </template>
 
@@ -17,10 +21,16 @@ export default {
     }
   },
   methods: {
-    init () {
+    async init (reInit = false) {
       const { $refs, setOption } = this
 
-      this.myChart = new Charts($refs["chart"])
+      const container = $refs["chart"]
+
+      if (reInit) container.innerHTML = ''
+
+      await this.$nextTick()
+
+      this.myChart = new Charts(container)
 
       setOption()
     },
@@ -48,11 +58,50 @@ export default {
 .demo {
   height: 500px;
   box-shadow: 0 0 1px #46bd87;
+  position: relative;
 
   .chart {
     width: 100%;
     height: 100%;
     cursor: pointer;
+  }
+
+  &:hover .action {
+    opacity: 1;
+  }
+
+  .action {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    opacity: 0;
+    transition: all 0.3s;
+    display: flex;
+
+    .btn {
+      color: #fff;
+      text-align: center;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 3px 20px;
+      box-shadow: 0 0 3px #999;
+
+      &.green {
+        background-color: #46bd87;
+      }
+
+      &.blue {
+        background-color: #37a2da;
+      }
+
+      &.green:active {
+        color: #46bd87;
+      }
+
+      &.blue:active {
+        color: #37a2da;
+      }
+    }
   }
 }
 </style>

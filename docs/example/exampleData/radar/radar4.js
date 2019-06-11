@@ -9,8 +9,19 @@ const option1 = {
       { name: '洛阳', max: 300 }
     ],
     polygon: true,
+    splitLine: {
+      style: {
+        stroke: 'rgba(159, 230, 184, 1)'
+      }
+    },
+    axisLine: {
+      style: {
+        stroke: 'rgba(159, 230, 184, 1)'
+      }
+    },
     splitArea: {
-      show: true
+      show: true,
+      color: ['rgba(159, 230, 184, .2)']
     }
   },
   series: [
@@ -32,8 +43,19 @@ const option2 = {
       { name: '洛阳', max: 300 }
     ],
     polygon: true,
+    splitLine: {
+      style: {
+        stroke: 'rgba(159, 230, 184, 1)'
+      }
+    },
+    axisLine: {
+      style: {
+        stroke: 'rgba(159, 230, 184, 1)'
+      }
+    },
     splitArea: {
-      show: true
+      show: true,
+      color: ['rgba(159, 230, 184, .2)']
     }
   },
   series: [

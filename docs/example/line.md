@@ -72,6 +72,14 @@
 <<< @/docs/example/exampleData/line/line9.js
 </fold-box>
 
+## 线柱混用
+
+<demo :option="line10" />
+
+<fold-box>
+<<< @/docs/example/exampleData/line/line10.js
+</fold-box>
+
 <script>
 import line1 from './exampleData/line/line1.js'
 import line2 from './exampleData/line/line2.js'
@@ -82,6 +90,7 @@ import line6 from './exampleData/line/line6.js'
 import line7 from './exampleData/line/line7.js'
 import line8 from './exampleData/line/line8.js'
 import line9 from './exampleData/line/line9.js'
+import line10 from './exampleData/line/line10.js'
 
 export default {
   data () {
@@ -94,7 +103,8 @@ export default {
       line6,
       line7,
       line8,
-      line9
+      line9,
+      line10
     }
   }
 }

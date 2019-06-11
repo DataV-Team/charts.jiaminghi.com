@@ -14,7 +14,7 @@ const option1 = {
     {
       data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
       type: 'line',
-      fill: {
+      lineArea: {
         show: true
       }
     }
@@ -37,7 +37,7 @@ const option2 = {
     {
       data: [2339, 1899, 2118, 1790, 3265, 4465, 3996],
       type: 'line',
-      fill: {
+      lineArea: {
         show: true
       }
     }

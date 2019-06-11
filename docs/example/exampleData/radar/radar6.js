@@ -1,6 +1,5 @@
 const option1 = {
   radar: {
-    polygon: true,
     indicator: [
       { name: '西峡', max: 300 },
       { name: '周口', max: 300 },
@@ -8,31 +7,30 @@ const option1 = {
       { name: '驻马店', max: 300 },
       { name: '郑州', max: 300 },
       { name: '洛阳', max: 300 }
-    ]
+    ],
+    polygon: true,
+    axisLine: {
+      style: {
+        stroke: 'rgba(251, 114, 147, .3)'
+      }
+    },
+    splitLine: {
+      style: {
+        stroke: 'rgba(251, 114, 147, .5)',
+        fill: 'rgba(251, 114, 147, .2)'
+      }
+    }
   },
   series: [
     {
       type: 'radar',
-      data: [111, 256, 178, 152, 266, 132],
-      label: {
-        show: false
-      },
-      animationCurve: 'easeOutBounce'
-    },
-    {
-      type: 'radar',
-      data: [222, 245, 220, 130, 240, 100],
-      label: {
-        show: false
-      },
-      animationCurve: 'easeOutBounce'
+      data: [111, 256, 178, 152, 266, 132]
     }
   ]
 }
 
 const option2 = {
   radar: {
-    polygon: true,
     indicator: [
       { name: '西峡', max: 300 },
       { name: '周口', max: 300 },
@@ -40,24 +38,24 @@ const option2 = {
       { name: '驻马店', max: 300 },
       { name: '郑州', max: 300 },
       { name: '洛阳', max: 300 }
-    ]
+    ],
+    polygon: true,
+    axisLine: {
+      style: {
+        stroke: 'rgba(230, 114, 209, .3)'
+      }
+    },
+    splitLine: {
+      style: {
+        stroke: 'rgba(230, 114, 209, .5)',
+        fill: 'rgba(230, 114, 209, .2)'
+      }
+    }
   },
   series: [
     {
       type: 'radar',
-      data: [223, 189, 214, 265, 178, 155],
-      label: {
-        show: false
-      },
-      animationCurve: 'easeOutBounce'
-    },
-    {
-      type: 'radar',
-      data: [116, 256, 280, 244, 240, 255],
-      label: {
-        show: false
-      },
-      animationCurve: 'easeOutBounce'
+      data: [223, 189, 214, 265, 178, 155]
     }
   ]
 }

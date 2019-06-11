@@ -6,7 +6,7 @@ const option1 = {
     {
       type: 'gauge',
       data: [
-        { name: 'itemA', value: 55, gradient: ['#f51007', '#f97c03', '#fedc00'] }
+        { name: 'itemA', value: 55, gradient: ['#e7bcf3', '#e690d1', '#fb7293'] }
       ],
       axisLabel: {
         formatter: '{value}%'
@@ -22,7 +22,7 @@ const option2 = {
   series: [
     {
       type: 'gauge',
-      data: [ { name: 'itemA', value: 89, gradient: ['#f51007', '#f97c03', '#fedc00'] } ],
+      data: [ { name: 'itemA', value: 89, gradient: ['#e7bcf3', '#e690d1', '#fb7293'] } ],
       axisLabel: {
         formatter: '{value}%'
       }

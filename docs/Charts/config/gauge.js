@@ -153,7 +153,7 @@ export const gaugeConfig = {
      */
     style: {
       scale: [1, 1],
-      fill: '#f62606'
+      fill: '#fb7293'
     }
   },
   /**

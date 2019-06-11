@@ -32,8 +32,7 @@
 <<< @/docs/example/exampleData/gauge/gauge4.js
 </fold-box>
 
-
-## 百分比环
+## 局部渐变
 
 <demo :option="gauge5" />
 
@@ -41,12 +40,20 @@
 <<< @/docs/example/exampleData/gauge/gauge5.js
 </fold-box>
 
-## 多同心百分比环
+## 百分比环
 
 <demo :option="gauge6" />
 
 <fold-box>
 <<< @/docs/example/exampleData/gauge/gauge6.js
+</fold-box>
+
+## 多同心百分比环
+
+<demo :option="gauge7" />
+
+<fold-box>
+<<< @/docs/example/exampleData/gauge/gauge7.js
 </fold-box>
 
 <script>
@@ -56,6 +63,7 @@ import gauge3 from './exampleData/gauge/gauge3.js'
 import gauge4 from './exampleData/gauge/gauge4.js'
 import gauge5 from './exampleData/gauge/gauge5.js'
 import gauge6 from './exampleData/gauge/gauge6.js'
+import gauge7 from './exampleData/gauge/gauge7.js'
 
 export default {
   data () {
@@ -65,7 +73,8 @@ export default {
       gauge3,
       gauge4,
       gauge5,
-      gauge6
+      gauge6,
+      gauge7
     }
   }
 }

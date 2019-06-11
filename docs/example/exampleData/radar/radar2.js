@@ -13,7 +13,8 @@ const option1 = {
   series: [
     {
       type: 'radar',
-      data: [111, 256, 178, 152, 266, 132]
+      data: [111, 256, 178, 152, 266, 132],
+      animationCurve: 'easeOutBack'
     }
   ]
 }
@@ -33,7 +34,8 @@ const option2 = {
   series: [
     {
       type: 'radar',
-      data: [223, 189, 214, 265, 178, 155]
+      data: [223, 189, 214, 265, 178, 155],
+      animationCurve: 'easeOutBack'
     }
   ]
 }

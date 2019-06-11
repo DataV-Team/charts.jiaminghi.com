@@ -56,7 +56,7 @@
 <<< @/docs/example/exampleData/bar/bar7.js
 </fold-box>
 
-## 极简柱状图
+## 描边柱状图
 
 <demo :option="bar8" />
 
@@ -64,12 +64,20 @@
 <<< @/docs/example/exampleData/bar/bar8.js
 </fold-box>
 
-## 柱线混用
+## 极简柱状图
 
 <demo :option="bar9" />
 
 <fold-box>
 <<< @/docs/example/exampleData/bar/bar9.js
+</fold-box>
+
+## 柱线混用
+
+<demo :option="bar10" />
+
+<fold-box>
+<<< @/docs/example/exampleData/bar/bar10.js
 </fold-box>
 
 <script>
@@ -82,6 +90,7 @@ import bar6 from './exampleData/bar/bar6.js'
 import bar7 from './exampleData/bar/bar7.js'
 import bar8 from './exampleData/bar/bar8.js'
 import bar9 from './exampleData/bar/bar9.js'
+import bar10 from './exampleData/bar/bar10.js'
 
 export default {
   data () {
@@ -94,7 +103,8 @@ export default {
       bar6,
       bar7,
       bar8,
-      bar9
+      bar9,
+      bar10
     }
   }
 }

@@ -1,66 +1,32 @@
 const option1 = {
+  title: {
+    text: '剩余油量表'
+  },
   series: [
     {
       type: 'gauge',
-      startAngle: -Math.PI / 2,
-      endAngle: Math.PI * 1.5,
-      arcLineWidth: 25,
       data: [
-        { name: 'itemA', value: 65, gradient: ['#03c2fd', '#1ed3e5', '#2fded6'] }
+        { name: 'itemA', value: 55, gradient: ['#e7bcf3', '#e690d1', '#fb7293'], localGradient: true }
       ],
       axisLabel: {
-        show: false
-      },
-      axisTick: {
-        show: false
-      },
-      pointer: {
-        show: false
-      },
-      dataItemStyle: {
-        lineCap: 'round'
-      },
-      details: {
-        show: true,
-        formatter: '{value}%',
-        style: {
-            fill: '#1ed3e5',
-            fontSize: 35
-        }
+        formatter: '{value}%'
       }
     }
   ]
 }
 
 const option2 = {
+  title: {
+    text: '剩余油量表'
+  },
   series: [
     {
       type: 'gauge',
-      startAngle: -Math.PI / 2,
-      endAngle: Math.PI * 1.5,
-      arcLineWidth: 25,
       data: [
-        { name: 'itemA', value: 89, gradient: ['#03c2fd', '#1ed3e5', '#2fded6'] }
+        { name: 'itemA', value: 89, gradient: ['#e7bcf3', '#e690d1', '#fb7293'], localGradient: true }
       ],
       axisLabel: {
-        show: false
-      },
-      axisTick: {
-        show: false
-      },
-      pointer: {
-        show: false
-      },
-      dataItemStyle: {
-        lineCap: 'round'
-      },
-      details: {
-        show: true,
-        formatter: '{value}%',
-        style: {
-            fill: '#1ed3e5',
-            fontSize: 35
-        }
+        formatter: '{value}%'
       }
     }
   ]

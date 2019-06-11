@@ -15,7 +15,7 @@ const option1 = {
       data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
       type: 'bar',
       gradient: {
-        color: ['#526df5', '#fb31dc']
+        color: ['#37a2da', '#67e0e3']
       }
     }
   ]
@@ -38,7 +38,7 @@ const option2 = {
       data: [2339, 1899, 2118, 1790, 3265, 4465, 3996],
       type: 'bar',
       gradient: {
-        color: ['#fb31dc', '#526df5']
+        color: ['#67e0e3', '#37a2da']
       }
     }
   ]

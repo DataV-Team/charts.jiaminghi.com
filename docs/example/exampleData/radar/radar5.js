@@ -11,14 +11,24 @@ const option1 = {
     polygon: true,
     splitLine: {
       style: {
-        fill: 'rgba(150, 150, 150, .2)'
+        stroke: 'rgba(159, 230, 184, 1)'
       }
+    },
+    axisLine: {
+      style: {
+        stroke: 'rgba(159, 230, 184, 1)'
+      }
+    },
+    splitArea: {
+      show: true,
+      color: ['rgba(159, 230, 184, .2)', 'rgba(251, 114, 147, .2)']
     }
   },
   series: [
     {
       type: 'radar',
-      data: [111, 256, 178, 152, 266, 132]
+      data: [111, 256, 178, 152, 266, 132],
+      animationCurve: 'easeInOutBack'
     }
   ]
 }
@@ -36,14 +46,24 @@ const option2 = {
     polygon: true,
     splitLine: {
       style: {
-        fill: 'rgba(150, 150, 150, .2)'
+        stroke: 'rgba(159, 230, 184, 1)'
       }
+    },
+    axisLine: {
+      style: {
+        stroke: 'rgba(159, 230, 184, 1)'
+      }
+    },
+    splitArea: {
+      show: true,
+      color: ['rgba(251, 114, 147, .2)', 'rgba(159, 230, 184, .2)']
     }
   },
   series: [
     {
       type: 'radar',
-      data: [223, 189, 214, 265, 178, 155]
+      data: [223, 189, 214, 265, 178, 155],
+      animationCurve: 'easeInOutBack'
     }
   ]
 }
