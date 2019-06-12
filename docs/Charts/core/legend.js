@@ -69,7 +69,7 @@ function filterInvalidData (legend, option, chart) {
     return item
   })
 
-  if (!legendStatus) legendStatus = new Array(legend.data.legend).fill(true)
+  if (!legendStatus) legendStatus = new Array(legend.data.length).fill(true)
 
   data.forEach((item, i) => (item.status = legendStatus[i]))
 
@@ -146,7 +146,7 @@ function calcDefaultHorizontalPosition (legend) {
   data.forEach((item, i) => {
     const beforeItem = data.slice(0, i)
 
-    const beforeWidth = mulAdd(beforeItem.map(({ textWidth }) => textWidth)) + i * (itemGap + 5)
+    const beforeWidth = mulAdd(beforeItem.map(({ textWidth }) => textWidth)) + i * (itemGap + 5 + iconWidth)
 
     item.iconPosition = [beforeWidth, 0]
     item.textPosition = [beforeWidth + iconWidth + 5, 0]
