@@ -446,6 +446,17 @@ style: {
  */
 ```
 
+## rLevel
+
+```js
+/**
+ * @description 仪表盘渲染级别
+ * 级别高者优先渲染
+ * @type {Number}
+ * @default rLevel = 10
+ */
+```
+
 ## animationCurve
 
 ```js

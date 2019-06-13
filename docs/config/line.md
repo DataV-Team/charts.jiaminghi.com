@@ -232,6 +232,17 @@ style: {
 }
 ```
 
+## rLevel
+
+```js
+/**
+ * @description 折线图渲染级别
+ * 级别高者优先渲染
+ * @type {Number}
+ * @default rLevel = 10
+ */
+```
+
 ## animationCurve
 
 ```js

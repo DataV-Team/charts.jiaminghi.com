@@ -267,6 +267,17 @@ style: {
 style: {}
 ```
 
+## rLevel
+
+```js
+/**
+ * @description 柱状图渲染级别
+ * 级别高者优先渲染
+ * @type {Number}
+ * @default rLevel = 0
+ */
+```
+
 ## animationCurve
 
 ```js
