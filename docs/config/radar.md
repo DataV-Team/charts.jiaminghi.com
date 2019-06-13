@@ -20,13 +20,23 @@ sidebarDepth: 2
  */
 ```
 
+## name
+
+```js
+/**
+ * @description 图例标签名
+ * @type {String}
+ * @default name = ''
+ */
+```
+
 ## data
 
 ```js
 /**
  * @description 构成雷达图的数据
  * @type {Array}
- * @default data = null
+ * @default data = []
  * @example data = [100, 200, 300]
  */
 ```

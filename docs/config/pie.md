@@ -16,6 +16,16 @@ sidebarDepth: 2
  */
 ```
 
+## name
+
+```js
+/**
+ * @description 图例标签名
+ * @type {String}
+ * @default name = ''
+ */
+```
+
 ## radius
 
 ```js
@@ -86,6 +96,7 @@ sidebarDepth: 2
 /**
  * @description 构成饼状图的数据
  * @type {Array}
+ * @default data = []
  */
 ```
 

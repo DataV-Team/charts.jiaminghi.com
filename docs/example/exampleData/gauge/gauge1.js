@@ -8,7 +8,8 @@ const option1 = {
       data: [ { name: 'itemA', value: 55 } ],
       axisLabel: {
         formatter: '{value}%'
-      }
+      },
+      animationCurve: 'easeInOutBack'
     }
   ]
 }
@@ -23,7 +24,8 @@ const option2 = {
       data: [ { name: 'itemA', value: 89 } ],
       axisLabel: {
         formatter: '{value}%'
-      }
+      },
+      animationCurve: 'easeInOutBack'
     }
   ]
 }

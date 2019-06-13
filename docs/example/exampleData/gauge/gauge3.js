@@ -10,7 +10,8 @@ const option1 = {
       ],
       axisLabel: {
         formatter: '{value}%'
-      }
+      },
+      animationCurve: 'easeOutBounce'
     }
   ]
 }
@@ -25,7 +26,8 @@ const option2 = {
       data: [ { name: 'itemA', value: 89, gradient: ['#e7bcf3', '#e690d1', '#fb7293'] } ],
       axisLabel: {
         formatter: '{value}%'
-      }
+      },
+      animationCurve: 'easeOutBounce'
     }
   ]
 }

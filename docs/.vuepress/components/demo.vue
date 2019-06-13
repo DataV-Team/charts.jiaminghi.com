@@ -1,6 +1,6 @@
 <template>
   <div class="demo">
-    <div class="chart" ref="chart" @click="setOption" title="点击以切换图表配置"/>
+    <div class="chart" ref="chart" />
     <div class="action">
       <div class="btn blue" @click="setOption">切换数据</div>
       <div class="btn green" @click="init(true)">重置</div>
@@ -63,7 +63,6 @@ export default {
   .chart {
     width: 100%;
     height: 100%;
-    cursor: pointer;
   }
 
   &:hover .action {

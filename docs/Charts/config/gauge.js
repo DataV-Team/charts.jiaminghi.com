@@ -6,6 +6,12 @@ export const gaugeConfig = {
    */
   show: true,
   /**
+   * @description Legend name
+   * @type {String}
+   * @default name = ''
+   */
+  name: '',
+  /**
    * @description Radius of gauge
    * @type {String|Number}
    * @default radius = '60%'
@@ -57,6 +63,12 @@ export const gaugeConfig = {
    * @default arcLineWidth = 15
    */
   arcLineWidth: 15,
+  /**
+   * @description Gauge chart data
+   * @type {Array}
+   * @default data = []
+   */
+  data: [],
   /**
    * @description Data item arc default style configuration
    * @type {Object}

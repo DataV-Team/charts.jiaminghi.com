@@ -2,6 +2,18 @@ const option1 = {
   title: {
     text: '周销售额趋势'
   },
+  legend: {
+    data: [
+      {
+        name: '销售额',
+        color: '#aeeff0'
+      },
+      {
+        name: '人流量',
+        color: '#f1829f'
+      }
+    ]
+  },
   xAxis: {
     data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
   },
@@ -22,6 +34,7 @@ const option1 = {
   ],
   series: [
     {
+      name: '人流量',
       data: [1000, 1200, 900, 1500, 900, 1200, 1000],
       type: 'line',
       smooth: true,
@@ -41,6 +54,7 @@ const option1 = {
       yAxisIndex: 1
     },
     {
+      name: '销售额',
       data: [1500, 1700, 1400, 2000, 1400, 1700, 1500],
       type: 'bar',
       gradient: {
@@ -56,6 +70,18 @@ const option1 = {
 const option2 = {
   title: {
     text: '周销售额趋势'
+  },
+  legend: {
+    data: [
+      {
+        name: '销售额',
+        color: '#aeeff0'
+      },
+      {
+        name: '人流量',
+        color: '#f1829f'
+      }
+    ]
   },
   xAxis: {
     data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
@@ -77,6 +103,7 @@ const option2 = {
   ],
   series: [
     {
+      name: '人流量',
       data: [1200, 1000, 1500, 900, 1500, 1000, 1200],
       type: 'line',
       smooth: true,
@@ -95,6 +122,7 @@ const option2 = {
       yAxisIndex: 1
     },
     {
+      name: '销售额',
       data: [1700, 1500, 2000, 1400, 2000, 1500, 1700],
       type: 'bar',
       gradient: {

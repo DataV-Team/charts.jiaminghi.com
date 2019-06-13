@@ -9,26 +9,32 @@ import { deepMerge, mulAdd } from '../util'
 export function legend (chart, option = {}) {
   let { legend } = option
 
-  legend = deepMerge(deepClone(legendConfig, true), legend)
+  if (legend) {
+    legend = deepMerge(deepClone(legendConfig, true), legend)
 
-  legend = initLegendData(legend)
+    legend = initLegendData(legend)
+  
+    legend = filterInvalidData(legend, option, chart)
+  
+    legend = calcLegendTextWidth(legend, chart)
+  
+    legend = calcLegendPosition(legend, chart)
 
-  legend = filterInvalidData(legend, option, chart)
-
-  legend = calcLegendTextWidth(legend, chart)
-
-  legend = calcLegendPosition(legend, chart)
+    legend = [legend]
+  } else {
+    legend = []
+  }
 
   doUpdate({
     chart,
-    series: [legend],
+    series: legend,
     key: 'legendIcon',
     getGraphConfig: getIconConfig
   })
 
   doUpdate({
     chart,
-    series: [legend],
+    series: legend,
     key: 'legendText',
     getGraphConfig: getTextConfig
   })
@@ -66,10 +72,12 @@ function filterInvalidData (legend, option, chart) {
 
     if (!item.color) item.color = result.color
 
+    if (!item.icon) item.icon = result.type
+
     return item
   })
 
-  if (!legendStatus) legendStatus = new Array(legend.data.length).fill(true)
+  if (!legendStatus || legendStatus.length !== legend.data.length) legendStatus = new Array(legend.data.length).fill(true)
 
   data.forEach((item, i) => (item.status = legendStatus[i]))
 
@@ -119,42 +127,68 @@ function calcLegendPosition (legend, chart) {
 }
 
 function calcHorizontalPosition (legend, chart) {
-  calcDefaultHorizontalPosition(legend)
+  const { iconHeight, itemGap } = legend
 
-  const xOffset = getHorizontalXOffset(legend, chart)
+  const lines = calcDefaultHorizontalPosition(legend, chart)
+
+  const xOffsets = lines.map(line => getHorizontalXOffset(line, legend, chart))
   const yOffset = getHorizontalYOffset(legend, chart)
 
-  const align = {
-    textAlign: 'left',
-    textBaseline: 'middle'
-  }
+  const align = { textAlign: 'left', textBaseline: 'middle' }
 
-  legend.data.forEach(item => {
-    const { iconPosition, textPosition } = item
+  lines.forEach((line, i) => line.forEach(item => {
+      const { iconPosition, textPosition } = item
 
-    item.iconPosition = mergeOffset(iconPosition, [xOffset, yOffset])
-    item.textPosition = mergeOffset(textPosition, [xOffset, yOffset])
-    item.align = align
-  })  
+      let xOffset = xOffsets[i]
+      const realYOffset = yOffset + i * (itemGap + iconHeight)
 
-  return legend
+      item.iconPosition = mergeOffset(iconPosition, [xOffset, realYOffset])
+      item.textPosition = mergeOffset(textPosition, [xOffset, realYOffset])
+      item.align = align
+    })
+  )
 }
 
-function calcDefaultHorizontalPosition (legend) {
-  const { data, itemGap, iconWidth } = legend
+function calcDefaultHorizontalPosition (legend, chart) {
+  const { data, iconWidth } = legend
+
+  const w = chart.render.area[0]
+
+  let startIndex = 0
+
+  const lines = [[]]
 
   data.forEach((item, i) => {
-    const beforeItem = data.slice(0, i)
+    let beforeWidth = getBeforeWidth(startIndex, i, legend)
 
-    const beforeWidth = mulAdd(beforeItem.map(({ textWidth }) => textWidth)) + i * (itemGap + 5 + iconWidth)
+    const endXPos = beforeWidth + iconWidth + 5 + item.textWidth
+
+    if (endXPos >= w) {
+      startIndex = i
+      beforeWidth = getBeforeWidth(startIndex, i, legend)
+
+      lines.push([])
+    }
 
     item.iconPosition = [beforeWidth, 0]
     item.textPosition = [beforeWidth + iconWidth + 5, 0]
+
+    lines.slice(-1)[0].push(item)
   })
+
+  return lines
 }
 
-function getHorizontalXOffset (legend, chart) {
-  let { left, right, data, iconWidth, itemGap } = legend
+function getBeforeWidth (startIndex, currentIndex, legend) {
+  const { data, iconWidth, itemGap } = legend
+
+  const beforeItem = data.slice(startIndex, currentIndex)
+
+  return mulAdd(beforeItem.map(({ textWidth }) => textWidth)) + (currentIndex - startIndex) * (itemGap + 5 + iconWidth)
+}
+
+function getHorizontalXOffset (data, legend, chart) {
+  let { left, right, iconWidth, itemGap } = legend
 
   const w = chart.render.area[0]
 
@@ -206,14 +240,93 @@ function mergeOffset ([x, y], [ox, oy]) {
 }
 
 function calcVerticalPosition (legend, chart) {
+  const [isRight, xOffset] = getVerticalXOffset(legend, chart)
+  const yOffset = getVerticalYOffset(legend, chart)
 
+  calcDefaultVerticalPosition(legend, isRight)
+
+  let align = { textAlign: 'left', textBaseline: 'middle' }
+
+  legend.data.forEach(item => {
+    const { textPosition, iconPosition } = item
+
+    item.textPosition = mergeOffset(textPosition, [xOffset, yOffset])
+    item.iconPosition = mergeOffset(iconPosition, [xOffset, yOffset])
+    item.align = align
+  })
+}
+
+function getVerticalXOffset (legend, chart) {
+  const { left, right } = legend
+
+  const w = chart.render.area[0]
+
+  const horizontal = [left, right].findIndex(pos => pos !== 'auto')
+
+  if (horizontal === -1) {
+    return [
+      true,
+      w - 10
+    ]
+  } else {
+    let offset = [left, right][horizontal]
+
+    if (typeof offset !== 'number') offset = parseInt(offset) / 100 * w
+
+    return [
+      Boolean(horizontal),
+      offset
+    ]
+  }
+}
+
+function getVerticalYOffset (legend, chart) {
+  const { iconHeight, itemGap, data, top, bottom } = legend
+
+  const h = chart.render.area[1]
+
+  const dataNum = data.length
+
+  const allHeight = dataNum * iconHeight + (dataNum - 1) * itemGap
+
+  const vertical = [top, bottom].findIndex(pos => pos !== 'auto')
+
+  if (vertical === -1) {
+    return (h - allHeight) / 2
+  } else {
+    let offset = [top, bottom][vertical]
+
+    if (typeof offset !== 'number') offset = parseInt(offset) / 100 * h
+
+    if (vertical === 1) offset = h - offset - allHeight
+
+    return offset
+  }
+}
+
+function calcDefaultVerticalPosition (legend, isRight) {
+  const { data, iconWidth, iconHeight, itemGap } = legend
+
+  const halfIconHeight = iconHeight / 2
+
+  data.forEach((item, i) => {
+    const { textWidth } = item
+
+    const yPos = (iconHeight + itemGap) * i + halfIconHeight
+
+    const iconXPos = isRight ? (0 - iconWidth) : 0
+    const textXpos = isRight ? (iconXPos - 5 - textWidth) : (iconWidth + 5)
+
+    item.iconPosition = [iconXPos, yPos]
+    item.textPosition = [textXpos, yPos]
+  })
 }
 
 function getIconConfig (legendItem, updater) {
   const { data, selectAble, animationCurve, animationFrame } = legendItem
 
-  return data.map((foo, i) => ({
-    name: 'rect',
+  return data.map((item, i) => ({
+    name: item.icon === 'line' ? 'lineIcon' : 'rect',
     visible: legendItem.show,
     hover: selectAble,
     click: selectAble,

@@ -16,6 +16,16 @@ sidebarDepth: 2
  */
 ```
 
+## name
+
+```js
+/**
+ * @description 图例标签名
+ * @type {String}
+ * @default name = ''
+ */
+```
+
 ## center
 
 ```js
@@ -116,6 +126,7 @@ sidebarDepth: 2
 /**
  * @description 构成仪表盘的圆弧的数据
  * @type {Array}
+ * @default data = []
  */
 ```
 

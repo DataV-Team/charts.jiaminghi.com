@@ -1,4 +1,7 @@
 const option1 = {
+  legend: {
+    data: ['同比', '环比']
+  },
   radar: {
     polygon: true,
     indicator: [
@@ -12,6 +15,7 @@ const option1 = {
   },
   series: [
     {
+      name: '同比',
       type: 'radar',
       data: [111, 256, 178, 152, 266, 132],
       label: {
@@ -20,6 +24,7 @@ const option1 = {
       animationCurve: 'easeOutBounce'
     },
     {
+      name: '环比',
       type: 'radar',
       data: [222, 245, 220, 130, 240, 100],
       label: {
@@ -31,6 +36,9 @@ const option1 = {
 }
 
 const option2 = {
+  legend: {
+    data: ['同比', '环比']
+  },
   radar: {
     polygon: true,
     indicator: [
@@ -44,6 +52,7 @@ const option2 = {
   },
   series: [
     {
+      name: '同比',
       type: 'radar',
       data: [223, 189, 214, 265, 178, 155],
       label: {
@@ -52,6 +61,7 @@ const option2 = {
       animationCurve: 'easeOutBounce'
     },
     {
+      name: '环比',
       type: 'radar',
       data: [116, 256, 280, 244, 240, 255],
       label: {

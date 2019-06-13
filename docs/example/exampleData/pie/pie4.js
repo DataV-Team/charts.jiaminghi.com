@@ -2,8 +2,13 @@ const option1 = {
   title: {
     text: '畅销饮料占比饼状图'
   },
+  legend: {
+    data: ['同比', '环比'],
+    orient: 'vertical'
+  },
   series: [
     {
+      name: '同比',
       type: 'pie',
       data: [
         { name: '可口可乐', value: 93 },
@@ -21,6 +26,7 @@ const option1 = {
       }
     },
     {
+      name: '环比',
       type: 'pie',
       data: [
         { name: '可口可乐', value: 93 },
@@ -38,8 +44,12 @@ const option2 = {
   title: {
     text: '畅销饮料占比饼状图'
   },
+  legend: {
+    data: ['同比', '环比']
+  },
   series: [
     {
+      name: '同比',
       type: 'pie',
       data: [
         { name: '可口可乐', value: 93 },
@@ -56,6 +66,7 @@ const option2 = {
       }
     },
     {
+      name: '环比',
       type: 'pie',
       data: [
         { name: '可口可乐', value: 93 },

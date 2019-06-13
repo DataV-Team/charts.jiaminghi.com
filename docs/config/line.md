@@ -16,6 +16,16 @@ sidebarDepth: 2
  */
 ```
 
+## name
+
+```js
+/**
+ * @description 图例标签名
+ * @type {String}
+ * @default name = ''
+ */
+```
+
 ## smooth
 
 ```js
@@ -54,7 +64,7 @@ sidebarDepth: 2
 /**
  * @description 构成折线图的数据
  * @type {Array}
- * @default data = null
+ * @default data = []
  * @example data = [100, 200, 300]
  */
 ```

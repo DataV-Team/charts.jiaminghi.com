@@ -16,6 +16,16 @@ sidebarDepth: 2
  */
 ```
 
+## name
+
+```js
+/**
+ * @description 图例标签名
+ * @type {String}
+ * @default name = ''
+ */
+```
+
 ## shapeType
 
 ```js
@@ -104,7 +114,7 @@ sidebarDepth: 2
 /**
  * @description 构成柱状图的数据
  * @type {Array}
- * @default data = null
+ * @default data = []
  * @example data = [100, 200, 300]
  */
 ```

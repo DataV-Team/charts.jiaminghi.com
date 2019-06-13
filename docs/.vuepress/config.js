@@ -45,6 +45,7 @@ module.exports = {
           '/config/': [
             '',
             'title',
+            'legend',
             'xAxis',
             'yAxis',
             'grid',
