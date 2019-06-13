@@ -4,6 +4,10 @@
 
 由[CRender](http://crender.jiaminghi.com)提供图形渲染。
 
+<demonstration />
+
+点击以**重新**播放演示。
+
 ## 安装
 
 * npm安装
