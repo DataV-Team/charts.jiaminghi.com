@@ -26,6 +26,17 @@ sidebarDepth: 2
  */
 ```
 
+## stack
+
+```js
+/**
+ * @description 数据堆叠
+ * 相同stack的series元素的data值将被叠加（后边的值将被叠加在前边的值上）
+ * @type {String}
+ * @default name = ''
+ */
+```
+
 ## shapeType
 
 ```js

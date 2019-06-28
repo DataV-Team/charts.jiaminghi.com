@@ -44,6 +44,7 @@ module.exports = {
         sidebar: {
           '/config/': [
             '',
+            'color',
             'title',
             'legend',
             'xAxis',
