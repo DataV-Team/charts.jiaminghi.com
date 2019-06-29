@@ -6,7 +6,7 @@ sidebarDepth: 2
 
 将series子元素的`type`属性配置为`radar`，即可使用雷达图。
 
-:::tip
+::: tip TIP
 使用雷达图需要配置`radar`雷达坐标系。
 :::
 
