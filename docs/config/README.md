@@ -12,7 +12,7 @@
 
 ## 颜色
 
-配置中使用的颜色支持`Hex|rgb|rgba`这三种类型，暂不支持如`red`等描述颜色。图表默认配色如下
+图表默认配色如下：
 
 <div class="color-container">
   <div
