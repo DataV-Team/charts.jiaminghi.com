@@ -562,7 +562,6 @@ export default {
             ],
             splitArea: {
               show: true,
-              color: ['rgba(159, 230, 184, 0)']
             }
           },
           series: [
