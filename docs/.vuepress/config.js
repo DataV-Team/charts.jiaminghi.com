@@ -42,6 +42,9 @@ module.exports = {
           }
         ],
         sidebar: {
+          '/guide/': [
+            ''
+          ],
           '/config/': [
             '',
             'color',

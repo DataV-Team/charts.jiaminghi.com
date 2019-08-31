@@ -36,3 +36,17 @@ myChart.setOption({
   // ...otherConfig
 })
 ```
+
+## 快速体验
+
+```html
+<!--资源位于个人服务器仅供体验和测试，请勿在生产环境使用-->
+<!--调试版-->
+<script src="http://lib.jiaminghi.com/charts/charts.map.js"></script>
+<!--压缩版-->
+<script src="http://lib.jiaminghi.com/charts/charts.min.js"></script>
+<script>
+  const Charts = window.Charts.default
+  // do something
+</script>
+```
