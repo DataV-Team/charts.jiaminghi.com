@@ -699,7 +699,7 @@
   dependencies:
     "@babel/polyfill" "^7.4.4"
 
-"@jiaminghi/fs@^0.0.2":
+"@jiaminghi/fs@0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@jiaminghi/fs/-/fs-0.0.2.tgz#bbf1b2ba9a985442fe9de738836c809c482b2b5e"
   integrity sha512-MApj6o+/cHbbbAaP85q0NnajxVm6IiAJlO9/WNN+RXJ49GwhyTXa4zrT49UEL1j4ZX6jDkhbhjOAis893s80Zg==
