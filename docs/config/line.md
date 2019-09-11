@@ -178,7 +178,7 @@ style: {
 }
 ```
 
-## babel
+## label
 
 ```js
 /**
@@ -187,7 +187,7 @@ style: {
  */
 ```
 
-### babel.show
+### label.show
 
 ```js
 /**
@@ -197,7 +197,7 @@ style: {
  */
 ```
 
-### babel.position
+### label.position
 
 ```js
 /**
@@ -208,7 +208,7 @@ style: {
  */
 ```
 
-### babel.offset
+### label.offset
 
 ```js
 /**
@@ -218,7 +218,7 @@ style: {
  */
 ```
 
-### babel.formatter
+### label.formatter
 
 ```js
 /**
@@ -230,7 +230,7 @@ style: {
  */
 ```
 
-### babel.style
+### label.style
 
 ```js
 /**
