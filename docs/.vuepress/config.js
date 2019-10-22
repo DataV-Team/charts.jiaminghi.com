@@ -38,7 +38,7 @@ module.exports = {
           },
           {
             text: 'GitHub',
-            link: 'https://github.com/jiaming743/charts'
+            link: 'https://github.com/DataV-Team/Charts'
           }
         ],
         sidebar: {
@@ -80,7 +80,7 @@ module.exports = {
           },
           {
             text: 'GitHub',
-            link: 'https://github.com/jiaming743/charts.jiaminghi.com'
+            link: 'https://github.com/DataV-Team/Charts'
           }
         ],
         sidebar: {
