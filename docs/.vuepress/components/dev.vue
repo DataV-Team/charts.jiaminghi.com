@@ -18,220 +18,46 @@ export default {
     }
   },
   methods: {
-    init () {
-      const { $refs } = this;
+    async init () {
+      const { $refs, randomNum } = this;
 
       const myChart = this.myChart = new Charts($refs["chart"])
 
-      myChart.setOption({
-        title: {
-          text: '周销售额趋势'
-        },
-        grid: {
-          // bottom: 100
-        },
-        xAxis: {
-          name: '第二周',
-          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-        },
-        yAxis: {
-          name: '销售额',
-          data: 'value',
-          min: 0
-        },
-        legend: {
-          data: [
-            '------------------------itema', '------------------------itemb', '------------------------itemc',
-            '------------------------itemd', '------------------------iteme', '------------------------itemf',
-            '------------------------itemg', '------------------------itemh', '------------------------itemi',
-            '------------------------itemj', '------------------------itemk', '------------------------iteml',
-            ],
-          orient: 'vertical',
-          left: 10,
-          bottom: 10
-        },
-        series: [
-          {
-            name: '------------------------itema',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------itemb',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------itemc',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------itemd',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------iteme',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------itemf',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------itemg',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------itemh',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------itemi',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------itemj',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------itemk',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          },
-          {
-            name: '------------------------iteml',
-            data: [100, 80, 60, 40, 120, 30, 90],
-            type: 'line',
-            stack: 'a'
-          }
-        ]
-      })
+      for (let i = 0; i < 99999; i++) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
 
-      // setTimeout(() => {
-      //   myChart.setOption({
-      //   title: {
-      //     text: '周销售额趋势'
-      //   },
-      //   grid: {
-      //     // bottom: 100
-      //   },
-      //   xAxis: {
-      //     name: '第二周',
-      //     data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-      //   },
-      //   yAxis: {
-      //     name: '销售额',
-      //     data: 'value',
-      //     min: 0
-      //   },
-      //   legend: {
-      //     data: [
-      //       '------------------------itema', '------------------------itemb', '------------------------itemc',
-      //       '------------------------itemd', '------------------------iteme', '------------------------itemf',
-      //       '------------------------itemg', '------------------------itemh', '------------------------itemi',
-      //       '------------------------itemj', '------------------------itemk', '------------------------iteml',
-      //       ],
-      //     orient: 'vertical',
-      //     left: 10,
-      //     bottom: 10
-      //   },
-      //   series: [
-      //     {
-      //       name: '------------------------itema',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------itemb',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------itemc',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------itemd',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------iteme',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------itemf',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------itemg',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------itemh',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------itemi',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------itemj',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------itemk',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     },
-      //     {
-      //       name: '------------------------iteml',
-      //       data: [100, 80, 60, 40, 120, 30, 90],
-      //       type: 'line',
-      //       stack: 'a'
-      //     }
-      //   ]
-      //   })
-      // }, 2000)
-
-      console.warn(myChart)
+        myChart.setOption({
+          series: [
+            {
+              type: 'pie',
+              data: [
+                { name: '可口可乐', value: randomNum(30, 100) },
+                { name: '百事可乐', value: randomNum(30, 80) },
+                { name: '哇哈哈', value: randomNum(30, 60) },
+                { name: '康师傅', value: randomNum(40, 100) },
+                { name: '统一', value: randomNum(50, 100) },
+              ],
+              radius: ['40%', '50%'],
+              insideLabel: {
+                show: true
+              }
+            }
+          ]
+        }, true)
+      }
+    },
+    randomNum (minNum, maxNum){ 
+      switch(arguments.length){ 
+        case 1:
+          return parseInt(Math.random() * minNum + 1, 10)
+        break
+        case 2:
+          return parseInt(Math.random() * (maxNum - minNum + 1) + minNum,10)
+        break
+        default:
+            return 0
+        break
+      }
     }
   },
   async mounted () {
