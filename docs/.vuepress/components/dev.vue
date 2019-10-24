@@ -24,7 +24,7 @@ export default {
       const myChart = this.myChart = new Charts($refs["chart"])
 
       for (let i = 0; i < 99999; i++) {
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise(resolve => setTimeout(resolve, 500))
 
         myChart.setOption({
           series: [
