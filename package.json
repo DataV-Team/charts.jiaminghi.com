@@ -9,7 +9,7 @@
     "dev": "vuepress dev docs"
   },
   "dependencies": {
-    "@jiaminghi/c-render": "*",
+    "@jiaminghi/c-render": "^0.4.3",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "vuepress": "^1.0.0-rc.1"

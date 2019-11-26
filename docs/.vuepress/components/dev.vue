@@ -23,28 +23,25 @@ export default {
 
       const myChart = this.myChart = new Charts($refs["chart"])
 
-      for (let i = 0; i < 99999; i++) {
-        await new Promise(resolve => setTimeout(resolve, 500))
-
-        myChart.setOption({
-          series: [
-            {
-              type: 'pie',
-              data: [
-                { name: '可口可乐', value: randomNum(30, 100) },
-                { name: '百事可乐', value: randomNum(30, 80) },
-                { name: '哇哈哈', value: randomNum(30, 60) },
-                { name: '康师傅', value: randomNum(40, 100) },
-                { name: '统一', value: randomNum(50, 100) },
-              ],
-              radius: ['40%', '50%'],
-              insideLabel: {
-                show: true
-              }
-            }
-          ]
-        }, true)
-      }
+      myChart.setOption({
+        title: {
+          text: '周销售额趋势'
+        },
+        xAxis: {
+          name: '第一周',
+          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+        },
+        yAxis: {
+          name: '销售额',
+          data: 'value'
+        },
+        series: [
+          {
+            type: 'bar',
+            data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
+          }
+        ]
+      }, true)
     },
     randomNum (minNum, maxNum){ 
       switch(arguments.length){ 

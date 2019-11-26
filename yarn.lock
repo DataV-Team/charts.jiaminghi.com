@@ -570,14 +570,6 @@
     "@babel/helper-regex" "^7.4.4"
     regexpu-core "^4.5.4"
 
-"@babel/polyfill@^7.4.4":
-  version "7.4.4"
-  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.4.4.tgz#78801cf3dbe657844eeabf31c1cae3828051e893"
-  integrity sha512-WlthFLfhQQhh+A2Gn5NSFl0Huxz36x86Jn+E9OW7ibK8edKPq+KLy4apM1yDpQ8kJOVi1OVjpP4vSDLdrI04dg==
-  dependencies:
-    core-js "^2.6.5"
-    regenerator-runtime "^0.13.2"
-
 "@babel/preset-env@^7.0.0 < 7.4.0":
   version "7.3.4"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.3.4.tgz#887cf38b6d23c82f19b5135298bdb160062e33e1"
@@ -642,6 +634,13 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
+"@babel/runtime@^7.5.5":
+  version "7.7.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.7.4.tgz#b23a856751e4bf099262f867767889c0e3fe175b"
+  integrity sha512-r24eVUUr0QqNZa+qrImUk8fn5SPhHq+IfYvIoIMg0do3GdK9sMdiLKP3GYVVaxpPKORgm8KRKaNTEhAjgIpLMw==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@babel/template@^7.1.0", "@babel/template@^7.4.4":
   version "7.4.4"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.4.4.tgz#f4b88d1225689a08f5bc3a17483545be9e4ed237"
@@ -676,28 +675,28 @@
     to-fast-properties "^2.0.0"
 
 "@jiaminghi/bezier-curve@*":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@jiaminghi/bezier-curve/-/bezier-curve-0.0.5.tgz#1c18c2752e0ed2f6871692a7cdec3c1c432599c5"
-  integrity sha512-K8RVGOj0JfGh0C3SG7J5y+LpObvDF4VDICXh47UGQrtwLOOCVHDPXrXr0zqElRVRxKQqVfFLNy9XRFUrfN99rw==
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@jiaminghi/bezier-curve/-/bezier-curve-0.0.9.tgz#5196aca93c8b061a612b4c3eabcedf9490cef6ee"
+  integrity sha512-u9xJPOEl6Dri2E9FfmJoGxYQY7vYJkURNX04Vj64tdi535tPrpkuf9Sm0lNr3QTKdHQh0DdNRsaa62FLQNQEEw==
   dependencies:
-    "@babel/polyfill" "^7.4.4"
+    "@babel/runtime" "^7.5.5"
 
-"@jiaminghi/c-render@*":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@jiaminghi/c-render/-/c-render-0.4.0.tgz#77c060dfa95cf212b6000e50fe0706417b808915"
-  integrity sha512-154iIHQSE/LvgOW6M86kV+Af0FB1nOVuqKhEPUkXsl3i5I7PPabENUbzn87pCns4dCwIbZoYUOp7j1sdU4oaTA==
+"@jiaminghi/c-render@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@jiaminghi/c-render/-/c-render-0.4.3.tgz#982ebd8f71b443bb9507834227834973ebd9b6d8"
+  integrity sha512-FJfzj5hGj7MLqqqI2D7vEzHKbQ1Ynnn7PJKgzsjXaZpJzTqs2Yw5OSeZnm6l7Qj7jyPAP53lFvEQNH4o4j6s+Q==
   dependencies:
-    "@babel/polyfill" "^7.4.4"
+    "@babel/runtime" "^7.5.5"
     "@jiaminghi/bezier-curve" "*"
     "@jiaminghi/color" "*"
     "@jiaminghi/transition" "*"
 
 "@jiaminghi/color@*":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@jiaminghi/color/-/color-0.0.6.tgz#886aae4f30cee2a9ad842af8a26e73ee48455663"
-  integrity sha512-wCCLPR+U/FLDpVDHaiFkebKFqognGVpMa2ArDumDtO+lj2wh3IyOrbjHKktJFtonF8udlnQW3woion6a8oZLlg==
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@jiaminghi/color/-/color-0.1.1.tgz#bddf9012dfce6982d3829a983ffeb91ee9dda7b6"
+  integrity sha512-M09+Sb5HGqVim0zo+nG5gU1v+6gXT8ptr0BZR6dMGt83XmCJgnZtO8s7llTW4hLFFFM5co6geZvTekqLpSPAAQ==
   dependencies:
-    "@babel/polyfill" "^7.4.4"
+    "@babel/runtime" "^7.5.5"
 
 "@jiaminghi/fs@0.0.2":
   version "0.0.2"
@@ -705,11 +704,11 @@
   integrity sha512-MApj6o+/cHbbbAaP85q0NnajxVm6IiAJlO9/WNN+RXJ49GwhyTXa4zrT49UEL1j4ZX6jDkhbhjOAis893s80Zg==
 
 "@jiaminghi/transition@*":
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/@jiaminghi/transition/-/transition-1.1.9.tgz#02e883392c417b8ded4342d3aa9a1391dd3d9bdd"
-  integrity sha512-4Trv2l8E7NPry8FVubnNvkmvzYr8c3MMDHyPe43xok1W8YXZMLAgGy1eAMCOd7VBIO1GMMTpz0Y3am3WyZnLsQ==
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/@jiaminghi/transition/-/transition-1.1.11.tgz#576d8af092434b34201eba5eaecc79dd33c8ad8c"
+  integrity sha512-owBggipoHMikDHHDW5Gc7RZYlVuvxHADiU4bxfjBVkHDAmmck+fCkm46n2JzC3j33hWvP9nSCAeh37t6stgWeg==
   dependencies:
-    "@babel/polyfill" "^7.4.4"
+    "@babel/runtime" "^7.5.5"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"

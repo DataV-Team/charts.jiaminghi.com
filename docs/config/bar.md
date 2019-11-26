@@ -278,6 +278,31 @@ style: {
 style: {}
 ```
 
+## independentColor
+
+```js
+/**
+ * @description 独立配色模式
+ * 设置为true时，可以配置每一个柱的颜色
+ * @type {Boolean}
+ * @default independentColor = false
+ */
+```
+
+## independentColors
+
+```js
+/**
+ * @description 独立配色颜色
+ * 仅在启用独立配色模式后生效
+ * 默认值与根配置下的color属性相同，用于分别设置每一个柱的颜色
+ * 设置二维颜色数组时，将自动应用渐变色独立配色
+ * @type {Array}
+ * @example independentColor = ['#fff', '#000']
+ * @example independentColor = [['#fff', '#000'], '#000']
+ */
+```
+
 ## rLevel
 
 ```js
