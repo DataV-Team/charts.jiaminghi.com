@@ -24,21 +24,26 @@ export default {
       const myChart = this.myChart = new Charts($refs["chart"])
 
       myChart.setOption({
+        color: ['#19aef2', '#4bdbc6', '#f87421'],
         title: {
-          text: '周销售额趋势'
-        },
-        xAxis: {
-          name: '第一周',
-          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-        },
-        yAxis: {
-          name: '销售额',
-          data: 'value'
+          text: '本日采购单类型金额占比',
+          style: {
+            fill: 'white',
+          },
+          show: false
         },
         series: [
           {
-            type: 'bar',
-            data: [1200, 2230, 1900, 2100, 3500, 4200, 3985],
+            type: 'pie',
+            data: [
+              { name: '统采', value: 22633.86 },
+              { name: '补采', value: 3468.28 },
+              // { name: '临采', value: 100 },
+            ],
+            insideLabel: {
+              show: true
+            },
+            percentToFixed: 2
           }
         ]
       }, true)
