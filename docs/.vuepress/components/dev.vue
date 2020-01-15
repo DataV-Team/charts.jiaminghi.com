@@ -10,6 +10,10 @@
 <script>
 import Charts from "../../Charts/index.js"
 
+let option = `{"series":[{"type":"pie","radius":"55%","activeRadius":"60%","data":[{"name":"公安","value":1799,"radius":[67.5,97.5]},{"value":1789,"name":"人社","radius":[67.5,97.5]},{"value":1043,"name":"医保","radius":[67.5,97.5]},{"value":787,"name":"住建","radius":[67.5,97.5]},{"value":587,"name":"总工会","radius":[67.5,97.5]},{"value":251,"name":"档案","radius":[67.5,97.5]},{"value":136,"name":"民政","radius":[67.5,97.5]},{"value":46,"name":"卫健","radius":[67.5,97.5]},{"value":35,"name":"残联","radius":[67.5,97.5]},{"value":19,"name":"公安1","radius":[67.5,97.5]},{"value":7,"name":"粮食","radius":[67.5,97.5]}],"lineWidth":30,"activeTimeGap":3000,"color":["#e8dd82","#ff34a3","#c716e8","#4ae814","#100de8","#e80700","#797B7F","#CFB2A9","#DE9325","#7FAE90","#9FDABF","#E98F6F","#6AB0B8","#334B5C","#fc0503"],"digitalFlopStyle":{"fontSize":25,"fill":"#fff"},"digitalFlopToFixed":0,"animationCurve":"easeOutCubic","animationFrame":50,"outsideLabel":{"show":false}}],"color":["#e8dd82","#ff34a3","#c716e8","#4ae814","#100de8","#e80700","#797B7F","#CFB2A9","#DE9325","#7FAE90","#9FDABF","#E98F6F","#6AB0B8","#334B5C","#fc0503"]}`
+
+option = JSON.parse(option)
+
 export default {
   name: "Dev",
   data () {
@@ -23,30 +27,7 @@ export default {
 
       const myChart = this.myChart = new Charts($refs["chart"])
 
-      myChart.setOption({
-        color: ['#19aef2', '#4bdbc6', '#f87421'],
-        title: {
-          text: '本日采购单类型金额占比',
-          style: {
-            fill: 'white',
-          },
-          show: false
-        },
-        series: [
-          {
-            type: 'pie',
-            data: [
-              { name: '统采', value: 22633.86 },
-              { name: '补采', value: 3468.28 },
-              // { name: '临采', value: 100 },
-            ],
-            insideLabel: {
-              show: true
-            },
-            percentToFixed: 2
-          }
-        ]
-      }, true)
+      myChart.setOption(option, true)
     },
     randomNum (minNum, maxNum){ 
       switch(arguments.length){ 
