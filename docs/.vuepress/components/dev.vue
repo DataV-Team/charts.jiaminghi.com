@@ -10,9 +10,22 @@
 <script>
 import Charts from "../../Charts/index.js"
 
-let option = `{"series":[{"type":"pie","radius":"55%","activeRadius":"60%","data":[{"name":"公安","value":1799,"radius":[67.5,97.5]},{"value":1789,"name":"人社","radius":[67.5,97.5]},{"value":1043,"name":"医保","radius":[67.5,97.5]},{"value":787,"name":"住建","radius":[67.5,97.5]},{"value":587,"name":"总工会","radius":[67.5,97.5]},{"value":251,"name":"档案","radius":[67.5,97.5]},{"value":136,"name":"民政","radius":[67.5,97.5]},{"value":46,"name":"卫健","radius":[67.5,97.5]},{"value":35,"name":"残联","radius":[67.5,97.5]},{"value":19,"name":"公安1","radius":[67.5,97.5]},{"value":7,"name":"粮食","radius":[67.5,97.5]}],"lineWidth":30,"activeTimeGap":3000,"color":["#e8dd82","#ff34a3","#c716e8","#4ae814","#100de8","#e80700","#797B7F","#CFB2A9","#DE9325","#7FAE90","#9FDABF","#E98F6F","#6AB0B8","#334B5C","#fc0503"],"digitalFlopStyle":{"fontSize":25,"fill":"#fff"},"digitalFlopToFixed":0,"animationCurve":"easeOutCubic","animationFrame":50,"outsideLabel":{"show":false}}],"color":["#e8dd82","#ff34a3","#c716e8","#4ae814","#100de8","#e80700","#797B7F","#CFB2A9","#DE9325","#7FAE90","#9FDABF","#E98F6F","#6AB0B8","#334B5C","#fc0503"]}`
-
-option = JSON.parse(option)
+const option = {
+    xAxis: {
+    name: '第一周',
+    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+  },
+  yAxis: {
+    name: '销售额',
+    data: 'value'
+  },
+  series: [
+    {
+      data: [20, 20, 20, 20, 20, 20, 20],
+      type: 'line'
+    }
+  ]
+}
 
 export default {
   name: "Dev",
