@@ -10,22 +10,7 @@
 <script>
 import Charts from "../../Charts/index.js"
 
-const option = {
-    xAxis: {
-    name: '第一周',
-    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-  },
-  yAxis: {
-    name: '销售额',
-    data: 'value'
-  },
-  series: [
-    {
-      data: [20, 20, 20, 20, 20, 20, 20],
-      type: 'line'
-    }
-  ]
-}
+const option = {"series":[{"type":"pie","radius":"50%","activeRadius":"55%","data":[{"name":"周口","value":16984,"radius":[65,85]},{"name":"南阳","value":48872,"radius":[65,85]},{"name":"西峡","value":17366,"radius":[65,85]},{"name":"驻马店","value":6101,"radius":[65,85]},{"name":"新乡","value":3197,"radius":[65,85]},{"name":"郑州","value":97,"radius":[65,85]}],"lineWidth":20,"activeTimeGap":3000,"color":[],"digitalFlopStyle":{"fontSize":25,"fill":"#fff"},"digitalFlopToFixed":2,"animationCurve":"easeOutCubic","animationFrame":50,"showOriginValue":false,"showValue":true,"fontSize":14,"outsideLabel":{"show":false}, outsideLabel: {show: true, formatter: '{percent}'}}],"color":[]}
 
 export default {
   name: "Dev",
