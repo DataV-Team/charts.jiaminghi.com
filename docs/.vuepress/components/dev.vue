@@ -26,9 +26,9 @@ export default {
       const text = render.add({
         name: 'numberText',
         shape: {
-          number: [10123123],
+          number: [10123123, 32324],
           position: [200, 20],
-          content: '{nt}元',
+          content: '{nt}元\n{nt}个',
           formatter (number) {
             const numbers = number.toString().split('').reverse()
             const segs = []
@@ -44,7 +44,7 @@ export default {
       })
 
       text.animation('shape', {
-        number: [23234234]
+        number: [23234234, 11233]
       })
     },
     randomNum (minNum, maxNum){ 

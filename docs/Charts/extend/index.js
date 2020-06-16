@@ -1,5 +1,7 @@
 import { extendNewGraph } from '@jiaminghi/c-render'
 
+import { text } from '@jiaminghi/c-render/lib/config/graphs'
+
 import { getCircleRadianPoint, checkPointIsInRect } from '@jiaminghi/c-render/lib/plugin/util'
 
 import { getColorFromRgbValue } from '@jiaminghi/color'
@@ -134,6 +136,7 @@ const numberText = {
     content: '',
     position: [0, 0],
     toFixed: 0,
+    rowGap: 0,
     formatter: null
   },
 
@@ -151,9 +154,7 @@ const numberText = {
   },
 
   draw ({ ctx }, { shape }) {
-    ctx.beginPath()
-
-    const { number, content, position, toFixed, formatter } = shape
+    const { number, content, toFixed, rowGap, formatter } = shape
 
     const textSegments = content.split('{nt}')
 
@@ -171,10 +172,7 @@ const numberText = {
       textString += t + (currentNumber || '')
     })
 
-    ctx.closePath()
-
-    ctx.strokeText(textString, ...position)
-    ctx.fillText(textString, ...position)
+    text.draw({ ctx }, { shape: { ...shape, content: textString, rowGap} })
   }
 }
 
