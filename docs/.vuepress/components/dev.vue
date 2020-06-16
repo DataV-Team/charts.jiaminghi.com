@@ -1,6 +1,6 @@
 <template>
   <div class="dev">
-    <div
+    <canvas
       class="chart"
       ref="chart"
     />
@@ -8,24 +8,44 @@
 </template>
 
 <script>
-import Charts from "../../Charts/index.js"
-
-const option = {"series":[{"type":"pie","radius":"50%","activeRadius":"55%","data":[{"name":"周口","value":16984,"radius":[65,85]},{"name":"南阳","value":48872,"radius":[65,85]},{"name":"西峡","value":17366,"radius":[65,85]},{"name":"驻马店","value":6101,"radius":[65,85]},{"name":"新乡","value":3197,"radius":[65,85]},{"name":"郑州","value":97,"radius":[65,85]}],"lineWidth":20,"activeTimeGap":3000,"color":[],"digitalFlopStyle":{"fontSize":25,"fill":"#fff"},"digitalFlopToFixed":2,"animationCurve":"easeOutCubic","animationFrame":50,"showOriginValue":false,"showValue":true,"fontSize":14,"outsideLabel":{"show":false}, outsideLabel: {show: true, formatter: '{percent}'}}],"color":[]}
+import CRender from "@jiaminghi/c-render"
+import '../../Charts/extend/index.js'
 
 export default {
   name: "Dev",
   data () {
     return {
-      myChart: null
     }
   },
   methods: {
     async init () {
       const { $refs, randomNum } = this;
 
-      const myChart = this.myChart = new Charts($refs["chart"])
+      const render = new CRender($refs["chart"])
 
-      myChart.setOption(option, true)
+      const text = render.add({
+        name: 'numberText',
+        shape: {
+          number: [10123123],
+          position: [200, 20],
+          content: '{nt}元',
+          formatter (number) {
+            const numbers = number.toString().split('').reverse()
+            const segs = []
+
+            while (numbers.length) segs.push(numbers.splice(0, 3).join(''))
+
+            return segs.join(',').split('').reverse().join('')
+          }
+        },
+        style: {
+          fontSize: 20
+        }
+      })
+
+      text.animation('shape', {
+        number: [23234234]
+      })
     },
     randomNum (minNum, maxNum){ 
       switch(arguments.length){ 
@@ -43,10 +63,6 @@ export default {
   },
   async mounted () {
     this.init()
-
-    window.addEventListener('resize', e => {
-      this.myChart.resize()
-    })
   }
 }
 </script>
