@@ -44,7 +44,7 @@ export default {
       })
 
       text.animation('shape', {
-        number: [23234234, 11233]
+        number: [0, 0]
       })
     },
     randomNum (minNum, maxNum){ 
